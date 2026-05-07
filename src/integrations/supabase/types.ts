@@ -14,7 +14,219 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      acertos: {
+        Row: {
+          created_at: string
+          data: string
+          de_socio_id: string
+          id: string
+          observacoes: string | null
+          para_socio_id: string
+          valor: number
+        }
+        Insert: {
+          created_at?: string
+          data?: string
+          de_socio_id: string
+          id?: string
+          observacoes?: string | null
+          para_socio_id: string
+          valor: number
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          de_socio_id?: string
+          id?: string
+          observacoes?: string | null
+          para_socio_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acertos_de_socio_id_fkey"
+            columns: ["de_socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acertos_para_socio_id_fkey"
+            columns: ["para_socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categorias: {
+        Row: {
+          cor: string
+          created_at: string
+          icone: string
+          id: string
+          nome: string
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+        }
+        Insert: {
+          cor?: string
+          created_at?: string
+          icone?: string
+          id?: string
+          nome: string
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+        }
+        Update: {
+          cor?: string
+          created_at?: string
+          icone?: string
+          id?: string
+          nome?: string
+          tipo?: Database["public"]["Enums"]["tipo_transacao"]
+        }
+        Relationships: []
+      }
+      gastos_fixos: {
+        Row: {
+          ativo: boolean
+          categoria_id: string | null
+          created_at: string
+          dia_mes: number
+          empresa: string | null
+          id: string
+          nome: string
+          socio_padrao_id: string | null
+          valor: number
+        }
+        Insert: {
+          ativo?: boolean
+          categoria_id?: string | null
+          created_at?: string
+          dia_mes: number
+          empresa?: string | null
+          id?: string
+          nome: string
+          socio_padrao_id?: string | null
+          valor: number
+        }
+        Update: {
+          ativo?: boolean
+          categoria_id?: string | null
+          created_at?: string
+          dia_mes?: number
+          empresa?: string | null
+          id?: string
+          nome?: string
+          socio_padrao_id?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gastos_fixos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gastos_fixos_socio_padrao_id_fkey"
+            columns: ["socio_padrao_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      socios: {
+        Row: {
+          cor: string
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          cor?: string
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          cor?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
+      transacoes: {
+        Row: {
+          acertada: boolean
+          acerto_id: string | null
+          categoria_id: string | null
+          created_at: string
+          data: string
+          descricao: string
+          empresa: string | null
+          id: string
+          observacoes: string | null
+          origem: string
+          socio_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          acertada?: boolean
+          acerto_id?: string | null
+          categoria_id?: string | null
+          created_at?: string
+          data?: string
+          descricao: string
+          empresa?: string | null
+          id?: string
+          observacoes?: string | null
+          origem?: string
+          socio_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          acertada?: boolean
+          acerto_id?: string | null
+          categoria_id?: string | null
+          created_at?: string
+          data?: string
+          descricao?: string
+          empresa?: string | null
+          id?: string
+          observacoes?: string | null
+          origem?: string
+          socio_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_transacao"]
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transacoes_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_socio_id_fkey"
+            columns: ["socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +235,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      tipo_transacao: "despesa" | "receita"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +362,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      tipo_transacao: ["despesa", "receita"],
+    },
   },
 } as const
