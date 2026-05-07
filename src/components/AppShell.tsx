@@ -14,7 +14,14 @@ import { useState } from "react";
 import logo from "@/assets/logo-mambaia.svg";
 import { cn } from "@/lib/utils";
 
-const nav = [
+type NavItem = {
+  to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias";
+  label: string;
+  icon: typeof LayoutDashboard;
+  accent?: boolean;
+};
+
+const nav: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/nova", label: "Nova", icon: PlusCircle, accent: true },
   { to: "/transacoes", label: "Transações", icon: Receipt },
@@ -22,7 +29,7 @@ const nav = [
   { to: "/fixos", label: "Gastos Fixos", icon: Repeat },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/categorias", label: "Categorias", icon: Tag },
-] as const;
+];
 
 export function AppShell() {
   const location = useLocation();
