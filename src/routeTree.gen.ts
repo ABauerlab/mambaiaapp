@@ -9,61 +9,205 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
+import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
+import { Route as AppNovaRouteImport } from './routes/_app.nova'
+import { Route as AppFixosRouteImport } from './routes/_app.fixos'
+import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
+import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTransacoesRoute = AppTransacoesRouteImport.update({
+  id: '/transacoes',
+  path: '/transacoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNovaRoute = AppNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFixosRoute = AppFixosRouteImport.update({
+  id: '/fixos',
+  path: '/fixos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCategoriasRoute = AppCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAcertosRoute = AppAcertosRouteImport.update({
+  id: '/acertos',
+  path: '/acertos',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/acertos': typeof AppAcertosRoute
+  '/categorias': typeof AppCategoriasRoute
+  '/fixos': typeof AppFixosRoute
+  '/nova': typeof AppNovaRoute
+  '/relatorios': typeof AppRelatoriosRoute
+  '/transacoes': typeof AppTransacoesRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/acertos': typeof AppAcertosRoute
+  '/categorias': typeof AppCategoriasRoute
+  '/fixos': typeof AppFixosRoute
+  '/nova': typeof AppNovaRoute
+  '/relatorios': typeof AppRelatoriosRoute
+  '/transacoes': typeof AppTransacoesRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/acertos': typeof AppAcertosRoute
+  '/_app/categorias': typeof AppCategoriasRoute
+  '/_app/fixos': typeof AppFixosRoute
+  '/_app/nova': typeof AppNovaRoute
+  '/_app/relatorios': typeof AppRelatoriosRoute
+  '/_app/transacoes': typeof AppTransacoesRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/acertos'
+    | '/categorias'
+    | '/fixos'
+    | '/nova'
+    | '/relatorios'
+    | '/transacoes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/acertos'
+    | '/categorias'
+    | '/fixos'
+    | '/nova'
+    | '/relatorios'
+    | '/transacoes'
+    | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/acertos'
+    | '/_app/categorias'
+    | '/_app/fixos'
+    | '/_app/nova'
+    | '/_app/relatorios'
+    | '/_app/transacoes'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/transacoes': {
+      id: '/_app/transacoes'
+      path: '/transacoes'
+      fullPath: '/transacoes'
+      preLoaderRoute: typeof AppTransacoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/relatorios': {
+      id: '/_app/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AppRelatoriosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/nova': {
+      id: '/_app/nova'
+      path: '/nova'
+      fullPath: '/nova'
+      preLoaderRoute: typeof AppNovaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/fixos': {
+      id: '/_app/fixos'
+      path: '/fixos'
+      fullPath: '/fixos'
+      preLoaderRoute: typeof AppFixosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categorias': {
+      id: '/_app/categorias'
+      path: '/categorias'
+      fullPath: '/categorias'
+      preLoaderRoute: typeof AppCategoriasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/acertos': {
+      id: '/_app/acertos'
+      path: '/acertos'
+      fullPath: '/acertos'
+      preLoaderRoute: typeof AppAcertosRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAcertosRoute: typeof AppAcertosRoute
+  AppCategoriasRoute: typeof AppCategoriasRoute
+  AppFixosRoute: typeof AppFixosRoute
+  AppNovaRoute: typeof AppNovaRoute
+  AppRelatoriosRoute: typeof AppRelatoriosRoute
+  AppTransacoesRoute: typeof AppTransacoesRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAcertosRoute: AppAcertosRoute,
+  AppCategoriasRoute: AppCategoriasRoute,
+  AppFixosRoute: AppFixosRoute,
+  AppNovaRoute: AppNovaRoute,
+  AppRelatoriosRoute: AppRelatoriosRoute,
+  AppTransacoesRoute: AppTransacoesRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
