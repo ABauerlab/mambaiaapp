@@ -74,6 +74,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
       { name: "twitter:image", content: "/icon-512.png" },
+      { title: "Mambaia App" },
+      { property: "og:title", content: "Mambaia App" },
+      { name: "twitter:title", content: "Mambaia App" },
+      { name: "description", content: "Conecta. Cultiva. Transforma." },
+      { property: "og:description", content: "Conecta. Cultiva. Transforma." },
+      { name: "twitter:description", content: "Conecta. Cultiva. Transforma." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
