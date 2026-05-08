@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WifiRouteImport } from './routes/wifi'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
@@ -19,6 +20,11 @@ import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 
+const WifiRoute = WifiRouteImport.update({
+  id: '/wifi',
+  path: '/wifi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -66,6 +72,7 @@ const AppAcertosRoute = AppAcertosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/transacoes': typeof AppTransacoesRoute
 }
 export interface FileRoutesByTo {
+  '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
@@ -87,6 +95,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/fixos': typeof AppFixosRoute
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/wifi'
     | '/acertos'
     | '/categorias'
     | '/fixos'
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/transacoes'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/wifi'
     | '/acertos'
     | '/categorias'
     | '/fixos'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/wifi'
     | '/_app/acertos'
     | '/_app/categorias'
     | '/_app/fixos'
@@ -132,10 +144,18 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  WifiRoute: typeof WifiRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wifi': {
+      id: '/wifi'
+      path: '/wifi'
+      fullPath: '/wifi'
+      preLoaderRoute: typeof WifiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -228,7 +248,18 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  WifiRoute: WifiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
