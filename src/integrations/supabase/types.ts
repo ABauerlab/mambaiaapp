@@ -137,6 +137,54 @@ export type Database = {
           },
         ]
       }
+      quadro_itens: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          empresa: string | null
+          id: string
+          ordem: number
+          prazo: string | null
+          prioridade: string
+          responsavel_id: string | null
+          status: string
+          tags: string[]
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          empresa?: string | null
+          id?: string
+          ordem?: number
+          prazo?: string | null
+          prioridade?: string
+          responsavel_id?: string | null
+          status?: string
+          tags?: string[]
+          tipo: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          empresa?: string | null
+          id?: string
+          ordem?: number
+          prazo?: string | null
+          prioridade?: string
+          responsavel_id?: string | null
+          status?: string
+          tags?: string[]
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       socios: {
         Row: {
           cor: string

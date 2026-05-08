@@ -9,15 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WifiRouteImport } from './routes/wifi'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
+import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
 import { Route as AppNovaRouteImport } from './routes/_app.nova'
 import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 
+const WifiRoute = WifiRouteImport.update({
+  id: '/wifi',
+  path: '/wifi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -35,6 +42,11 @@ const AppTransacoesRoute = AppTransacoesRouteImport.update({
 const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppQuadroRoute = AppQuadroRouteImport.update({
+  id: '/quadro',
+  path: '/quadro',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNovaRoute = AppNovaRouteImport.update({
@@ -60,18 +72,22 @@ const AppAcertosRoute = AppAcertosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
+  '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
 }
 export interface FileRoutesByTo {
+  '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
+  '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
   '/': typeof AppIndexRoute
@@ -79,10 +95,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/fixos': typeof AppFixosRoute
   '/_app/nova': typeof AppNovaRoute
+  '/_app/quadro': typeof AppQuadroRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
   '/_app/': typeof AppIndexRoute
@@ -91,28 +109,34 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/wifi'
     | '/acertos'
     | '/categorias'
     | '/fixos'
     | '/nova'
+    | '/quadro'
     | '/relatorios'
     | '/transacoes'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/wifi'
     | '/acertos'
     | '/categorias'
     | '/fixos'
     | '/nova'
+    | '/quadro'
     | '/relatorios'
     | '/transacoes'
     | '/'
   id:
     | '__root__'
     | '/_app'
+    | '/wifi'
     | '/_app/acertos'
     | '/_app/categorias'
     | '/_app/fixos'
     | '/_app/nova'
+    | '/_app/quadro'
     | '/_app/relatorios'
     | '/_app/transacoes'
     | '/_app/'
@@ -120,10 +144,18 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  WifiRoute: typeof WifiRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wifi': {
+      id: '/wifi'
+      path: '/wifi'
+      fullPath: '/wifi'
+      preLoaderRoute: typeof WifiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -150,6 +182,13 @@ declare module '@tanstack/react-router' {
       path: '/relatorios'
       fullPath: '/relatorios'
       preLoaderRoute: typeof AppRelatoriosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/quadro': {
+      id: '/_app/quadro'
+      path: '/quadro'
+      fullPath: '/quadro'
+      preLoaderRoute: typeof AppQuadroRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/nova': {
@@ -188,6 +227,7 @@ interface AppRouteChildren {
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppFixosRoute: typeof AppFixosRoute
   AppNovaRoute: typeof AppNovaRoute
+  AppQuadroRoute: typeof AppQuadroRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
   AppTransacoesRoute: typeof AppTransacoesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -198,6 +238,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriasRoute: AppCategoriasRoute,
   AppFixosRoute: AppFixosRoute,
   AppNovaRoute: AppNovaRoute,
+  AppQuadroRoute: AppQuadroRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
   AppTransacoesRoute: AppTransacoesRoute,
   AppIndexRoute: AppIndexRoute,
@@ -207,7 +248,18 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  WifiRoute: WifiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

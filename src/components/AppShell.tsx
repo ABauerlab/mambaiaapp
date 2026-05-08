@@ -7,6 +7,7 @@ import {
   Scale,
   BarChart3,
   Tag,
+  Lightbulb,
   Menu,
   X,
 } from "lucide-react";
@@ -15,7 +16,7 @@ import logo from "@/assets/logo-mambaia.svg";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
-  to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias";
+  to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro";
   label: string;
   icon: typeof LayoutDashboard;
   accent?: boolean;
@@ -25,6 +26,7 @@ const nav: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/nova", label: "Nova", icon: PlusCircle, accent: true },
   { to: "/transacoes", label: "Transações", icon: Receipt },
+  { to: "/quadro", label: "Ideias", icon: Lightbulb },
   { to: "/acertos", label: "Acertos", icon: Scale },
   { to: "/fixos", label: "Gastos Fixos", icon: Repeat },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
