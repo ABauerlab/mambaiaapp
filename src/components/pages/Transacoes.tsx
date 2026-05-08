@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { friendlyErrorMessage } from "@/lib/utils";
 
 export function Transacoes() {
   const qc = useQueryClient();
@@ -38,7 +39,7 @@ export function Transacoes() {
       toast.success("Transação removida");
       qc.invalidateQueries({ queryKey: ["transacoes"] });
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível remover. Tente novamente.")),
   });
 
   return (
