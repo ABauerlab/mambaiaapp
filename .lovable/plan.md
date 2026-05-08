@@ -1,118 +1,97 @@
-# Mambaia App — Fase 1: Financeiro
+# Plano — Mambaia App: Ideias/Tarefas + Página /wifi
 
-PWA instalável com a identidade visual da Mambaia (verde escuro #1F3D2B, verde vibrante #A6D608, amarelo limão #DFFF4F, creme #F5F2E9), tipografia Poppins, logo enviada como ícone/favicon. Sem login nesta fase — uso interno da administração.
+## 1. Confirmação sobre o banco
+O sistema já está totalmente conectado ao banco real (Lovable Cloud). Não há dados fictícios em código — Dashboard, Transações, Acertos, etc. já leem das tabelas `transacoes`, `socios`, `categorias`, `gastos_fixos`, `acertos`. Tudo que for registrado no app já fica salvo de verdade. Nada a mudar aqui.
 
-## Estrutura de páginas
+## 2. Novo módulo: Ideias / Tarefas / Demandas
 
-- **/** — Dashboard (estilo PowerBI)
-- **/transacoes** — Lista de gastos e ganhos com filtros
-- **/nova** — Registrar gasto ou ganho
-- **/fixos** — Gastos fixos recorrentes
-- **/acertos** — Saldo entre sócios e histórico de acertos
-- **/relatorios** — Relatórios detalhados
-- **/categorias** — Gerenciar categorias
+Espaço criativo para anotar e visualizar de forma clara.
 
-## Modelo de dados (Lovable Cloud)
+### Banco (nova tabela)
+```
+quadro_itens (
+  id uuid pk,
+  tipo text check in ('ideia','tarefa','demanda'),
+  titulo text not null,
+  descricao text,
+  status text check in ('aberto','em_andamento','concluido','arquivado') default 'aberto',
+  prioridade text check in ('baixa','media','alta') default 'media',
+  responsavel_id uuid references socios(id) null,
+  empresa text null,            -- Kriya, Kodara, Mambaia, Estúdio
+  tags text[] default '{}',
+  prazo date null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+)
+```
+- RLS aberta (mantém padrão atual sem auth na administração).
+- Trigger `set_updated_at` (já existe a função).
 
-- **socios**: João Victor, Laura Ottoni, Eduardo (pré-cadastrados)
-- **categorias**: tipo (despesa/receita), nome, ícone, cor — pré-populadas + criação livre
-- **transacoes**: tipo (gasto/ganho), valor, data, descrição, categoria, pago_por (sócio), recebido_por (opcional, p/ ganhos), empresa relacionada (Kriya/Kodara/Asari/Bauer Lab/Mambaia), observações
-- **gastos_fixos**: nome, valor, dia do mês, categoria, ativo — gera transação automática mensal
-- **acertos**: data, de_socio, para_socio, valor, transações incluídas
+### Rota e UI: `/quadro` (item no menu: "Ideias")
+- Visualização **Kanban** com 3 colunas (Aberto → Em andamento → Concluído) + tab "Arquivados".
+- Filtros: tipo (ideia/tarefa/demanda), responsável, empresa, prioridade, busca.
+- Cards visuais com cor por tipo (ideia=lima `#A6D608`, tarefa=verde escuro `#1F3D2B`, demanda=amarelo `#DFFF4F`), badge de prioridade, avatar do responsável, prazo.
+- Botão "+ Nova" abre dialog com: tipo, título, descrição (textarea), responsável, empresa, prioridade, prazo, tags.
+- Click no card abre dialog de edição completa (com mover status, arquivar, excluir).
+- Drag & drop entre colunas para mudar status (usa `@dnd-kit/core` — já leve e suportado).
 
-## Lógica financeira (validada)
+### AppShell
+- Adicionar item "Ideias" no menu lateral/bottom bar com ícone `Lightbulb`.
 
-Todo gasto é dividido por 3 igualmente:
-- Quem pagou fica com crédito de `valor × 2/3` contra os outros dois
-- Cada outro sócio deve `valor / 3` ao pagador
-- Arredondamento em centavos com ajuste para o pagador absorver a diferença (garante soma = total exato)
+## 3. Página /wifi (pública, separada do app)
 
-**Saldo por sócio** = soma de todos os créditos − soma de todas as dívidas (considerando apenas transações ainda não acertadas).
+Rota **fora** do layout `_app` — sem sidebar, sem acesso ao sistema. Arquivo: `src/routes/wifi.tsx`.
 
-**Sugestão de acerto**: algoritmo de minimização de transferências (ex: se A deve 100 a B e B deve 100 a C, sugere A → C diretamente).
-
-Ao marcar acerto: as transações envolvidas são marcadas como "acertadas", saem do saldo ativo e vão para o histórico/balanço geral.
-
-**Validações obrigatórias**:
-- Valores > 0, máximo 2 casas decimais
-- Data não futura para registros (configurável p/ fixos)
-- Pagador obrigatório em gastos
-- Soma das divisões = valor total (teste automático em cada cálculo)
-- Schema Zod no client e validação server-side
-
-## Dashboard (estilo PowerBI)
-
-Layout em cards/grid responsivo:
-
-```text
-┌─────────────────────────────────────────┐
-│ KPIs: Receita | Despesa | Lucro mês    │
-├──────────────────┬──────────────────────┤
-│ Linha mês a mês  │ Donut por categoria  │
-│ (rec x desp)     │                      │
-├──────────────────┴──────────────────────┤
-│ Saldo entre sócios (cards)              │
-│ João → Laura: R$ X | Laura → Edu: R$ Y │
-├─────────────────────────────────────────┤
-│ Últimas transações                      │
-└─────────────────────────────────────────┘
+### Fluxo (3 passos guiados)
+```
+[ Boas-vindas Mambaia ]
+        ↓
+Passo 1: Avaliar no Google (5 estrelas)
+  - Botão "Abrir Google Reviews" → window.open(url)
+  - Após retorno, botão "Já avaliei ✓" desbloqueia próximo passo
+        ↓
+Passo 2: Seguir no Instagram
+  - Botão "Abrir Instagram @mambaiabh"
+  - Após retorno, botão "Já segui ✓" libera senha
+        ↓
+Passo 3: Wifi liberado
+  - Card grande: Rede MAMBAIA, Senha Mambaia*22
+  - Botão "Copiar senha" (navigator.clipboard)
+  - Mensagem de agradecimento
 ```
 
-- Gráficos com Recharts nas cores da marca
-- Filtro global de período (mês atual, últimos 3, 6, 12, customizado)
-- Animações suaves, dark mode opcional usando verde escuro como base
+### Detalhes técnicos
+- **Sem login**, página 100% pública.
+- Estado dos passos guardado em `localStorage` (`mambaia_wifi_step`) — se a pessoa fechar e voltar, retoma. Se já completou antes no mesmo dispositivo, vai direto para a senha.
+- Detecta retorno do Google/Instagram via `visibilitychange` + timer mínimo (~3s na aba externa) antes de habilitar "Já avaliei/segui" — evita clique imediato sem sair.
+- Funciona Android/iOS: links abrem app nativo quando instalado (URLs `https://` deep-linkam automaticamente em ambos), fallback no navegador.
+- Layout mobile-first, branding Mambaia (verde escuro + lima), logo no topo, botões grandes (touch target 48px+).
+- Meta tags próprias (`<title>Wi-Fi Mambaia</title>`), sem itens de menu do app.
 
-## Registrar transação (UX otimizada)
+### Registro opcional (sem PII)
+Tabela `wifi_acessos` com `created_at`, `user_agent` (truncado), só para contagem agregada futura. RLS aberta para insert anônimo. *Confirmar se quer rastrear* — se preferir não registrar nada, removo.
 
-Formulário em uma tela com:
-- Toggle Gasto/Ganho (cores diferentes)
-- Valor com máscara R$
-- Categoria (chips clicáveis + botão "+ Nova")
-- Data (default: hoje)
-- Pago por (avatar dos 3 sócios) — preview em tempo real: "Cada um deve R$ X,XX para [pagador]"
-- Empresa associada (opcional)
-- Descrição
-- Botão salvar grande (mobile-friendly)
+### Limitações honestas
+- Não há como **verificar** de fato que a pessoa avaliou no Google ou seguiu no Insta (Google/Meta não expõem essa API publicamente sem OAuth complexo). O fluxo é baseado em confiança + fricção (precisa abrir os links, esperar uns segundos, confirmar). É o padrão usado por apps similares de "wifi social".
 
-## Gastos fixos
+## 4. Arquivos a criar/editar
 
-Cadastro com geração automática de transação no dia configurado (via cron edge function diária), marcando origem "fixo".
+**Criar:**
+- `supabase/migrations/...` — tabela `quadro_itens` (+ `wifi_acessos` se aprovado) + trigger updated_at.
+- `src/routes/_app.quadro.tsx`
+- `src/routes/wifi.tsx` (fora do layout `_app`)
+- `src/components/pages/Quadro.tsx` (kanban + dialogs)
+- `src/components/wifi/WifiFlow.tsx`
+- `src/lib/quadro.ts` (queries CRUD)
 
-## Acertos
+**Editar:**
+- `src/components/AppShell.tsx` — adicionar item "Ideias".
+- `src/lib/db.ts` — exports adicionais se preciso.
 
-Tela mostra:
-- Matriz visual: quem deve para quem
-- Botão "Sugerir acerto ótimo"
-- Botão "Marcar como pago" por par de sócios
-- Histórico de acertos passados
+**Dependência nova:**
+- `@dnd-kit/core` + `@dnd-kit/sortable` para drag & drop do kanban.
 
-## Relatórios
-
-- Resumo mensal: receitas × despesas × lucro
-- Evolução temporal (linha) mês a mês
-- Saldo entre sócios e histórico completo de acertos
-- Exportar CSV
-
-## PWA & SEO
-
-- `manifest.json` com nome "Mambaia App", cores da marca, ícones gerados a partir da SVG enviada (192, 512, maskable, apple-touch-icon, favicon)
-- `display: standalone`, instalável em mobile e desktop
-- Sem service worker (evita problemas no preview do Lovable; instalação funciona com manifest puro)
-- Meta tags completas: title, description, og:title, og:description, og:image, twitter card em cada rota
-- `lang="pt-BR"`, theme-color verde escuro
-
-## Stack técnica
-
-- TanStack Start (já configurado), Tailwind v4, shadcn/ui
-- Lovable Cloud (Postgres) com RLS aberta nesta fase (sem auth) — preparada para adicionar auth depois
-- Recharts para gráficos
-- Zod para validação
-- Server functions para cron de gastos fixos
-- Fonte Poppins via Google Fonts
-
-## Preparação para próximas fases
-
-Estrutura modular já pronta para receber:
-- Agenda do estúdio fotográfico com notificações push
-- Autenticação dos 3 sócios
-- Módulos por empresa (Kriya, Kodara, Asari, Bauer Lab)
+## 5. Perguntas antes de implementar
+1. Quer registrar acessos ao /wifi (contagem anônima) ou não rastrear nada?
+2. Quadro de Ideias: começar com **Kanban** (recomendado) ou prefere visualização em **lista/grid**?
+3. Senha do wifi (`Mambaia*22`) e nome da rede (`MAMBAIA`) ficam **hardcoded** no código ou quer uma tela de admin no app para editá-las?
