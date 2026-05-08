@@ -44,7 +44,7 @@ import { friendlyErrorMessage } from "@/lib/utils";
 const TIPOS: { value: QuadroTipo; label: string; icon: typeof Lightbulb; color: string }[] = [
   { value: "ideia", label: "Ideia", icon: Lightbulb, color: "var(--brand-lime)" },
   { value: "tarefa", label: "Tarefa", icon: CheckSquare, color: "var(--brand-green)" },
-  { value: "demanda", label: "Demanda", icon: Inbox, color: "var(--brand-yellow)" },
+  { value: "demanda", label: "Demanda", icon: Inbox, color: "var(--brand-dark)" },
 ];
 
 const COLUNAS: { status: QuadroStatus; label: string }[] = [
@@ -292,7 +292,7 @@ function ItemCard({ item, socios, onClick }: { item: QuadroItem; socios: { id: s
     <Card
       onClick={onClick}
       className="p-3 cursor-pointer hover:shadow-md transition border-l-4"
-      style={{ borderLeftColor: `var(--brand-${item.tipo === "ideia" ? "lime" : item.tipo === "tarefa" ? "green" : "yellow"})` as string }}
+        style={{ borderLeftColor: `var(--brand-${item.tipo === "ideia" ? "lime" : item.tipo === "tarefa" ? "green" : "dark"})` as string }}
     >
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
