@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { friendlyErrorMessage } from "@/lib/utils";
 
 const EMPRESAS = ["Mambaia", "Kriya", "Kodara", "Asari", "Bauer Lab"] as const;
 
@@ -83,10 +84,7 @@ export function NovaTransacao() {
       qc.invalidateQueries({ queryKey: ["transacoes"] });
       navigate({ to: "/" });
     },
-    onError: (e: unknown) => {
-      const msg = e instanceof z.ZodError ? e.issues[0].message : (e as Error).message;
-      toast.error(msg);
-    },
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível salvar a transação.")),
   });
 
   return (

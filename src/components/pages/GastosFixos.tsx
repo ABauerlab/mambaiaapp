@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { friendlyErrorMessage } from "@/lib/utils";
 
 const schema = z.object({
   nome: z.string().trim().min(1, "Nome obrigatório").max(100),
@@ -49,7 +50,7 @@ export function GastosFixos() {
       qc.invalidateQueries({ queryKey: ["fixos"] });
       setShowForm(false); setNome(""); setValorStr(""); setDia("5"); setCatId(""); setSocioId("");
     },
-    onError: (e: unknown) => toast.error(e instanceof z.ZodError ? e.issues[0].message : (e as Error).message),
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível salvar. Tente novamente.")),
   });
   const toggle = useMutation({
     mutationFn: async ({ id, ativo }: { id: string; ativo: boolean }) => {
@@ -57,6 +58,7 @@ export function GastosFixos() {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["fixos"] }),
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível atualizar.")),
   });
   const del = useMutation({
     mutationFn: async (id: string) => {
@@ -64,6 +66,7 @@ export function GastosFixos() {
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["fixos"] }); toast.success("Removido"); },
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível remover.")),
   });
   const lancar = useMutation({
     mutationFn: async (id: string) => {
@@ -77,7 +80,7 @@ export function GastosFixos() {
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["transacoes"] }); toast.success("Lançado"); },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível lançar.")),
   });
 
   return (

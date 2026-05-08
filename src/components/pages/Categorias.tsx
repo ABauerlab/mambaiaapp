@@ -9,6 +9,7 @@ import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { friendlyErrorMessage } from "@/lib/utils";
 
 const schema = z.object({
   nome: z.string().trim().min(1, "Nome obrigatório").max(50),
@@ -28,7 +29,7 @@ export function Categorias() {
       if (error) throw error;
     },
     onSuccess: () => { toast.success("Categoria criada"); qc.invalidateQueries({ queryKey: ["categorias"] }); setNome(""); },
-    onError: (e: unknown) => toast.error(e instanceof z.ZodError ? e.issues[0].message : (e as Error).message),
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível criar a categoria.")),
   });
 
   const del = useMutation({
@@ -37,7 +38,7 @@ export function Categorias() {
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["categorias"] }); toast.success("Removida"); },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível remover.")),
   });
 
   const despesas = (categorias ?? []).filter((c) => c.tipo === "despesa");
