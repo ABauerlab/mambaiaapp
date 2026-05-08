@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   DndContext,
@@ -341,9 +341,10 @@ function ItemDialog({
   saving: boolean;
 }) {
   const [form, setForm] = useState<FormState>(state.data);
-  // sync when opening
-  const key = state.open + "_" + (state.data.id ?? "new");
-  useMemoSync(key, () => setForm(state.data));
+  // sync form when dialog opens or data changes
+  useEffect(() => {
+    if (state.open) setForm(state.data);
+  }, [state.open, state.data]);
 
   return (
     <Dialog open={state.open} onOpenChange={(o) => !o && onClose()}>
@@ -452,17 +453,3 @@ function ItemDialog({
     </Dialog>
   );
 }
-
-// runs callback when key changes (used to sync form state with dialog open)
-function useMemoSync(key: string, fn: () => void) {
-  const ref = (useMemoSync as any)._ref ||= new WeakMap();
-  // simple module-scoped tracking via React useState would be cleaner; do effect instead
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [last, setLast] = useStateLazy(key);
-  if (last !== key) {
-    setLast(key);
-    fn();
-  }
-}
-
-import { useState as useStateLazy } from "react";
