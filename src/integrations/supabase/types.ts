@@ -147,6 +147,7 @@ export type Database = {
           prazo: string | null
           prioridade: string
           responsavel_id: string | null
+          responsavel_ids: string[]
           status: string
           tags: string[]
           tipo: string
@@ -162,6 +163,7 @@ export type Database = {
           prazo?: string | null
           prioridade?: string
           responsavel_id?: string | null
+          responsavel_ids?: string[]
           status?: string
           tags?: string[]
           tipo: string
@@ -177,6 +179,7 @@ export type Database = {
           prazo?: string | null
           prioridade?: string
           responsavel_id?: string | null
+          responsavel_ids?: string[]
           status?: string
           tags?: string[]
           tipo?: string
