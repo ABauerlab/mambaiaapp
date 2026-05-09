@@ -1,26 +1,30 @@
 /**
- * Cálculo de saldos entre sócios (todos os valores em centavos).
+ * Saldos da Mambaia (caixa coletivo) e dos socios cotistas.
  *
- * Algoritmo:
- * 1. Para cada despesa não acertada: o pagador credita (N-1)*each + remainder
- *    e cada outro sócio debita `each` centavos.
- * 2. Acertos manuais (transferências reais entre sócios) ajustam:
- *    - de_socio: crédito de `valor` (já pagou sua dívida)
- *    - para_socio: débito de `valor` (recebeu do outro)
- * 3. Saldo líquido de cada sócio = soma das movimentações.
- *    - Saldo positivo: outros devem para ele
- *    - Saldo negativo: ele deve para os outros
- * 4. Sugestão de transferências: algoritmo guloso minimizando número de pagamentos.
+ * Modelo:
+ *   - Toda transacao e da Mambaia.
+ *   - DESPESA paga por socio: ele credita "valor"; cada cotista debita sua cota.
+ *   - DESPESA paga pela Mambaia (caixa): cada cotista debita sua cota; o caixa
+ *     credita o total (ja saiu).
+ *   - RECEITA recebida pela Mambaia: cada cotista credita sua cota; o caixa
+ *     debita o total (precisa repassar).
+ *   - RECEITA recebida por socio: ele debita "valor"; cada cotista credita cota.
+ *   - ACERTOS: pagador credita, recebedor debita.
+ *
+ * Saldo positivo = a receber. Negativo = a pagar.
+ * Soma de todos os saldos == 0.
  */
 
-import { splitForPayer } from "./money";
+import { splitByCota, MAMBAIA_CAIXA_ID, type SocioBasic } from "./cotas";
+import { toCents } from "./money";
 
 export type Socio = { id: string; nome: string; cor: string };
 
-export type DespesaAberta = {
+export type TransacaoAberta = {
   id: string;
+  tipo: "despesa" | "receita";
   valor_cents: number;
-  socio_id: string; // pagador
+  socio_id: string | null;
 };
 
 export type AcertoRegistro = {
@@ -29,27 +33,27 @@ export type AcertoRegistro = {
   valor_cents: number;
 };
 
-/** Saldo líquido por sócio (centavos). Positivo = a receber. */
-export const computeNetBalances = (
+export function computeNetBalances(
   socios: Socio[],
-  despesas: DespesaAberta[],
+  transacoes: TransacaoAberta[],
   acertos: AcertoRegistro[] = [],
-): Map<string, number> => {
+): Map<string, number> {
   const balances = new Map<string, number>();
   socios.forEach((s) => balances.set(s.id, 0));
+  balances.set(MAMBAIA_CAIXA_ID, 0);
 
-  const N = socios.length;
-  if (N === 0) return balances;
+  const basics: SocioBasic[] = socios.map((s) => ({ id: s.id, nome: s.nome }));
 
-  for (const d of despesas) {
-    if (!balances.has(d.socio_id)) continue;
-    const { eachOwes, payerShare } = splitForPayer(d.valor_cents, N);
-    // Pagador "adianta" o total e absorve sua parte
-    balances.set(d.socio_id, (balances.get(d.socio_id) ?? 0) + (d.valor_cents - payerShare));
-    // Cada outro deve eachOwes
-    for (const s of socios) {
-      if (s.id === d.socio_id) continue;
-      balances.set(s.id, (balances.get(s.id) ?? 0) - eachOwes);
+  for (const t of transacoes) {
+    const cotas = splitByCota(t.valor_cents, basics);
+    if (t.tipo === "despesa") {
+      for (const [id, c] of cotas) balances.set(id, (balances.get(id) ?? 0) - c);
+      const pagadorId = t.socio_id ?? MAMBAIA_CAIXA_ID;
+      balances.set(pagadorId, (balances.get(pagadorId) ?? 0) + t.valor_cents);
+    } else {
+      for (const [id, c] of cotas) balances.set(id, (balances.get(id) ?? 0) + c);
+      const recebedorId = t.socio_id ?? MAMBAIA_CAIXA_ID;
+      balances.set(recebedorId, (balances.get(recebedorId) ?? 0) - t.valor_cents);
     }
   }
 
@@ -62,27 +66,22 @@ export const computeNetBalances = (
     }
   }
 
-  // Sanidade: soma dos saldos deve ser 0 (centavos exatos)
   let sum = 0;
   balances.forEach((v) => (sum += v));
-  if (sum !== 0) {
-    console.error("Soma dos saldos != 0:", sum, balances);
-  }
+  if (sum !== 0) console.error("Soma dos saldos != 0:", sum, balances);
 
   return balances;
-};
+}
 
 export type Sugestao = { de: string; para: string; valor_cents: number };
 
-/** Algoritmo guloso: maior devedor paga maior credor até zerar. */
-export const sugerirAcertos = (balances: Map<string, number>): Sugestao[] => {
+export function sugerirAcertos(balances: Map<string, number>): Sugestao[] {
   const arr = Array.from(balances.entries()).map(([id, v]) => ({ id, v }));
   const credores = arr.filter((x) => x.v > 0).sort((a, b) => b.v - a.v);
   const devedores = arr.filter((x) => x.v < 0).sort((a, b) => a.v - b.v);
 
   const sugs: Sugestao[] = [];
-  let i = 0;
-  let j = 0;
+  let i = 0, j = 0;
   while (i < devedores.length && j < credores.length) {
     const d = devedores[i];
     const c = credores[j];
@@ -96,4 +95,14 @@ export const sugerirAcertos = (balances: Map<string, number>): Sugestao[] => {
     if (c.v === 0) j++;
   }
   return sugs;
-};
+}
+
+export function transacoesAbertasParaBalance(
+  transacoes: { id: string; tipo: "despesa" | "receita"; valor: number; socio_id: string | null; acertada: boolean }[],
+): TransacaoAberta[] {
+  return transacoes
+    .filter((t) => !t.acertada)
+    .map((t) => ({ id: t.id, tipo: t.tipo, valor_cents: toCents(t.valor), socio_id: t.socio_id }));
+}
+
+export { MAMBAIA_CAIXA_ID };

@@ -18,6 +18,7 @@ import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
 import { Route as AppNovaRouteImport } from './routes/_app.nova'
 import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
+import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 
 const WifiRoute = WifiRouteImport.update({
@@ -64,6 +65,11 @@ const AppCategoriasRoute = AppCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAcertosRoute = AppAcertosRouteImport.update({
   id: '/acertos',
   path: '/acertos',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
+  '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
+  '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
+  '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/fixos': typeof AppFixosRoute
   '/_app/nova': typeof AppNovaRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/'
     | '/wifi'
     | '/acertos'
+    | '/auditoria'
     | '/categorias'
     | '/fixos'
     | '/nova'
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
   to:
     | '/wifi'
     | '/acertos'
+    | '/auditoria'
     | '/categorias'
     | '/fixos'
     | '/nova'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/wifi'
     | '/_app/acertos'
+    | '/_app/auditoria'
     | '/_app/categorias'
     | '/_app/fixos'
     | '/_app/nova'
@@ -212,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/auditoria': {
+      id: '/_app/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AppAuditoriaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/acertos': {
       id: '/_app/acertos'
       path: '/acertos'
@@ -224,6 +243,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAcertosRoute: typeof AppAcertosRoute
+  AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppFixosRoute: typeof AppFixosRoute
   AppNovaRoute: typeof AppNovaRoute
@@ -235,6 +255,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAcertosRoute: AppAcertosRoute,
+  AppAuditoriaRoute: AppAuditoriaRoute,
   AppCategoriasRoute: AppCategoriasRoute,
   AppFixosRoute: AppFixosRoute,
   AppNovaRoute: AppNovaRoute,
