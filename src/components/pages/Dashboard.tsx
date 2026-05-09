@@ -16,7 +16,7 @@ import {
 import { ArrowDownRight, ArrowUpRight, TrendingUp, Wallet, PlusCircle } from "lucide-react";
 import { fetchTransacoes, fetchSocios, fetchCategorias, fetchAcertos } from "@/lib/db";
 import { formatBRL, toCents, fromCents } from "@/lib/money";
-import { computeNetBalances, sugerirAcertos } from "@/lib/balance";
+import { computeNetBalances, sugerirAcertos, transacoesAbertasParaBalance, MAMBAIA_CAIXA_ID } from "@/lib/balance";
 import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -90,19 +90,13 @@ export function Dashboard() {
   // Saldos entre sócios
   const balances = useMemo(() => {
     if (!socios || !transacoes) return null;
-    const despesasAbertas = transacoes
-      .filter((t) => t.tipo === "despesa" && !t.acertada && t.socio_id)
-      .map((t) => ({ id: t.id, valor_cents: toCents(t.valor), socio_id: t.socio_id! }));
+    const abertas = transacoesAbertasParaBalance(transacoes);
     const ac = (acertos ?? []).map((a) => ({
       de_socio_id: a.de_socio_id,
       para_socio_id: a.para_socio_id,
       valor_cents: toCents(a.valor),
     }));
-    const bal = computeNetBalances(
-      socios.map((s) => ({ id: s.id, nome: s.nome, cor: s.cor })),
-      despesasAbertas,
-      ac,
-    );
+    const bal = computeNetBalances(socios, abertas, ac);
     return { bal, sugestoes: sugerirAcertos(new Map(bal)) };
   }, [socios, transacoes, acertos]);
 
