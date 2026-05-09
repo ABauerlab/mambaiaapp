@@ -11,7 +11,8 @@ export type QuadroItem = {
   descricao: string | null;
   status: QuadroStatus;
   prioridade: QuadroPrioridade;
-  responsavel_id: string | null;
+  responsavel_id: string | null; // legado
+  responsavel_ids: string[];
   empresa: string | null;
   tags: string[];
   prazo: string | null;
@@ -20,6 +21,8 @@ export type QuadroItem = {
   updated_at: string;
 };
 
+export const EMPRESAS = ["Mambaia", "Kodara", "Asari", "BauerLab", "Kriya"] as const;
+
 export async function fetchQuadroItens(): Promise<QuadroItem[]> {
   const { data, error } = await supabase
     .from("quadro_itens")
@@ -27,16 +30,19 @@ export async function fetchQuadroItens(): Promise<QuadroItem[]> {
     .order("ordem", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as QuadroItem[];
+  return ((data ?? []) as unknown as QuadroItem[]).map((i) => ({
+    ...i,
+    responsavel_ids: i.responsavel_ids ?? (i.responsavel_id ? [i.responsavel_id] : []),
+  }));
 }
 
-export async function createQuadroItem(input: Omit<QuadroItem, "id" | "created_at" | "updated_at" | "ordem"> & { ordem?: number }) {
-  const { error } = await supabase.from("quadro_itens").insert(input);
+export async function createQuadroItem(input: Partial<QuadroItem>) {
+  const { error } = await supabase.from("quadro_itens").insert(input as never);
   if (error) throw error;
 }
 
 export async function updateQuadroItem(id: string, patch: Partial<QuadroItem>) {
-  const { error } = await supabase.from("quadro_itens").update(patch).eq("id", id);
+  const { error } = await supabase.from("quadro_itens").update(patch as never).eq("id", id);
   if (error) throw error;
 }
 
