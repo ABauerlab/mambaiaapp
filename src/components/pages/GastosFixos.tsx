@@ -19,7 +19,7 @@ const schema = z.object({
   valor: z.number().positive("Valor inválido").max(10_000_000),
   dia_mes: z.number().int().min(1).max(31),
   categoria_id: z.string().uuid("Selecione uma categoria"),
-  socio_padrao_id: z.string().uuid("Selecione um sócio").nullable(),
+  socio_padrao_id: z.string().uuid("Pagador padrão obrigatório"),
 });
 
 export function GastosFixos() {
@@ -40,7 +40,7 @@ export function GastosFixos() {
       const parsed = schema.parse({
         nome, valor: parseFloat(valorStr.replace(",", ".")),
         dia_mes: parseInt(dia, 10), categoria_id: catId,
-        socio_padrao_id: socioId || null,
+        socio_padrao_id: socioId,
       });
       const { error } = await supabase.from("gastos_fixos").insert(parsed);
       if (error) throw error;
@@ -100,9 +100,9 @@ export function GastosFixos() {
               {cats.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
           </div>
-          <div><Label>Pagador padrão</Label>
+          <div><Label>Pagador padrão <span className="text-destructive">*</span></Label>
             <select value={socioId} onChange={(e) => setSocioId(e.target.value)} className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm">
-              <option value="">Selecione</option>
+              <option value="">Selecione (obrigatório)</option>
               {(socios ?? []).map((s) => <option key={s.id} value={s.id}>{s.nome}</option>)}
             </select>
           </div>
