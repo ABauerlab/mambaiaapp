@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Star, Instagram, Wifi, Copy, Check, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo-mambaia.svg";
@@ -10,7 +10,14 @@ const REVIEW_URL = "https://g.page/r/CWoCkyZFVLHiEBM/review";
 const INSTAGRAM_URL = "https://instagram.com/mambaiabh";
 const WIFI_SSID = "MAMBAIA";
 const WIFI_PASSWORD = "Mambaia*22";
-const MIN_AWAY_MS = 3000;
+const UNLOCK_DELAY_MS = 3000;
+
+const UPSELL_INSTAS = [
+  { handle: "kriyastudio.co", desc: "Estúdio criativo" },
+  { handle: "vistakodara",    desc: "Slow fashion" },
+  { handle: "use.asari",      desc: "Acessórios" },
+  { handle: "abauerlab",      desc: "Estética & beleza" },
+];
 
 type Step = "intro" | "google" | "instagram" | "done";
 
@@ -33,7 +40,6 @@ function WifiPage() {
   const [googleConfirmable, setGoogleConfirmable] = useState(false);
   const [instaConfirmable, setInstaConfirmable] = useState(false);
   const [copied, setCopied] = useState(false);
-  const awayRef = useRef<{ at: number | null; target: "google" | "instagram" | null }>({ at: null, target: null });
 
   // restore prior progress
   useEffect(() => {
@@ -56,30 +62,13 @@ function WifiPage() {
     } catch { /* ignore */ }
   }, [googleDone, instaDone]);
 
-  // detect return from external app
-  useEffect(() => {
-    function onVis() {
-      if (document.visibilityState === "hidden") {
-        if (step === "google" && !googleConfirmable) awayRef.current = { at: Date.now(), target: "google" };
-        if (step === "instagram" && !instaConfirmable) awayRef.current = { at: Date.now(), target: "instagram" };
-      } else {
-        const a = awayRef.current;
-        if (a.at && Date.now() - a.at >= MIN_AWAY_MS) {
-          if (a.target === "google") setGoogleConfirmable(true);
-          if (a.target === "instagram") setInstaConfirmable(true);
-        }
-        awayRef.current = { at: null, target: null };
-      }
-    }
-    document.addEventListener("visibilitychange", onVis);
-    return () => document.removeEventListener("visibilitychange", onVis);
-  }, [step, googleConfirmable, instaConfirmable]);
-
   function abrirGoogle() {
     window.open(REVIEW_URL, "_blank", "noopener,noreferrer");
+    setTimeout(() => setGoogleConfirmable(true), UNLOCK_DELAY_MS);
   }
   function abrirInsta() {
     window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
+    setTimeout(() => setInstaConfirmable(true), UNLOCK_DELAY_MS);
   }
 
   async function copiarSenha() {
@@ -99,25 +88,25 @@ function WifiPage() {
         <img src={logo} alt="Mambaia" className="w-20 h-20 rounded-2xl mb-4" />
         <h1 className="text-3xl font-bold tracking-tight">Wi-Fi Mambaia</h1>
         <p className="text-white/70 text-sm mt-2 max-w-xs">
-          Conecta. Cultiva. Transforma. ✨
+          Conecta. Cultiva. Transforma.
         </p>
       </header>
 
       <main className="flex-1 px-5 pb-10 max-w-md mx-auto w-full">
         {step === "intro" && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur">
-            <h2 className="text-xl font-semibold mb-2">Bem-vinda(o)! 🌱</h2>
+            <h2 className="text-xl font-semibold mb-2">Bem-vinda à Mambaia</h2>
             <p className="text-white/80 text-sm leading-relaxed mb-6">
-              Pra liberar o Wi-Fi, pedimos só 2 contribuições rapidinhas com a marca:
+              Para liberar o Wi-Fi, pedimos duas contribuições rapidinhas com a marca:
             </p>
             <ul className="space-y-3 mb-6 text-sm">
               <li className="flex items-start gap-3">
                 <Star className="w-5 h-5 text-[color:var(--brand-lime)] flex-shrink-0 mt-0.5" />
-                <span>Avaliar a Mambaia no Google com 5 estrelas ⭐</span>
+                <span>Avaliar a Mambaia no Google com 5 estrelas</span>
               </li>
               <li className="flex items-start gap-3">
                 <Instagram className="w-5 h-5 text-[color:var(--brand-lime)] flex-shrink-0 mt-0.5" />
-                <span>Seguir a gente no Instagram <strong>@mambaiabh</strong></span>
+                <span>Seguir a Mambaia no Instagram <strong>@mambaiabh</strong></span>
               </li>
             </ul>
             <Button
@@ -134,7 +123,7 @@ function WifiPage() {
             stepNum={1}
             icon={<Star className="w-6 h-6" />}
             title="Avalie no Google"
-            description="Toque no botão abaixo, deixe 5 estrelas e volte para esta tela."
+            description="Toque no botão, deixe 5 estrelas no app do Google e volte para continuar."
           >
             <Button
               onClick={() => { abrirGoogle(); }}
@@ -148,7 +137,7 @@ function WifiPage() {
               variant="outline"
               className="w-full h-12 mt-3 bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white disabled:opacity-40"
             >
-              {googleConfirmable ? "Já avaliei ✓" : "Avalie primeiro para continuar"}
+              {googleConfirmable ? "Já avaliei" : "Aguarde 3s após abrir o Google…"}
             </Button>
           </StepCard>
         )}
@@ -158,7 +147,7 @@ function WifiPage() {
             stepNum={2}
             icon={<Instagram className="w-6 h-6" />}
             title="Siga no Instagram"
-            description="Abra nosso perfil, toque em Seguir e volte para liberar o Wi-Fi."
+            description="Abra o perfil da Mambaia, toque em Seguir (se ainda não segue) e volte para liberar o Wi-Fi."
           >
             <Button
               onClick={() => { abrirInsta(); }}
@@ -172,45 +161,70 @@ function WifiPage() {
               variant="outline"
               className="w-full h-12 mt-3 bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white disabled:opacity-40"
             >
-              {instaConfirmable ? "Já segui ✓" : "Siga primeiro para continuar"}
+              {instaConfirmable ? "Já segui" : "Aguarde 3s após abrir o Instagram…"}
             </Button>
           </StepCard>
         )}
 
         {step === "done" && (
-          <div className="bg-[color:var(--brand-green)] text-[color:var(--brand-dark)] rounded-2xl p-6 shadow-xl">
-            <div className="flex items-center gap-2 mb-4">
-              <Wifi className="w-7 h-7" />
-              <h2 className="text-xl font-bold">Wi-Fi liberado! 🎉</h2>
-            </div>
-            <p className="text-sm mb-6 opacity-80">
-              Obrigada pelo apoio à Mambaia! Aqui estão os dados da rede:
-            </p>
-
-            <div className="bg-[color:var(--brand-dark)] text-white rounded-xl p-5 space-y-4">
-              <div>
-                <div className="text-xs uppercase tracking-wider opacity-60 mb-1">Rede</div>
-                <div className="text-2xl font-bold tracking-wide">{WIFI_SSID}</div>
+          <>
+            <div className="bg-[color:var(--brand-green)] text-[color:var(--brand-dark)] rounded-2xl p-6 shadow-xl">
+              <div className="flex items-center gap-2 mb-4">
+                <Wifi className="w-7 h-7" />
+                <h2 className="text-xl font-bold">Wi-Fi liberado</h2>
               </div>
-              <div>
-                <div className="text-xs uppercase tracking-wider opacity-60 mb-1">Senha</div>
-                <div className="flex items-center justify-between gap-3">
-                  <code className="text-2xl font-mono font-bold select-all break-all">{WIFI_PASSWORD}</code>
-                  <Button
-                    size="sm"
-                    onClick={copiarSenha}
-                    className="bg-[color:var(--brand-lime)] text-[color:var(--brand-dark)] hover:bg-[color:var(--brand-lime)]/80 font-semibold flex-shrink-0"
-                  >
-                    {copied ? <><Check className="w-4 h-4 mr-1" /> Copiado</> : <><Copy className="w-4 h-4 mr-1" /> Copiar</>}
-                  </Button>
+              <p className="text-sm mb-6 opacity-80">
+                Obrigada por nos visitar! Aqui estão os dados da rede:
+              </p>
+
+              <div className="bg-[color:var(--brand-dark)] text-white rounded-xl p-5 space-y-4">
+                <div>
+                  <div className="text-xs uppercase tracking-wider opacity-60 mb-1">Rede</div>
+                  <div className="text-2xl font-bold tracking-wide">{WIFI_SSID}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wider opacity-60 mb-1">Senha</div>
+                  <div className="flex items-center justify-between gap-3">
+                    <code className="text-2xl font-mono font-bold select-all break-all">{WIFI_PASSWORD}</code>
+                    <Button
+                      size="sm"
+                      onClick={copiarSenha}
+                      className="bg-[color:var(--brand-lime)] text-[color:var(--brand-dark)] hover:bg-[color:var(--brand-lime)]/80 font-semibold flex-shrink-0"
+                    >
+                      {copied ? <><Check className="w-4 h-4 mr-1" /> Copiado</> : <><Copy className="w-4 h-4 mr-1" /> Copiar</>}
+                    </Button>
+                  </div>
                 </div>
               </div>
+
+              <p className="text-sm mt-5 text-center font-medium">
+                Obrigada por nos visitar! Se algo der errado com a senha, fale com nossa equipe.
+              </p>
             </div>
 
-            <p className="text-xs mt-5 opacity-70 text-center">
-              Boa estadia! Se algo der errado com a senha, fale com a recepção.
-            </p>
-          </div>
+            <section className="mt-8">
+              <h3 className="text-white text-sm font-semibold mb-3 text-center">
+                Conheça também as marcas do nosso ecossistema
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {UPSELL_INSTAS.map((u) => (
+                  <a
+                    key={u.handle}
+                    href={`https://instagram.com/${u.handle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition flex flex-col gap-1"
+                  >
+                    <div className="flex items-center gap-2 text-[color:var(--brand-lime)]">
+                      <Instagram className="w-4 h-4" />
+                      <span className="font-semibold text-sm">@{u.handle}</span>
+                    </div>
+                    <span className="text-xs text-white/60">{u.desc}</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          </>
         )}
 
         {step !== "intro" && step !== "done" && (

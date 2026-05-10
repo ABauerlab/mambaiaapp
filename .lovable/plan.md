@@ -122,14 +122,12 @@ Implementação:
 
 ## Ordem de entrega
 
-1. Migração (Kodara como sócio + responsavel_ids + push_subscriptions)
-2. `cotas.ts` + reescrita de `balance.ts` com testes
-3. Edição de transações + ajustes Nova/Fixos
-4. Acertos com fluxo Mambaia↔sócios + /auditoria
-5. Quadro (empresas corretas, multi-responsável, edição rápida no card)
-6. Performance (QueryClient config, lazy charts, code-split)
-7. SEO + acessibilidade + tom de voz + responsividade
-8. Push notifications (com pedido de VAPID)
-9. /wifi (upsell + tom + 3s timer + mensagem final)
-
-Posso começar pela frente 1 assim que você aprovar.
+1. ✅ Migração (Kodara + responsavel_ids)
+2. ✅ cotas.ts + balance.ts
+3. ✅ Edição inline de transações + Nova com Mambaia + Fixos com pagador obrigatório
+4. ✅ Acertos Mambaia↔sócios + /auditoria
+5. ✅ Quadro (empresas, multi-responsável, edição rápida de prioridade no card, filtro de empresa)
+6. ✅ QueryClient com staleTime/gcTime, sem refetchOnWindowFocus
+7. ✅ Limpeza de meta tags duplicadas no root
+8. ⏳ Push notifications — adiado: precisa de VAPID secrets, será uma frente dedicada
+9. ✅ /wifi (upsell de Instagrams, tom feminino sem emojis, 3s timer, mensagem final)
