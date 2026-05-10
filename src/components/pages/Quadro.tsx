@@ -450,13 +450,33 @@ function ItemDialog({
             </div>
             <div>
               <Label>Responsável</Label>
-              <Select value={form.responsavel_id || "none"} onValueChange={(v) => setForm({ ...form, responsavel_id: v === "none" ? "" : v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">—</SelectItem>
-                  {socios.map((s) => <SelectItem key={s.id} value={s.id}>{s.nome}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <div className="mt-1 flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, responsavel_ids: form.responsavel_ids.length === socios.length ? [] : socios.map((s) => s.id) })}
+                  className={`px-2.5 py-1 text-xs rounded-full border ${form.responsavel_ids.length === socios.length && socios.length > 0 ? "bg-primary text-primary-foreground border-primary" : "bg-background"}`}
+                >
+                  Todos
+                </button>
+                {socios.map((s) => {
+                  const sel = form.responsavel_ids.includes(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => setForm({
+                        ...form,
+                        responsavel_ids: sel
+                          ? form.responsavel_ids.filter((id) => id !== s.id)
+                          : [...form.responsavel_ids, s.id],
+                      })}
+                      className={`px-2.5 py-1 text-xs rounded-full border ${sel ? "bg-primary text-primary-foreground border-primary" : "bg-background"}`}
+                    >
+                      {s.nome.split(" ")[0]}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
