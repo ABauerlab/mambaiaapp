@@ -50,3 +50,16 @@ export const sendTestPush = createServerFn({ method: "POST" }).handler(async () 
     tag: "teste",
   });
 });
+
+const notifySchema = z.object({
+  title: z.string().min(1).max(100),
+  body: z.string().min(1).max(300),
+  url: z.string().max(200).optional(),
+  tag: z.string().max(100).optional(),
+});
+
+export const notifyImmediate = createServerFn({ method: "POST" })
+  .inputValidator((d) => notifySchema.parse(d))
+  .handler(async ({ data }) => {
+    return sendPushToAll(data);
+  });
