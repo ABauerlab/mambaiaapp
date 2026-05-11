@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus, Trash2, Repeat } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyImmediate } from "@/lib/push.functions";
 import { fetchGastosFixos, fetchCategorias, fetchSocios } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
@@ -24,6 +26,7 @@ const schema = z.object({
 
 export function GastosFixos() {
   const qc = useQueryClient();
+  const notify = useServerFn(notifyImmediate);
   const { data: fixos } = useQuery({ queryKey: ["fixos"], queryFn: fetchGastosFixos });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
@@ -44,6 +47,11 @@ export function GastosFixos() {
       });
       const { error } = await supabase.from("gastos_fixos").insert(parsed);
       if (error) throw error;
+      void notify({ data: {
+        title: "Novo gasto fixo",
+        body: `${parsed.nome} — ${formatBRL(parsed.valor)} todo dia ${parsed.dia_mes}`,
+        url: "/fixos",
+      }}).catch(() => {});
     },
     onSuccess: () => {
       toast.success("Gasto fixo cadastrado");
