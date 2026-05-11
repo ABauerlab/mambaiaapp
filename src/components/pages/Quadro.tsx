@@ -11,6 +11,8 @@ import {
 } from "@dnd-kit/core";
 import { Lightbulb, CheckSquare, Inbox, Plus, Pencil, Trash2, Archive, Calendar as CalIcon, Search } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyImmediate } from "@/lib/push.functions";
 import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -116,6 +118,7 @@ export function Quadro() {
   const porColuna = (status: QuadroStatus) => filtrados.filter((i) => i.status === status);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const notify = useServerFn(notifyImmediate);
 
   const moverStatus = useMutation({
     mutationFn: ({ id, status }: { id: string; status: QuadroStatus }) => updateQuadroItem(id, { status }),
@@ -150,6 +153,14 @@ export function Quadro() {
       if (!payload.titulo) throw new Error("Título é obrigatório");
       if (f.id) await updateQuadroItem(f.id, payload);
       else await createQuadroItem(payload);
+      const today = new Date().toISOString().slice(0, 10);
+      if (!f.id && payload.prazo === today) {
+        void notify({ data: {
+          title: "Tarefa para hoje",
+          body: payload.titulo,
+          url: "/quadro",
+        }}).catch(() => {});
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["quadro_itens"] });

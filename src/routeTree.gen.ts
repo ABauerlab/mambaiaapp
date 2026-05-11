@@ -20,6 +20,7 @@ import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
+import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
 
 const WifiRoute = WifiRouteImport.update({
   id: '/wifi',
@@ -75,6 +76,12 @@ const AppAcertosRoute = AppAcertosRouteImport.update({
   path: '/acertos',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicHooksDailyDigestRoute =
+  ApiPublicHooksDailyDigestRouteImport.update({
+    id: '/api/public/hooks/daily-digest',
+    path: '/api/public/hooks/daily-digest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
+  '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
   '/wifi': typeof WifiRoute
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
   '/': typeof AppIndexRoute
+  '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
   '/_app/': typeof AppIndexRoute
+  '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
+    | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/wifi'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/transacoes'
     | '/'
+    | '/api/public/hooks/daily-digest'
   id:
     | '__root__'
     | '/_app'
@@ -152,11 +164,13 @@ export interface FileRouteTypes {
     | '/_app/relatorios'
     | '/_app/transacoes'
     | '/_app/'
+    | '/api/public/hooks/daily-digest'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   WifiRoute: typeof WifiRoute
+  ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -238,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAcertosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/hooks/daily-digest': {
+      id: '/api/public/hooks/daily-digest'
+      path: '/api/public/hooks/daily-digest'
+      fullPath: '/api/public/hooks/daily-digest'
+      preLoaderRoute: typeof ApiPublicHooksDailyDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -270,6 +291,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   WifiRoute: WifiRoute,
+  ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

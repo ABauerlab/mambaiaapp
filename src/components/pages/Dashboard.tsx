@@ -18,6 +18,7 @@ import { fetchTransacoes, fetchSocios, fetchCategorias, fetchAcertos } from "@/l
 import { formatBRL, toCents, fromCents } from "@/lib/money";
 import { computeNetBalances, sugerirAcertos, transacoesAbertasParaBalance, MAMBAIA_CAIXA_ID } from "@/lib/balance";
 import { PageHeader } from "./PageHeader";
+import { PushNotificationsCard } from "@/components/PushNotificationsCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -123,6 +124,10 @@ export function Dashboard() {
           </Button>
         }
       />
+
+      <div className="mb-6">
+        <PushNotificationsCard />
+      </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">

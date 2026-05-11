@@ -129,5 +129,5 @@ Implementação:
 5. ✅ Quadro (empresas, multi-responsável, edição rápida de prioridade no card, filtro de empresa)
 6. ✅ QueryClient com staleTime/gcTime, sem refetchOnWindowFocus
 7. ✅ Limpeza de meta tags duplicadas no root
-8. ⏳ Push notifications — adiado: precisa de VAPID secrets, será uma frente dedicada
+8. ✅ Push notifications — VAPID configurado, service worker, tabela push_subscriptions, card no Dashboard, digest diário 09:00 (12 UTC) via pg_cron, push imediato ao criar gasto fixo ou tarefa com prazo hoje
 9. ✅ /wifi (upsell de Instagrams, tom feminino sem emojis, 3s timer, mensagem final)
