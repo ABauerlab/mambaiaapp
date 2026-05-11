@@ -18,6 +18,7 @@ import { fetchTransacoes, fetchSocios, fetchCategorias, fetchAcertos } from "@/l
 import { formatBRL, toCents, fromCents } from "@/lib/money";
 import { computeNetBalances, sugerirAcertos, transacoesAbertasParaBalance, MAMBAIA_CAIXA_ID } from "@/lib/balance";
 import { PageHeader } from "./PageHeader";
+import { PushNotificationsCard } from "@/components/PushNotificationsCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
