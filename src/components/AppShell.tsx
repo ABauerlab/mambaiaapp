@@ -10,10 +10,14 @@ import {
   Lightbulb,
   Menu,
   X,
+  LogOut,
+  User,
 } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo-mambaia.svg";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type NavItem = {
   to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro";
@@ -36,6 +40,7 @@ const nav: NavItem[] = [
 export function AppShell() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const { profile, signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -70,8 +75,22 @@ export function AppShell() {
             );
           })}
         </nav>
-        <div className="p-4 text-xs text-sidebar-foreground/50">
-          Conecta. Cultiva. Transforma.
+        <div className="p-3 border-t border-sidebar-border space-y-1">
+          <Link to="/perfil" className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent">
+            <Avatar className="w-8 h-8">
+              {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.display_name} />}
+              <AvatarFallback className="text-xs bg-sidebar-accent text-sidebar-foreground">
+                {(profile?.display_name ?? "?").slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-sm min-w-0">
+              <div className="font-medium truncate">{profile?.display_name ?? "Perfil"}</div>
+              <div className="text-[11px] text-sidebar-foreground/60 truncate">Editar perfil</div>
+            </div>
+          </Link>
+          <button onClick={() => void signOut()} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-sidebar-foreground/70 hover:bg-sidebar-accent">
+            <LogOut className="w-3.5 h-3.5" /> Sair
+          </button>
         </div>
       </aside>
 
@@ -82,13 +101,19 @@ export function AppShell() {
             <img src={logo} alt="Mambaia" className="w-8 h-8 rounded-md" />
             <span className="font-semibold">Mambaia</span>
           </Link>
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="p-2 -mr-2"
-            aria-label="Menu"
-          >
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-1">
+            <Link to="/perfil" className="p-1.5" onClick={() => setOpen(false)} aria-label="Perfil">
+              <Avatar className="w-7 h-7">
+                {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.display_name} />}
+                <AvatarFallback className="text-[10px] bg-sidebar-accent text-sidebar-foreground">
+                  {(profile?.display_name ?? "?").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+            <button onClick={() => setOpen((v) => !v)} className="p-2 -mr-2" aria-label="Menu">
+              {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
         {open && (
           <nav className="border-t border-sidebar-border p-3 space-y-1">
@@ -112,6 +137,12 @@ export function AppShell() {
                 </Link>
               );
             })}
+            <Link to="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/80">
+              <User className="w-4 h-4" /> Meu perfil
+            </Link>
+            <button onClick={() => { setOpen(false); void signOut(); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/80">
+              <LogOut className="w-4 h-4" /> Sair
+            </button>
           </nav>
         )}
       </div>
