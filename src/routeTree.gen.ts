@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WifiRouteImport } from './routes/wifi'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
@@ -25,6 +26,11 @@ import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/publ
 const WifiRoute = WifiRouteImport.update({
   id: '/wifi',
   path: '/wifi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -85,6 +91,7 @@ const ApiPublicHooksDailyDigestRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/login': typeof LoginRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/auditoria': typeof AppAuditoriaRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/auditoria': typeof AppAuditoriaRoute
@@ -112,6 +120,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
   '/_app/auditoria': typeof AppAuditoriaRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/wifi'
     | '/acertos'
     | '/auditoria'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
     | '/wifi'
     | '/acertos'
     | '/auditoria'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/login'
     | '/wifi'
     | '/_app/acertos'
     | '/_app/auditoria'
@@ -169,6 +181,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
   WifiRoute: typeof WifiRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
 }
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/wifi'
       fullPath: '/wifi'
       preLoaderRoute: typeof WifiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -290,9 +310,20 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
   WifiRoute: WifiRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
