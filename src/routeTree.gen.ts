@@ -17,6 +17,7 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
+import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppNovaRouteImport } from './routes/_app.nova'
 import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
@@ -63,6 +64,11 @@ const AppQuadroRoute = AppQuadroRouteImport.update({
   path: '/quadro',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNovaRoute = AppNovaRouteImport.update({
   id: '/nova',
   path: '/nova',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
+  '/perfil': typeof AppPerfilRoute
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
+  '/perfil': typeof AppPerfilRoute
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/fixos': typeof AppFixosRoute
   '/_app/nova': typeof AppNovaRoute
+  '/_app/perfil': typeof AppPerfilRoute
   '/_app/quadro': typeof AppQuadroRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/fixos'
     | '/nova'
+    | '/perfil'
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/categorias'
     | '/fixos'
     | '/nova'
+    | '/perfil'
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/_app/categorias'
     | '/_app/fixos'
     | '/_app/nova'
+    | '/_app/perfil'
     | '/_app/quadro'
     | '/_app/relatorios'
     | '/_app/transacoes'
@@ -257,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppQuadroRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/perfil': {
+      id: '/_app/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/nova': {
       id: '/_app/nova'
       path: '/nova'
@@ -308,6 +327,7 @@ interface AppRouteChildren {
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppFixosRoute: typeof AppFixosRoute
   AppNovaRoute: typeof AppNovaRoute
+  AppPerfilRoute: typeof AppPerfilRoute
   AppQuadroRoute: typeof AppQuadroRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
   AppTransacoesRoute: typeof AppTransacoesRoute
@@ -320,6 +340,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriasRoute: AppCategoriasRoute,
   AppFixosRoute: AppFixosRoute,
   AppNovaRoute: AppNovaRoute,
+  AppPerfilRoute: AppPerfilRoute,
   AppQuadroRoute: AppQuadroRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
   AppTransacoesRoute: AppTransacoesRoute,
@@ -338,3 +359,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
