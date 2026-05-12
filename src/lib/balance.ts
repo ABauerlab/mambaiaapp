@@ -25,6 +25,7 @@ export type TransacaoAberta = {
   tipo: "despesa" | "receita";
   valor_cents: number;
   socio_id: string | null;
+  participantes_ids?: string[];
 };
 
 export type AcertoRegistro = {
@@ -45,7 +46,7 @@ export function computeNetBalances(
   const basics: SocioBasic[] = socios.map((s) => ({ id: s.id, nome: s.nome }));
 
   for (const t of transacoes) {
-    const cotas = splitByCota(t.valor_cents, basics);
+    const cotas = splitByCota(t.valor_cents, basics, t.participantes_ids);
     if (t.tipo === "despesa") {
       for (const [id, c] of cotas) balances.set(id, (balances.get(id) ?? 0) - c);
       const pagadorId = t.socio_id ?? MAMBAIA_CAIXA_ID;
@@ -98,11 +99,11 @@ export function sugerirAcertos(balances: Map<string, number>): Sugestao[] {
 }
 
 export function transacoesAbertasParaBalance(
-  transacoes: { id: string; tipo: "despesa" | "receita"; valor: number; socio_id: string | null; acertada: boolean }[],
+  transacoes: { id: string; tipo: "despesa" | "receita"; valor: number; socio_id: string | null; acertada: boolean; participantes_ids?: string[] }[],
 ): TransacaoAberta[] {
   return transacoes
     .filter((t) => !t.acertada)
-    .map((t) => ({ id: t.id, tipo: t.tipo, valor_cents: toCents(t.valor), socio_id: t.socio_id }));
+    .map((t) => ({ id: t.id, tipo: t.tipo, valor_cents: toCents(t.valor), socio_id: t.socio_id, participantes_ids: t.participantes_ids }));
 }
 
 export { MAMBAIA_CAIXA_ID };
