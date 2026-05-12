@@ -45,12 +45,35 @@ export function pesoDoSocio(nome: string): number {
 export function splitByCota(
   totalCents: number,
   socios: SocioBasic[],
+  participantesIds?: string[],
 ): Map<string, number> {
   if (!Number.isInteger(totalCents)) {
     throw new Error("totalCents deve ser inteiro (centavos)");
   }
   const result = new Map<string, number>();
   socios.forEach((s) => result.set(s.id, 0));
+  // Se foi passado um subset de participantes, usar divisão IGUAL.
+  // Caso contrário (ou se todos os 4 cotistas estão presentes), usar pesos.
+  const todosCotistasIds = socios.filter((s) => pesoDoSocio(s.nome) > 0).map((s) => s.id);
+  const usarSubset =
+    Array.isArray(participantesIds) &&
+    participantesIds.length > 0 &&
+    !(participantesIds.length === todosCotistasIds.length &&
+      todosCotistasIds.every((id) => participantesIds.includes(id)));
+
+  if (usarSubset) {
+    const ativos = socios.filter((s) => participantesIds!.includes(s.id));
+    if (ativos.length === 0) return result;
+    const base = Math.floor(totalCents / ativos.length);
+    let sobra = totalCents - base * ativos.length;
+    for (const s of ativos) {
+      let parte = base;
+      if (sobra > 0) { parte += 1; sobra -= 1; }
+      result.set(s.id, parte);
+    }
+    return result;
+  }
+
   const cotistas = socios.filter((s) => pesoDoSocio(s.nome) > 0);
   if (cotistas.length === 0) return result;
 
@@ -95,4 +118,11 @@ if (import.meta.env?.DEV) {
     console.assert(sum === cents, "splitByCota " + cents + " soma " + sum);
   };
   test(10000); test(10001); test(99); test(1); test(123456); test(7);
+  // subset igual
+  const fake2: SocioBasic[] = [
+    { id: "k", nome: "Kodara" }, { id: "e", nome: "Eduardo" },
+    { id: "j", nome: "Joao Victor" }, { id: "l", nome: "Laura Ottoni" },
+  ];
+  const r2 = splitByCota(100, fake2, ["e", "j"]);
+  console.assert((r2.get("e") ?? 0) === 50 && (r2.get("j") ?? 0) === 50, "subset igual");
 }
