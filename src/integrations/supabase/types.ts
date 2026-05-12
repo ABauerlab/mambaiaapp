@@ -137,6 +137,47 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string
+          id: string
+          must_change_password: boolean
+          socio_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          must_change_password?: boolean
+          socio_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          must_change_password?: boolean
+          socio_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_socio_id_fkey"
+            columns: ["socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_subscriptions: {
         Row: {
           auth: string
@@ -257,6 +298,7 @@ export type Database = {
           id: string
           observacoes: string | null
           origem: string
+          participantes_ids: string[]
           socio_id: string | null
           tipo: Database["public"]["Enums"]["tipo_transacao"]
           updated_at: string
@@ -273,6 +315,7 @@ export type Database = {
           id?: string
           observacoes?: string | null
           origem?: string
+          participantes_ids?: string[]
           socio_id?: string | null
           tipo: Database["public"]["Enums"]["tipo_transacao"]
           updated_at?: string
@@ -289,6 +332,7 @@ export type Database = {
           id?: string
           observacoes?: string | null
           origem?: string
+          participantes_ids?: string[]
           socio_id?: string | null
           tipo?: Database["public"]["Enums"]["tipo_transacao"]
           updated_at?: string

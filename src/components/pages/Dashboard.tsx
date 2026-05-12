@@ -22,7 +22,8 @@ import { PushNotificationsCard } from "@/components/PushNotificationsCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { DateRangeFilter, defaultMonthRange, isInRange, formatRange } from "@/components/DateRangeFilter";
 
 const BRAND_COLORS = ["#A6D608", "#1F3D2B", "#DFFF4F", "#5A8A2E", "#7FB320", "#3A6440"];
 
@@ -31,14 +32,13 @@ export function Dashboard() {
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
   const { data: acertos } = useQuery({ queryKey: ["acertos"], queryFn: fetchAcertos });
+  const [range, setRange] = useState(defaultMonthRange());
 
   const stats = useMemo(() => {
     if (!transacoes) return null;
-    const now = new Date();
-    const yyyymm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-    const mes = transacoes.filter((t) => t.data.startsWith(yyyymm));
-    const receitaMes = mes.filter((t) => t.tipo === "receita").reduce((s, t) => s + t.valor, 0);
-    const despesaMes = mes.filter((t) => t.tipo === "despesa").reduce((s, t) => s + t.valor, 0);
+    const inRange = transacoes.filter((t) => isInRange(t.data, range));
+    const receitaMes = inRange.filter((t) => t.tipo === "receita").reduce((s, t) => s + t.valor, 0);
+    const despesaMes = inRange.filter((t) => t.tipo === "despesa").reduce((s, t) => s + t.valor, 0);
     const receitaTotal = transacoes.filter((t) => t.tipo === "receita").reduce((s, t) => s + t.valor, 0);
     const despesaTotal = transacoes.filter((t) => t.tipo === "despesa").reduce((s, t) => s + t.valor, 0);
     return {
@@ -49,7 +49,7 @@ export function Dashboard() {
       despesaTotal,
       lucroTotal: receitaTotal - despesaTotal,
     };
-  }, [transacoes]);
+  }, [transacoes, range]);
 
   // Série mensal últimos 6 meses
   const monthlyData = useMemo(() => {
@@ -74,11 +74,9 @@ export function Dashboard() {
   // Categorias de despesa do mês atual
   const categoryData = useMemo(() => {
     if (!transacoes || !categorias) return [];
-    const now = new Date();
-    const yyyymm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
     const map = new Map<string, number>();
     for (const t of transacoes) {
-      if (t.tipo !== "despesa" || !t.data.startsWith(yyyymm)) continue;
+      if (t.tipo !== "despesa" || !isInRange(t.data, range)) continue;
       const cat = categorias.find((c) => c.id === t.categoria_id);
       const nome = cat?.nome ?? "Sem categoria";
       map.set(nome, (map.get(nome) ?? 0) + t.valor);
@@ -86,7 +84,7 @@ export function Dashboard() {
     return Array.from(map.entries())
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
-  }, [transacoes, categorias]);
+  }, [transacoes, categorias, range]);
 
   // Saldos entre sócios
   const balances = useMemo(() => {
@@ -117,11 +115,14 @@ export function Dashboard() {
     <div className="p-4 md:p-8 max-w-7xl mx-auto">
       <PageHeader
         title="Dashboard"
-        description="Panorama financeiro da Mambaia neste mês"
+        description={`Panorama financeiro · ${formatRange(range)}`}
         action={
-          <Button asChild>
-            <Link to="/nova"><PlusCircle className="w-4 h-4 mr-2" />Nova</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <DateRangeFilter value={range} onChange={setRange} />
+            <Button asChild>
+              <Link to="/nova"><PlusCircle className="w-4 h-4 mr-2" />Nova</Link>
+            </Button>
+          </div>
         }
       />
 
@@ -132,19 +133,19 @@ export function Dashboard() {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
         <KPICard
-          label="Receitas (mês)"
+          label="Receitas (período)"
           value={formatBRL(stats.receitaMes)}
           icon={<ArrowUpRight className="w-4 h-4" />}
           tone="success"
         />
         <KPICard
-          label="Despesas (mês)"
+          label="Despesas (período)"
           value={formatBRL(stats.despesaMes)}
           icon={<ArrowDownRight className="w-4 h-4" />}
           tone="destructive"
         />
         <KPICard
-          label="Lucro (mês)"
+          label="Lucro (período)"
           value={formatBRL(stats.lucroMes)}
           icon={<TrendingUp className="w-4 h-4" />}
           tone={stats.lucroMes >= 0 ? "primary" : "destructive"}
@@ -184,7 +185,7 @@ export function Dashboard() {
         </Card>
 
         <Card className="p-4 md:p-6">
-          <h3 className="font-semibold mb-4">Despesas por categoria</h3>
+          <h3 className="font-semibold mb-4">Despesas por categoria <span className="text-xs text-muted-foreground font-normal">({formatRange(range)})</span></h3>
           {categoryData.length === 0 ? (
             <div className="h-64 flex items-center justify-center text-sm text-muted-foreground">
               Sem despesas neste mês

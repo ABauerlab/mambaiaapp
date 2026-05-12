@@ -10,11 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WifiRouteImport } from './routes/wifi'
+import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
+import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppNovaRouteImport } from './routes/_app.nova'
 import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
@@ -25,6 +28,16 @@ import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/publ
 const WifiRoute = WifiRouteImport.update({
   id: '/wifi',
   path: '/wifi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrimeiroAcessoRoute = PrimeiroAcessoRouteImport.update({
+  id: '/primeiro-acesso',
+  path: '/primeiro-acesso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -49,6 +62,11 @@ const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
 const AppQuadroRoute = AppQuadroRouteImport.update({
   id: '/quadro',
   path: '/quadro',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNovaRoute = AppNovaRouteImport.update({
@@ -85,24 +103,30 @@ const ApiPublicHooksDailyDigestRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/login': typeof LoginRoute
+  '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
+  '/perfil': typeof AppPerfilRoute
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
+  '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
+  '/perfil': typeof AppPerfilRoute
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
@@ -112,12 +136,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
   '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/fixos': typeof AppFixosRoute
   '/_app/nova': typeof AppNovaRoute
+  '/_app/perfil': typeof AppPerfilRoute
   '/_app/quadro': typeof AppQuadroRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
@@ -128,24 +155,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
     | '/auditoria'
     | '/categorias'
     | '/fixos'
     | '/nova'
+    | '/perfil'
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
     | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
+    | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
     | '/auditoria'
     | '/categorias'
     | '/fixos'
     | '/nova'
+    | '/perfil'
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
@@ -154,12 +187,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/login'
+    | '/primeiro-acesso'
     | '/wifi'
     | '/_app/acertos'
     | '/_app/auditoria'
     | '/_app/categorias'
     | '/_app/fixos'
     | '/_app/nova'
+    | '/_app/perfil'
     | '/_app/quadro'
     | '/_app/relatorios'
     | '/_app/transacoes'
@@ -169,6 +205,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  PrimeiroAcessoRoute: typeof PrimeiroAcessoRoute
   WifiRoute: typeof WifiRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
 }
@@ -180,6 +218,20 @@ declare module '@tanstack/react-router' {
       path: '/wifi'
       fullPath: '/wifi'
       preLoaderRoute: typeof WifiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/primeiro-acesso': {
+      id: '/primeiro-acesso'
+      path: '/primeiro-acesso'
+      fullPath: '/primeiro-acesso'
+      preLoaderRoute: typeof PrimeiroAcessoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -215,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/quadro'
       fullPath: '/quadro'
       preLoaderRoute: typeof AppQuadroRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/perfil': {
+      id: '/_app/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/nova': {
@@ -268,6 +327,7 @@ interface AppRouteChildren {
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppFixosRoute: typeof AppFixosRoute
   AppNovaRoute: typeof AppNovaRoute
+  AppPerfilRoute: typeof AppPerfilRoute
   AppQuadroRoute: typeof AppQuadroRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
   AppTransacoesRoute: typeof AppTransacoesRoute
@@ -280,6 +340,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriasRoute: AppCategoriasRoute,
   AppFixosRoute: AppFixosRoute,
   AppNovaRoute: AppNovaRoute,
+  AppPerfilRoute: AppPerfilRoute,
   AppQuadroRoute: AppQuadroRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
   AppTransacoesRoute: AppTransacoesRoute,
@@ -290,19 +351,11 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
+  PrimeiroAcessoRoute: PrimeiroAcessoRoute,
   WifiRoute: WifiRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

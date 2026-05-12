@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
@@ -7,7 +7,7 @@ import { ArrowDownRight, ArrowUpRight, Calendar, Loader2, Wallet } from "lucide-
 import { fetchSocios, fetchCategorias } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL, toCents, fromCents } from "@/lib/money";
-import { splitByCota } from "@/lib/cotas";
+import { splitByCota, pesoDoSocio } from "@/lib/cotas";
 import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ const schema = z.object({
   categoria_id: z.string().uuid("Selecione uma categoria"),
   socio_id: z.string().nullable(),
   observacoes: z.string().max(500).nullable(),
+  participantes_ids: z.array(z.string().uuid()).min(1, "Selecione ao menos um participante"),
 });
 
 export function NovaTransacao() {
@@ -41,16 +42,27 @@ export function NovaTransacao() {
   const [categoriaId, setCategoriaId] = useState<string>("");
   const [pagadorId, setPagadorId] = useState<string>(MAMBAIA);
   const [observacoes, setObservacoes] = useState("");
+  const [participantes, setParticipantes] = useState<string[]>([]);
 
   const cats = useMemo(() => (categorias ?? []).filter((c) => c.tipo === tipo), [categorias, tipo]);
   const valor = parseFloat(valorStr.replace(",", ".")) || 0;
 
+  // Inicializa "todos os cotistas" assim que sócios carregam
+  const cotistasIds = useMemo(
+    () => (socios ?? []).filter((s) => pesoDoSocio(s.nome) > 0).map((s) => s.id),
+    [socios],
+  );
+  useEffect(() => {
+    if (participantes.length === 0 && cotistasIds.length > 0) setParticipantes(cotistasIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cotistasIds.join(",")]);
+
   const preview = useMemo(() => {
     if (!socios || valor <= 0) return null;
     try {
-      return splitByCota(toCents(valor), socios.map((s) => ({ id: s.id, nome: s.nome })));
+      return splitByCota(toCents(valor), socios.map((s) => ({ id: s.id, nome: s.nome })), participantes);
     } catch { return null; }
-  }, [valor, socios]);
+  }, [valor, socios, participantes]);
 
   const pagadorNome = pagadorId === MAMBAIA ? "a Mambaia" : socios?.find((s) => s.id === pagadorId)?.nome;
 
@@ -61,6 +73,7 @@ export function NovaTransacao() {
         categoria_id: categoriaId,
         socio_id: pagadorId === MAMBAIA ? null : pagadorId,
         observacoes: observacoes || null,
+        participantes_ids: participantes,
       });
       const { error } = await supabase.from("transacoes").insert({ ...parsed, origem: "manual" });
       if (error) throw error;
@@ -72,6 +85,12 @@ export function NovaTransacao() {
     },
     onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Nao foi possivel salvar.")),
   });
+
+  function toggleParticipante(id: string) {
+    setParticipantes((p) => p.includes(id) ? p.filter((x) => x !== id) : [...p, id]);
+  }
+  const todosMarcados = cotistasIds.length > 0 && cotistasIds.every((id) => participantes.includes(id)) && participantes.length === cotistasIds.length;
+  const modoCota = todosMarcados;
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto">
@@ -158,6 +177,44 @@ export function NovaTransacao() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <Label>Quem participa do rateio?</Label>
+              <button
+                type="button"
+                onClick={() => setParticipantes(todosMarcados ? [] : cotistasIds)}
+                className="text-xs text-primary hover:underline"
+              >
+                {todosMarcados ? "Limpar" : "Todos"}
+              </button>
+            </div>
+            <div className="mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {(socios ?? []).filter((s) => pesoDoSocio(s.nome) > 0).map((s) => {
+                const checked = participantes.includes(s.id);
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => toggleParticipante(s.id)}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-11",
+                      checked ? "border-primary bg-secondary" : "border-border hover:border-primary/40",
+                    )}
+                  >
+                    <span className="w-4 h-4 rounded border flex items-center justify-center text-[10px]"
+                      style={{ background: checked ? s.cor : "transparent", color: "#0A2A20" }}>
+                      {checked ? "✓" : ""}
+                    </span>
+                    {s.nome.split(" ")[0]}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1.5">
+              {modoCota ? "Divisão por cota (2/2/1/1)." : `Divisão igual entre ${participantes.length} pessoa(s).`}
+            </p>
           </div>
 
           <div>
