@@ -25,6 +25,7 @@ export type Transacao = {
   categoria_id: string | null;
   socio_id: string | null;
   empresa: string | null;
+  participantes_ids: string[];
   origem: string;
   acertada: boolean;
   acerto_id: string | null;
