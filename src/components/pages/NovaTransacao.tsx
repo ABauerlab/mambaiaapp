@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
@@ -52,7 +52,7 @@ export function NovaTransacao() {
     () => (socios ?? []).filter((s) => pesoDoSocio(s.nome) > 0).map((s) => s.id),
     [socios],
   );
-  useMemo(() => {
+  useEffect(() => {
     if (participantes.length === 0 && cotistasIds.length > 0) setParticipantes(cotistasIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cotistasIds.join(",")]);
