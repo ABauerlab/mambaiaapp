@@ -295,7 +295,11 @@ function Coluna({ status, label, count, children }: { status: QuadroStatus; labe
         <h3 className="font-semibold text-sm">{label}</h3>
         <Badge variant="secondary">{count}</Badge>
       </div>
-      <div className="space-y-2">{children}</div>
+      {/* Mobile: horizontal carousel com snap. Desktop: stack vertical. */}
+      <div className="md:hidden -mx-3 px-3 overflow-x-auto snap-x snap-mandatory flex gap-2 pb-1 scroll-smooth [&>*]:snap-start [&>*]:shrink-0 [&>*]:w-[85%]">
+        {children}
+      </div>
+      <div className="hidden md:block space-y-2">{children}</div>
     </div>
   );
 }
