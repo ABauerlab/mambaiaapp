@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { friendlyErrorMessage } from "@/lib/utils";
+import { DateRangeFilter, defaultMonthRange, type DateRangeValue } from "@/components/DateRangeFilter";
 
 export function Acertos() {
   const qc = useQueryClient();
@@ -20,6 +21,14 @@ export function Acertos() {
   const { data: transacoes } = useQuery({ queryKey: ["transacoes"], queryFn: fetchTransacoes });
   const { data: acertos } = useQuery({ queryKey: ["acertos"], queryFn: fetchAcertos });
   const [registering, setRegistering] = useState<string | null>(null);
+  const [range, setRange] = useState<DateRangeValue>(() => defaultMonthRange());
+
+  const acertosFiltrados = useMemo(() => {
+    return (acertos ?? []).filter((a) => {
+      const d = new Date(a.data + "T12:00:00");
+      return d >= range.from && d <= range.to;
+    });
+  }, [acertos, range]);
 
   const result = useMemo(() => {
     if (!socios || !transacoes) return null;
@@ -127,12 +136,15 @@ export function Acertos() {
           </Card>
 
           <Card className="p-5">
-            <h2 className="font-semibold mb-4">Historico de acertos</h2>
-            {(acertos?.length ?? 0) === 0 ? (
+            <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+              <h2 className="font-semibold">Historico de acertos</h2>
+              <DateRangeFilter value={range} onChange={setRange} />
+            </div>
+            {acertosFiltrados.length === 0 ? (
               <div className="text-center py-6 text-sm text-muted-foreground">Nenhum acerto registrado.</div>
             ) : (
               <div className="divide-y divide-border">
-                {acertos!.map((a) => (
+                {acertosFiltrados.map((a) => (
                   <div key={a.id} className="flex items-center gap-3 py-3 flex-wrap">
                     <span className="text-xs text-muted-foreground tabular-nums w-20">{new Date(a.data + "T00:00:00").toLocaleDateString("pt-BR")}</span>
                     <span className="text-sm flex-1 min-w-0">
