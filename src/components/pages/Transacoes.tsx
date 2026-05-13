@@ -6,6 +6,7 @@ import { fetchTransacoes, fetchSocios, fetchCategorias } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { PageHeader } from "./PageHeader";
+import { DateRangeFilter, defaultMonthRange, isInRange, type DateRangeValue } from "@/components/DateRangeFilter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,15 +29,17 @@ export function Transacoes() {
 
   const [filtro, setFiltro] = useState("");
   const [tipo, setTipo] = useState<"todos" | "despesa" | "receita">("todos");
+  const [range, setRange] = useState<DateRangeValue>(() => defaultMonthRange());
   const [editTx, setEditTx] = useState<Transacao | null>(null);
 
   const filtered = useMemo(() => {
     return (transacoes ?? []).filter((t) => {
       if (tipo !== "todos" && t.tipo !== tipo) return false;
+      if (!isInRange(t.data, range)) return false;
       if (filtro && !t.descricao.toLowerCase().includes(filtro.toLowerCase())) return false;
       return true;
     });
-  }, [transacoes, filtro, tipo]);
+  }, [transacoes, filtro, tipo, range]);
 
   const del = useMutation({
     mutationFn: async (id: string) => {
@@ -67,6 +70,7 @@ export function Transacoes() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="Buscar descrição..." className="pl-9" />
         </div>
+        <DateRangeFilter value={range} onChange={setRange} />
         <div className="flex gap-1 p-1 bg-secondary rounded-md">
           {(["todos", "despesa", "receita"] as const).map((t) => (
             <button key={t}
