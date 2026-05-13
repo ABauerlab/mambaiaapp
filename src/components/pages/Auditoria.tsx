@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAcertos, fetchTransacoes, fetchSocios } from "@/lib/db";
 import { MAMBAIA_CAIXA_ID } from "@/lib/balance";
@@ -7,6 +7,7 @@ import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { DateRangeFilter, defaultMonthRange, type DateRangeValue } from "@/components/DateRangeFilter";
 
 type Linha = {
   id: string;
@@ -20,6 +21,7 @@ export function Auditoria() {
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
   const { data: acertos } = useQuery({ queryKey: ["acertos"], queryFn: fetchAcertos });
   const { data: transacoes } = useQuery({ queryKey: ["transacoes"], queryFn: fetchTransacoes });
+  const [range, setRange] = useState<DateRangeValue>(() => defaultMonthRange());
 
   const nomeDe = (id: string | null) => {
     if (!id || id === MAMBAIA_CAIXA_ID) return "Mambaia (caixa)";
@@ -43,12 +45,21 @@ export function Auditoria() {
         texto: <span><CheckCircle2 className="inline w-3 h-3 mr-1 text-[color:var(--success)]" />Transacao {t.descricao} movida ao balanco geral</span>,
       });
     }
-    return out.sort((x, y) => y.data.localeCompare(x.data));
-  }, [acertos, transacoes, socios]);
+    return out
+      .filter((l) => {
+        const d = new Date(l.data);
+        return d >= range.from && d <= range.to;
+      })
+      .sort((x, y) => y.data.localeCompare(x.data));
+  }, [acertos, transacoes, socios, range]);
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
-      <PageHeader title="Auditoria" description="Historico de acertos e fechamentos" />
+      <PageHeader
+        title="Auditoria"
+        description="Historico de acertos e fechamentos"
+        action={<DateRangeFilter value={range} onChange={setRange} />}
+      />
       <Card className="divide-y divide-border">
         {linhas.map((l) => (
           <div key={l.id} className="flex items-start gap-3 p-3 md:p-4">
