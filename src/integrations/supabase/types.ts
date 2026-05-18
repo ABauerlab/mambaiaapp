@@ -92,8 +92,11 @@ export type Database = {
           categoria_id: string | null
           created_at: string
           dia_mes: number
+          dia_semana: number | null
           empresa: string | null
+          frequencia: string
           id: string
+          mes: number | null
           nome: string
           socio_padrao_id: string | null
           valor: number
@@ -103,8 +106,11 @@ export type Database = {
           categoria_id?: string | null
           created_at?: string
           dia_mes: number
+          dia_semana?: number | null
           empresa?: string | null
+          frequencia?: string
           id?: string
+          mes?: number | null
           nome: string
           socio_padrao_id?: string | null
           valor: number
@@ -114,8 +120,11 @@ export type Database = {
           categoria_id?: string | null
           created_at?: string
           dia_mes?: number
+          dia_semana?: number | null
           empresa?: string | null
+          frequencia?: string
           id?: string
+          mes?: number | null
           nome?: string
           socio_padrao_id?: string | null
           valor?: number

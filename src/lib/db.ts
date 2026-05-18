@@ -51,6 +51,9 @@ export type GastoFixo = {
   socio_padrao_id: string | null;
   ativo: boolean;
   empresa: string | null;
+  frequencia: "mensal" | "semanal" | "quinzenal" | "anual";
+  dia_semana: number | null;
+  mes: number | null;
 };
 
 const num = (v: unknown): number => (typeof v === "string" ? parseFloat(v) : (v as number));
