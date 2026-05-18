@@ -29,7 +29,7 @@ const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov"
 const schema = z.object({
   nome: z.string().trim().min(1, "Nome obrigatório").max(100),
   valor: z.number().positive("Valor inválido").max(10_000_000),
-  dia_mes: z.number().int().min(1).max(31).nullable(),
+  dia_mes: z.number().int().min(1).max(31),
   categoria_id: z.string().uuid("Selecione uma categoria"),
   socio_padrao_id: z.string().uuid().nullable(),
   frequencia: z.enum(["mensal", "semanal", "quinzenal", "anual"]),
@@ -56,11 +56,10 @@ export function GastosFixos() {
 
   const create = useMutation({
     mutationFn: async () => {
-      const usaDiaMes = frequencia === "mensal" || frequencia === "quinzenal" || frequencia === "anual";
       const parsed = schema.parse({
         nome,
         valor: parseFloat(valorStr.replace(",", ".")),
-        dia_mes: usaDiaMes ? parseInt(dia, 10) : null,
+        dia_mes: parseInt(dia, 10) || 1,
         categoria_id: catId,
         socio_padrao_id: socioId === MAMBAIA ? null : socioId,
         frequencia,
