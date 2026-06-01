@@ -18,28 +18,28 @@ export type Database = {
         Row: {
           created_at: string
           data: string
-          de_socio_id: string
+          de_socio_id: string | null
           id: string
           observacoes: string | null
-          para_socio_id: string
+          para_socio_id: string | null
           valor: number
         }
         Insert: {
           created_at?: string
           data?: string
-          de_socio_id: string
+          de_socio_id?: string | null
           id?: string
           observacoes?: string | null
-          para_socio_id: string
+          para_socio_id?: string | null
           valor: number
         }
         Update: {
           created_at?: string
           data?: string
-          de_socio_id?: string
+          de_socio_id?: string | null
           id?: string
           observacoes?: string | null
-          para_socio_id?: string
+          para_socio_id?: string | null
           valor?: number
         }
         Relationships: [
