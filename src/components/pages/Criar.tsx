@@ -282,7 +282,7 @@ function CobrancaCard({ c }: { c: Cobranca }) {
 
   const remove = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("cobrancas" as never).delete().eq("id", c.id);
+      const { error } = await sb.from("cobrancas").delete().eq("id", c.id);
       if (error) throw error;
     },
     onSuccess: () => {
