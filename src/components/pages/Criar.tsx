@@ -5,6 +5,10 @@ import { Loader2, Plus, Trash2, Copy, Check, ExternalLink, Sparkles } from "luci
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+// O cliente tipado ainda não conhece a tabela `cobrancas` (types gerados);
+// usamos um alias sem tipos para inserts/updates dela.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sb = supabase as any;
 import { useAuth } from "@/lib/auth";
 import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
