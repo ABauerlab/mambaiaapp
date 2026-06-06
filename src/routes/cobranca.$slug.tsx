@@ -26,17 +26,14 @@ type Cobranca = {
 const sb = supabase as any;
 
 async function fetchBySlug(slug: string): Promise<Cobranca | null> {
-  const { data, error } = await sb
-    .from("cobrancas")
-    .select("id, slug, cliente_nome, titulo, descricao, itens, total, pix_chave, pix_nome, observacoes, status, paid_at")
-    .eq("slug", slug)
-    .maybeSingle();
+  const { data, error } = await sb.rpc("get_cobranca_by_slug", { _slug: slug });
   if (error) throw error;
-  if (!data) return null;
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) return null;
   return {
-    ...data,
-    total: typeof data.total === "string" ? parseFloat(data.total) : data.total,
-    itens: Array.isArray(data.itens) ? data.itens : [],
+    ...row,
+    total: typeof row.total === "string" ? parseFloat(row.total) : row.total,
+    itens: Array.isArray(row.itens) ? row.itens : [],
   } as Cobranca;
 }
 
