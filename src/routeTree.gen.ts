@@ -20,6 +20,7 @@ import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppNovaRouteImport } from './routes/_app.nova'
 import { Route as AppFixosRouteImport } from './routes/_app.fixos'
+import { Route as AppCriarRouteImport } from './routes/_app.criar'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
@@ -79,6 +80,11 @@ const AppFixosRoute = AppFixosRouteImport.update({
   path: '/fixos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCriarRoute = AppCriarRouteImport.update({
+  id: '/criar',
+  path: '/criar',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCategoriasRoute = AppCategoriasRouteImport.update({
   id: '/categorias',
   path: '/categorias',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/acertos': typeof AppAcertosRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
+  '/criar': typeof AppCriarRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
   '/perfil': typeof AppPerfilRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/acertos': typeof AppAcertosRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
+  '/criar': typeof AppCriarRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
   '/perfil': typeof AppPerfilRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/_app/acertos': typeof AppAcertosRoute
   '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
+  '/_app/criar': typeof AppCriarRoute
   '/_app/fixos': typeof AppFixosRoute
   '/_app/nova': typeof AppNovaRoute
   '/_app/perfil': typeof AppPerfilRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/acertos'
     | '/auditoria'
     | '/categorias'
+    | '/criar'
     | '/fixos'
     | '/nova'
     | '/perfil'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/acertos'
     | '/auditoria'
     | '/categorias'
+    | '/criar'
     | '/fixos'
     | '/nova'
     | '/perfil'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/_app/acertos'
     | '/_app/auditoria'
     | '/_app/categorias'
+    | '/_app/criar'
     | '/_app/fixos'
     | '/_app/nova'
     | '/_app/perfil'
@@ -290,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFixosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/criar': {
+      id: '/_app/criar'
+      path: '/criar'
+      fullPath: '/criar'
+      preLoaderRoute: typeof AppCriarRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/categorias': {
       id: '/_app/categorias'
       path: '/categorias'
@@ -325,6 +344,7 @@ interface AppRouteChildren {
   AppAcertosRoute: typeof AppAcertosRoute
   AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
+  AppCriarRoute: typeof AppCriarRoute
   AppFixosRoute: typeof AppFixosRoute
   AppNovaRoute: typeof AppNovaRoute
   AppPerfilRoute: typeof AppPerfilRoute
@@ -338,6 +358,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAcertosRoute: AppAcertosRoute,
   AppAuditoriaRoute: AppAuditoriaRoute,
   AppCategoriasRoute: AppCategoriasRoute,
+  AppCriarRoute: AppCriarRoute,
   AppFixosRoute: AppFixosRoute,
   AppNovaRoute: AppNovaRoute,
   AppPerfilRoute: AppPerfilRoute,
@@ -359,3 +380,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
