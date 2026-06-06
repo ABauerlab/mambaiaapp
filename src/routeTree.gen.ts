@@ -14,6 +14,7 @@ import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
@@ -49,6 +50,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const CobrancaSlugRoute = CobrancaSlugRouteImport.update({
+  id: '/cobranca/$slug',
+  path: '/cobranca/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppTransacoesRoute = AppTransacoesRouteImport.update({
   id: '/transacoes',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
+  '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/quadro': typeof AppQuadroRoute
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
+  '/cobranca/$slug': typeof CobrancaSlugRoute
   '/': typeof AppIndexRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/_app/quadro': typeof AppQuadroRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
+  '/cobranca/$slug': typeof CobrancaSlugRoute
   '/_app/': typeof AppIndexRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
+    | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/quadro'
     | '/relatorios'
     | '/transacoes'
+    | '/cobranca/$slug'
     | '/'
     | '/api/public/hooks/daily-digest'
   id:
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/_app/quadro'
     | '/_app/relatorios'
     | '/_app/transacoes'
+    | '/cobranca/$slug'
     | '/_app/'
     | '/api/public/hooks/daily-digest'
   fileRoutesById: FileRoutesById
@@ -220,6 +232,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PrimeiroAcessoRoute: typeof PrimeiroAcessoRoute
   WifiRoute: typeof WifiRoute
+  CobrancaSlugRoute: typeof CobrancaSlugRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
 }
 
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/cobranca/$slug': {
+      id: '/cobranca/$slug'
+      path: '/cobranca/$slug'
+      fullPath: '/cobranca/$slug'
+      preLoaderRoute: typeof CobrancaSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/transacoes': {
       id: '/_app/transacoes'
@@ -375,8 +395,19 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PrimeiroAcessoRoute: PrimeiroAcessoRoute,
   WifiRoute: WifiRoute,
+  CobrancaSlugRoute: CobrancaSlugRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
