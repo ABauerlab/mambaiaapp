@@ -426,7 +426,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_cobranca_by_slug: {
+        Args: { _slug: string }
+        Returns: {
+          cliente_nome: string
+          descricao: string
+          id: string
+          itens: Json
+          observacoes: string
+          paid_at: string
+          pix_chave: string
+          pix_nome: string
+          slug: string
+          status: string
+          titulo: string
+          total: number
+        }[]
+      }
     }
     Enums: {
       tipo_transacao: "despesa" | "receita"
