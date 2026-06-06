@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Copy, Check, CheckCircle2, Loader2 } from "lucide-react";
@@ -193,6 +193,3 @@ function CobrancaPage() {
     </div>
   );
 }
-
-// silence unused
-void notFound;
