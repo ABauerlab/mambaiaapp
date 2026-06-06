@@ -86,6 +86,63 @@ export type Database = {
         }
         Relationships: []
       }
+      cobrancas: {
+        Row: {
+          cliente_email: string | null
+          cliente_nome: string
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          itens: Json
+          observacoes: string | null
+          paid_at: string | null
+          pix_chave: string
+          pix_nome: string
+          slug: string
+          status: string
+          titulo: string
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          cliente_email?: string | null
+          cliente_nome: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          itens?: Json
+          observacoes?: string | null
+          paid_at?: string | null
+          pix_chave: string
+          pix_nome: string
+          slug: string
+          status?: string
+          titulo: string
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          cliente_email?: string | null
+          cliente_nome?: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          itens?: Json
+          observacoes?: string | null
+          paid_at?: string | null
+          pix_chave?: string
+          pix_nome?: string
+          slug?: string
+          status?: string
+          titulo?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gastos_fixos: {
         Row: {
           ativo: boolean
