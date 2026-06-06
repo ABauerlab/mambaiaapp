@@ -65,8 +65,7 @@ function makeSlug(): string {
 }
 
 async function fetchCobrancas(): Promise<Cobranca[]> {
-  const { data, error } = await supabase
-    .from("cobrancas" as never)
+  const { data, error } = await sb.from("cobrancas")
     .select("*")
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -161,8 +160,7 @@ function FormCobranca({ userId, onDone }: { userId: string | null; onDone: () =>
         total: parsed.itens.reduce((a, b) => a + b.valor, 0),
         created_by: userId,
       };
-      const { data, error } = await supabase
-        .from("cobrancas" as never)
+      const { data, error } = await sb.from("cobrancas")
         .insert(payload)
         .select("slug")
         .single();
@@ -270,8 +268,7 @@ function CobrancaCard({ c }: { c: Cobranca }) {
 
   const setStatus = useMutation({
     mutationFn: async (status: Cobranca["status"]) => {
-      const { error } = await supabase
-        .from("cobrancas" as never)
+      const { error } = await sb.from("cobrancas")
         .update({ status, paid_at: status === "pago" ? new Date().toISOString() : null })
         .eq("id", c.id);
       if (error) throw error;
