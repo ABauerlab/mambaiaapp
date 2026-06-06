@@ -12,6 +12,7 @@ import {
   X,
   LogOut,
   User,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo-mambaia.svg";
@@ -20,7 +21,7 @@ import { useAuth } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type NavItem = {
-  to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro";
+  to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro" | "/criar";
   label: string;
   icon: typeof LayoutDashboard;
   accent?: boolean;
@@ -33,6 +34,7 @@ const nav: NavItem[] = [
   { to: "/quadro", label: "Ideias", icon: Lightbulb },
   { to: "/acertos", label: "Acertos", icon: Scale },
   { to: "/fixos", label: "Gastos Fixos", icon: Repeat },
+  { to: "/criar", label: "Criar", icon: Sparkles },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/categorias", label: "Categorias", icon: Tag },
 ];
