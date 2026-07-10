@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WifiRouteImport } from './routes/wifi'
 import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
@@ -24,6 +25,7 @@ import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCriarRouteImport } from './routes/_app.criar'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
+import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
 
@@ -40,6 +42,11 @@ const PrimeiroAcessoRoute = PrimeiroAcessoRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendarRoute = AgendarRouteImport.update({
+  id: '/agendar',
+  path: '/agendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -101,6 +108,11 @@ const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
   path: '/auditoria',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgendaRoute = AppAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAcertosRoute = AppAcertosRouteImport.update({
   id: '/acertos',
   path: '/acertos',
@@ -115,10 +127,12 @@ const ApiPublicHooksDailyDigestRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
+  '/agenda': typeof AppAgendaRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
@@ -132,10 +146,12 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
+  '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
+  '/agenda': typeof AppAgendaRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
@@ -152,10 +168,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
+  '/_app/agenda': typeof AppAgendaRoute
   '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/criar': typeof AppCriarRoute
@@ -173,10 +191,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agendar'
     | '/login'
     | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
+    | '/agenda'
     | '/auditoria'
     | '/categorias'
     | '/criar'
@@ -190,10 +210,12 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/agendar'
     | '/login'
     | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
+    | '/agenda'
     | '/auditoria'
     | '/categorias'
     | '/criar'
@@ -209,10 +231,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/agendar'
     | '/login'
     | '/primeiro-acesso'
     | '/wifi'
     | '/_app/acertos'
+    | '/_app/agenda'
     | '/_app/auditoria'
     | '/_app/categorias'
     | '/_app/criar'
@@ -229,6 +253,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  AgendarRoute: typeof AgendarRoute
   LoginRoute: typeof LoginRoute
   PrimeiroAcessoRoute: typeof PrimeiroAcessoRoute
   WifiRoute: typeof WifiRoute
@@ -257,6 +282,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agendar': {
+      id: '/agendar'
+      path: '/agendar'
+      fullPath: '/agendar'
+      preLoaderRoute: typeof AgendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -343,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuditoriaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agenda': {
+      id: '/_app/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/acertos': {
       id: '/_app/acertos'
       path: '/acertos'
@@ -362,6 +401,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAcertosRoute: typeof AppAcertosRoute
+  AppAgendaRoute: typeof AppAgendaRoute
   AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppCriarRoute: typeof AppCriarRoute
@@ -376,6 +416,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAcertosRoute: AppAcertosRoute,
+  AppAgendaRoute: AppAgendaRoute,
   AppAuditoriaRoute: AppAuditoriaRoute,
   AppCategoriasRoute: AppCategoriasRoute,
   AppCriarRoute: AppCriarRoute,
@@ -392,6 +433,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  AgendarRoute: AgendarRoute,
   LoginRoute: LoginRoute,
   PrimeiroAcessoRoute: PrimeiroAcessoRoute,
   WifiRoute: WifiRoute,
