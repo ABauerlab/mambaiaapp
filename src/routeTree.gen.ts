@@ -25,6 +25,7 @@ import { Route as AppFixosRouteImport } from './routes/_app.fixos'
 import { Route as AppCriarRouteImport } from './routes/_app.criar'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
+import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
 
@@ -107,6 +108,11 @@ const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
   path: '/auditoria',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgendaRoute = AppAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAcertosRoute = AppAcertosRouteImport.update({
   id: '/acertos',
   path: '/acertos',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
+  '/agenda': typeof AppAgendaRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
+  '/agenda': typeof AppAgendaRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
+  '/_app/agenda': typeof AppAgendaRoute
   '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/criar': typeof AppCriarRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
+    | '/agenda'
     | '/auditoria'
     | '/categorias'
     | '/criar'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
+    | '/agenda'
     | '/auditoria'
     | '/categorias'
     | '/criar'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/primeiro-acesso'
     | '/wifi'
     | '/_app/acertos'
+    | '/_app/agenda'
     | '/_app/auditoria'
     | '/_app/categorias'
     | '/_app/criar'
@@ -363,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuditoriaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/agenda': {
+      id: '/_app/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/acertos': {
       id: '/_app/acertos'
       path: '/acertos'
@@ -382,6 +401,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAcertosRoute: typeof AppAcertosRoute
+  AppAgendaRoute: typeof AppAgendaRoute
   AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppCriarRoute: typeof AppCriarRoute
@@ -396,6 +416,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAcertosRoute: AppAcertosRoute,
+  AppAgendaRoute: AppAgendaRoute,
   AppAuditoriaRoute: AppAuditoriaRoute,
   AppCategoriasRoute: AppCategoriasRoute,
   AppCriarRoute: AppCriarRoute,
