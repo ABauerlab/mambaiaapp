@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WifiRouteImport } from './routes/wifi'
 import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
@@ -40,6 +41,11 @@ const PrimeiroAcessoRoute = PrimeiroAcessoRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendarRoute = AgendarRouteImport.update({
+  id: '/agendar',
+  path: '/agendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -115,6 +121,7 @@ const ApiPublicHooksDailyDigestRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
+  '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
@@ -152,6 +160,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agendar'
     | '/login'
     | '/primeiro-acesso'
     | '/wifi'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/agendar'
     | '/login'
     | '/primeiro-acesso'
     | '/wifi'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/agendar'
     | '/login'
     | '/primeiro-acesso'
     | '/wifi'
@@ -229,6 +241,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  AgendarRoute: typeof AgendarRoute
   LoginRoute: typeof LoginRoute
   PrimeiroAcessoRoute: typeof PrimeiroAcessoRoute
   WifiRoute: typeof WifiRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agendar': {
+      id: '/agendar'
+      path: '/agendar'
+      fullPath: '/agendar'
+      preLoaderRoute: typeof AgendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -392,6 +412,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  AgendarRoute: AgendarRoute,
   LoginRoute: LoginRoute,
   PrimeiroAcessoRoute: PrimeiroAcessoRoute,
   WifiRoute: WifiRoute,
