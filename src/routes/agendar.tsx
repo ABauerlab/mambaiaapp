@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { toast } from "sonner";
@@ -66,12 +68,10 @@ function AgendarPage() {
   const hoje = useMemo(() => {
     const d = new Date(); d.setHours(0, 0, 0, 0); return d;
   }, []);
-  const dias = useMemo(() => {
-    return Array.from({ length: 30 }, (_, i) => {
-      const d = new Date(hoje);
-      d.setDate(d.getDate() + i);
-      return d;
-    });
+  const maxDate = useMemo(() => {
+    const d = new Date(hoje);
+    d.setFullYear(d.getFullYear() + 1);
+    return d;
   }, [hoje]);
 
   const [dataSel, setDataSel] = useState<Date>(hoje);
@@ -79,6 +79,7 @@ function AgendarPage() {
   const [horaInicio, setHoraInicio] = useState<string | null>(null);
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const dataStr = ymd(dataSel);
 
@@ -196,33 +197,37 @@ function AgendarPage() {
             <CalendarDays className="w-4 h-4 opacity-70" />
             <div className="text-xs uppercase tracking-widest opacity-60">Escolha a data</div>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
-            {dias.map((d) => {
-              const active = ymd(d) === dataStr;
-              return (
-                <button
-                  key={ymd(d)}
-                  onClick={() => handleDataChange(d)}
-                  className={cn(
-                    "min-w-[68px] shrink-0 rounded-2xl px-3 py-3 text-center transition border",
-                    active
-                      ? "bg-[var(--brand-lime)] text-[var(--brand-dark)] border-transparent shadow-lg"
-                      : "bg-white/5 border-white/10 hover:bg-white/10"
-                  )}
-                >
-                  <div className="text-[10px] uppercase font-semibold opacity-70">
-                    {d.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "")}
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <button
+                className="w-full flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-3 text-left transition"
+              >
+                <div>
+                  <div className="text-[11px] uppercase tracking-widest opacity-60">Data selecionada</div>
+                  <div className="text-base font-semibold mt-0.5 capitalize">
+                    {dataSel.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
                   </div>
-                  <div className="text-xl font-bold tabular-nums leading-none mt-0.5">
-                    {d.getDate()}
-                  </div>
-                  <div className="text-[10px] uppercase opacity-70 mt-0.5">
-                    {d.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "")}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                </div>
+                <CalendarDays className="w-5 h-5 opacity-70" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-0 pointer-events-auto">
+              <Calendar
+                mode="single"
+                selected={dataSel}
+                onSelect={(d) => {
+                  if (d) {
+                    handleDataChange(d);
+                    setCalendarOpen(false);
+                  }
+                }}
+                disabled={{ before: hoje, after: maxDate }}
+                defaultMonth={dataSel}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
         </section>
 
         {/* Duração */}
