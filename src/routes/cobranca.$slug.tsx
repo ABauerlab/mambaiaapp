@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Copy, Check, CheckCircle2, Loader2 } from "lucide-react";
+import { Copy, Check, CheckCircle2, Loader2, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/button";
@@ -82,6 +82,14 @@ function CobrancaPage() {
   };
 
   const pago = data.status === "pago";
+
+  const whatsappHref = (() => {
+    const msg =
+      `Olá! Acabei de fazer o pagamento da proposta "${data.titulo}" ` +
+      `no valor de ${formatBRL(data.total)}. ` +
+      `Segue o comprovante em anexo.\n\nCliente: ${data.cliente_nome}\nLink: ${typeof window !== "undefined" ? window.location.href : ""}`;
+    return `https://wa.me/5531998021169?text=${encodeURIComponent(msg)}`;
+  })();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">
@@ -175,6 +183,19 @@ function CobrancaPage() {
             <li>2. Cole a chave acima (CNPJ) e digite o valor exato.</li>
             <li>3. Confirme o pagamento. Pronto!</li>
           </ol>
+
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] hover:bg-[#1fbb59] text-white font-semibold h-12 px-4 transition shadow-lg"
+          >
+            <MessageCircle className="w-5 h-5" />
+            Enviar comprovante no WhatsApp
+          </a>
+          <p className="mt-2 text-xs opacity-60 text-center">
+            Após pagar, toque no botão acima para nos enviar o comprovante.
+          </p>
         </section>
 
         {data.observacoes && (
