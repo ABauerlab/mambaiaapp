@@ -328,6 +328,62 @@ export type Database = {
         }
         Relationships: []
       }
+      reservas: {
+        Row: {
+          cliente_nome: string
+          cliente_whatsapp: string
+          cobranca_id: string | null
+          created_at: string
+          data: string
+          duracao_minutos: number
+          hora_inicio: string
+          id: string
+          observacoes: string | null
+          status: string
+          updated_at: string
+          valor_sinal: number
+          valor_total: number
+        }
+        Insert: {
+          cliente_nome: string
+          cliente_whatsapp: string
+          cobranca_id?: string | null
+          created_at?: string
+          data: string
+          duracao_minutos: number
+          hora_inicio: string
+          id?: string
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor_sinal: number
+          valor_total: number
+        }
+        Update: {
+          cliente_nome?: string
+          cliente_whatsapp?: string
+          cobranca_id?: string | null
+          created_at?: string
+          data?: string
+          duracao_minutos?: number
+          hora_inicio?: string
+          id?: string
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor_sinal?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_cobranca_id_fkey"
+            columns: ["cobranca_id"]
+            isOneToOne: false
+            referencedRelation: "cobrancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       socios: {
         Row: {
           cor: string
@@ -426,6 +482,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calc_preco_reserva: { Args: { _minutos: number }; Returns: number }
+      criar_reserva: {
+        Args: {
+          _cliente_nome: string
+          _cliente_whatsapp: string
+          _data: string
+          _duracao_minutos: number
+          _hora_inicio: string
+        }
+        Returns: {
+          cobranca_slug: string
+          reserva_id: string
+          valor_sinal: number
+          valor_total: number
+        }[]
+      }
       get_cobranca_by_slug: {
         Args: { _slug: string }
         Returns: {
@@ -441,6 +513,13 @@ export type Database = {
           status: string
           titulo: string
           total: number
+        }[]
+      }
+      get_horarios_ocupados: {
+        Args: { _data: string }
+        Returns: {
+          duracao_minutos: number
+          hora_inicio: string
         }[]
       }
     }
