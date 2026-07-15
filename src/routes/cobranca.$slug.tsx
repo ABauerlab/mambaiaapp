@@ -307,49 +307,29 @@ function CobrancaPage() {
           <section className="rounded-2xl border-2 border-[var(--brand-lime)] bg-white/5 p-6 space-y-4">
             <div>
               <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">Passo final — obrigatório</div>
-              <h2 className="text-xl font-bold">Já pagou? Confirme aqui para receber seu comprovante</h2>
+              <h2 className="text-xl font-bold">Já pagou o sinal? Confirme aqui</h2>
               <p className="text-sm opacity-80 mt-1">
-                Depois de confirmar, você poderá baixar o PDF com todos os detalhes da reserva.
+                Ao confirmar, sua reserva fica garantida e o comprovante em PDF é gerado automaticamente.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => { setTipoPag("parcial"); setValorPag(String((reserva?.valor_sinal ?? data.total * 0.5).toFixed(2))); }}
-                className={`rounded-xl border p-3 text-left transition ${tipoPag === "parcial" ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/15" : "border-white/10 hover:bg-white/5"}`}
-              >
-                <div className="text-sm font-semibold">Sinal parcial (50%)</div>
-                <div className="text-xs opacity-70 mt-0.5">Pago o sinal, o resto no dia</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setTipoPag("integral"); setValorPag(String(data.total.toFixed(2))); }}
-                className={`rounded-xl border p-3 text-left transition ${tipoPag === "integral" ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/15" : "border-white/10 hover:bg-white/5"}`}
-              >
-                <div className="text-sm font-semibold">Valor integral</div>
-                <div className="text-xs opacity-70 mt-0.5">Paguei os {formatBRL(data.total)} completos</div>
-              </button>
-            </div>
-
-            <div>
-              <Label className="text-[var(--brand-cream)]">Valor que você pagou (R$)</Label>
-              <Input
-                value={valorPag}
-                onChange={(e) => setValorPag(e.target.value)}
-                placeholder="0,00"
-                inputMode="decimal"
-                className="bg-white/10 border-white/20 text-[var(--brand-cream)] placeholder:text-white/40"
-              />
+            <div className="rounded-xl bg-white/5 border border-white/10 p-4 flex items-baseline justify-between">
+              <span className="text-sm opacity-80">Sinal a confirmar</span>
+              <span className="text-2xl font-bold tabular-nums text-[var(--brand-lime)]">
+                {formatBRL(reserva?.valor_sinal ?? data.total)}
+              </span>
             </div>
 
             <Button
               onClick={() => confirmar.mutate()}
-              disabled={confirmar.isPending || !valorPag}
+              disabled={confirmar.isPending || !reserva}
               className="w-full h-12 bg-[var(--brand-lime)] text-[var(--brand-dark)] hover:bg-[var(--brand-lime)]/90 font-semibold text-base"
             >
-              {confirmar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CheckCircle2 className="w-5 h-5" /> Confirmar pagamento</>}
+              {confirmar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CheckCircle2 className="w-5 h-5" /> Confirmar pagamento e baixar PDF</>}
             </Button>
+            <p className="text-[11px] text-center opacity-60">
+              O restante é acertado no dia diretamente com a equipe.
+            </p>
           </section>
         ) : reserva ? (
           <section className="rounded-2xl bg-[var(--brand-lime)] text-[var(--brand-dark)] p-6 space-y-3 shadow-xl">
