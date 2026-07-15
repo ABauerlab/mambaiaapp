@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WifiRouteImport } from './routes/wifi'
 import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
+import { Route as PacoteMarcasRouteImport } from './routes/pacote-marcas'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AppRouteImport } from './routes/_app'
@@ -37,6 +38,11 @@ const WifiRoute = WifiRouteImport.update({
 const PrimeiroAcessoRoute = PrimeiroAcessoRouteImport.update({
   id: '/primeiro-acesso',
   path: '/primeiro-acesso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacoteMarcasRoute = PacoteMarcasRouteImport.update({
+  id: '/pacote-marcas',
+  path: '/pacote-marcas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
+  '/pacote-marcas': typeof PacoteMarcasRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
+  '/pacote-marcas': typeof PacoteMarcasRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
+  '/pacote-marcas': typeof PacoteMarcasRoute
   '/primeiro-acesso': typeof PrimeiroAcessoRoute
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agendar'
     | '/login'
+    | '/pacote-marcas'
     | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
   to:
     | '/agendar'
     | '/login'
+    | '/pacote-marcas'
     | '/primeiro-acesso'
     | '/wifi'
     | '/acertos'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/agendar'
     | '/login'
+    | '/pacote-marcas'
     | '/primeiro-acesso'
     | '/wifi'
     | '/_app/acertos'
@@ -255,6 +267,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AgendarRoute: typeof AgendarRoute
   LoginRoute: typeof LoginRoute
+  PacoteMarcasRoute: typeof PacoteMarcasRoute
   PrimeiroAcessoRoute: typeof PrimeiroAcessoRoute
   WifiRoute: typeof WifiRoute
   CobrancaSlugRoute: typeof CobrancaSlugRoute
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/primeiro-acesso'
       fullPath: '/primeiro-acesso'
       preLoaderRoute: typeof PrimeiroAcessoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pacote-marcas': {
+      id: '/pacote-marcas'
+      path: '/pacote-marcas'
+      fullPath: '/pacote-marcas'
+      preLoaderRoute: typeof PacoteMarcasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -435,6 +455,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AgendarRoute: AgendarRoute,
   LoginRoute: LoginRoute,
+  PacoteMarcasRoute: PacoteMarcasRoute,
   PrimeiroAcessoRoute: PrimeiroAcessoRoute,
   WifiRoute: WifiRoute,
   CobrancaSlugRoute: CobrancaSlugRoute,
