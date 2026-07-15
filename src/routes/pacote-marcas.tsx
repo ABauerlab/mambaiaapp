@@ -1,0 +1,300 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Loader2, CalendarDays, Camera, MessageCircle, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { formatBRL } from "@/lib/money";
+import { friendlyErrorMessage, cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { maskPhoneInput, isValidPhoneBR, onlyDigits } from "@/lib/phone";
+import { waMambaia } from "@/lib/whatsapp";
+import logo from "@/assets/logo-mambaia.svg";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sb = supabase as any;
+
+const WHATSAPP_GERAL = waMambaia(
+  "Oi Mambaia! Tenho interesse no Pacote Marcas para o meu empreendimento e queria tirar uma dúvida."
+);
+const OPEN_HOUR = 9;
+const CLOSE_HOUR = 22;
+const DURACAO = 60;
+const PRECO = 350;
+const SINAL = 175;
+
+function ymd(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+function timeToMin(t: string): number {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+function minToTime(min: number): string {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+export const Route = createFileRoute("/pacote-marcas")({
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Pacote Marcas Mambaia — fotos de catálogo em BH" },
+      { name: "description", content: "Pacote fotográfico para marcas e brechós: 1h no estúdio Mambaia com fotografia, edição e making-of por R$ 350. Praça Sete, Belo Horizonte." },
+      { name: "keywords", content: "fotos de catálogo BH, ensaio para marca, brechó, fotografia de produto, estúdio Belo Horizonte, Mambaia" },
+      { property: "og:title", content: "Pacote Marcas Mambaia — fotos de catálogo em BH" },
+      { property: "og:description", content: "1h no estúdio com fotografia, edição e making-of por R$ 350. Ideal para marcas e brechós na Praça Sete." },
+      { property: "og:type", content: "website" },
+      { property: "og:locale", content: "pt_BR" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wNUXIEFdbCVvIBAite7OhASh7G42/social-images/social-1778121832176-logo_mambaia.webp" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://mambaiabh.com.br/pacote-marcas" },
+    ],
+  }),
+  component: PacoteMarcasPage,
+});
+
+function PacoteMarcasPage() {
+  const navigate = useNavigate();
+  const hoje = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
+  const maxDate = useMemo(() => { const d = new Date(hoje); d.setFullYear(d.getFullYear() + 1); return d; }, [hoje]);
+
+  const [dataSel, setDataSel] = useState<Date>(hoje);
+  const [horaInicio, setHoraInicio] = useState<string | null>(null);
+  const [nome, setNome] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [empreendimento, setEmpreendimento] = useState("");
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const dataStr = ymd(dataSel);
+
+  const ocupados = useQuery({
+    queryKey: ["ocupados", dataStr],
+    queryFn: async () => {
+      const { data, error } = await sb.rpc("get_horarios_ocupados", { _data: dataStr });
+      if (error) throw error;
+      return (data ?? []) as { hora_inicio: string; duracao_minutos: number }[];
+    },
+  });
+
+  const slots = useMemo(() => {
+    const out: string[] = [];
+    for (let m = OPEN_HOUR * 60; m + DURACAO <= CLOSE_HOUR * 60; m += 30) out.push(minToTime(m));
+    return out;
+  }, []);
+
+  const agora = new Date();
+  const isPast = (hhmm: string) => {
+    if (dataSel.getTime() !== hoje.getTime()) return false;
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m <= agora.getHours() * 60 + agora.getMinutes();
+  };
+  const conflito = (hhmm: string) => {
+    const ini = timeToMin(hhmm);
+    const fim = ini + DURACAO;
+    return (ocupados.data ?? []).some((r) => {
+      const rIni = timeToMin(r.hora_inicio.slice(0, 5));
+      const rFim = rIni + r.duracao_minutos;
+      return ini < rFim && rIni < fim;
+    });
+  };
+
+  const criar = useMutation({
+    mutationFn: async () => {
+      if (!horaInicio) throw new Error("Escolha um horário");
+      if (nome.trim().length < 2) throw new Error("Informe seu nome");
+      if (empreendimento.trim().length < 2) throw new Error("Informe o nome da marca ou brechó");
+      if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
+      const { data, error } = await sb.rpc("criar_reserva_pacote", {
+        _data: dataStr,
+        _hora_inicio: horaInicio + ":00",
+        _cliente_nome: nome.trim(),
+        _cliente_whatsapp: onlyDigits(whatsapp),
+        _empreendimento: empreendimento.trim(),
+      });
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      return row as { reserva_id: string; cobranca_slug: string };
+    },
+    onSuccess: (row) => {
+      toast.success("Pacote reservado! Pague o sinal para confirmar.");
+      navigate({ to: "/cobranca/$slug", params: { slug: row.cobranca_slug } });
+    },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">
+      <header className="max-w-3xl mx-auto px-5 md:px-10 pt-6 md:pt-10 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="Mambaia" className="w-10 h-10 rounded-lg" />
+          <div>
+            <div className="font-semibold tracking-tight">Mambaia</div>
+            <div className="text-[11px] opacity-60">Pacote Marcas · Praça Sete · BH</div>
+          </div>
+        </div>
+        <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15">
+          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+        </a>
+      </header>
+
+      <main className="max-w-3xl mx-auto px-5 md:px-10 py-6 md:py-10 space-y-6">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand-green)] to-[var(--brand-lime)] text-[var(--brand-dark)] p-7 md:p-10 shadow-2xl">
+          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/20 blur-3xl" aria-hidden />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-semibold opacity-70">
+              <Sparkles className="w-3.5 h-3.5" /> Pacote Marcas e Brechós
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">Fotos de catálogo em 1h no Mambaia</h1>
+            <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
+              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350</strong>, no coração da Praça Sete.
+            </p>
+          </div>
+        </section>
+
+        <section className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 space-y-3">
+          <h2 className="text-xs uppercase tracking-widest opacity-60 font-medium">O que está incluso</h2>
+          <ul className="text-sm space-y-1.5 opacity-90">
+            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça — frente, costas e laterais).</li>
+            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Edição das imagens prontas para site e Instagram.</li>
+            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Making-of do dia para você usar como conteúdo.</li>
+            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Estúdio em L com iluminação, Wi-Fi, banheiro e água à vontade.</li>
+          </ul>
+          <p className="text-xs opacity-70">
+            Precisa de produção completa com busca de modelos?{" "}
+            <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline underline-offset-2">Fale no WhatsApp</a>.
+          </p>
+        </section>
+
+        <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <CalendarDays className="w-4 h-4 opacity-70" />
+            <div className="text-xs uppercase tracking-widest opacity-60">Escolha a data</div>
+          </div>
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <button className="w-full flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-3 text-left transition">
+                <div>
+                  <div className="text-[11px] uppercase tracking-widest opacity-60">Data selecionada</div>
+                  <div className="text-base font-semibold mt-0.5 capitalize">
+                    {dataSel.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+                  </div>
+                </div>
+                <CalendarDays className="w-5 h-5 opacity-70" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-0 pointer-events-auto">
+              <Calendar
+                mode="single"
+                selected={dataSel}
+                onSelect={(d) => { if (d) { setDataSel(d); setHoraInicio(null); setCalendarOpen(false); } }}
+                disabled={{ before: hoje, after: maxDate }}
+                defaultMonth={dataSel}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+        </section>
+
+        <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs uppercase tracking-widest opacity-60">Horário de início (duração fixa de 1h)</div>
+            {ocupados.isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin opacity-60" />}
+          </div>
+          <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+            {slots.map((s) => {
+              const past = isPast(s);
+              const busy = conflito(s);
+              const disabled = past || busy;
+              const active = horaInicio === s;
+              return (
+                <button
+                  key={s}
+                  disabled={disabled}
+                  onClick={() => setHoraInicio(s)}
+                  className={cn(
+                    "rounded-lg px-2 py-2 text-sm font-medium border tabular-nums transition",
+                    active && "bg-[var(--brand-lime)] text-[var(--brand-dark)] border-transparent",
+                    !active && !disabled && "bg-white/5 border-white/10 hover:bg-white/10",
+                    disabled && "bg-white/5 border-white/5 opacity-30 line-through cursor-not-allowed"
+                  )}
+                  title={busy ? "Já reservado" : past ? "Horário passou" : ""}
+                >
+                  {s}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="rounded-2xl bg-[var(--brand-cream)] text-[var(--brand-dark)] p-5 md:p-6 space-y-4">
+          <div className="grid md:grid-cols-2 gap-3">
+            <div className="md:col-span-2">
+              <Label>Marca ou brechó *</Label>
+              <Input value={empreendimento} onChange={(e) => setEmpreendimento(e.target.value)} placeholder="Ex.: Brechó da Lua" />
+            </div>
+            <div>
+              <Label>Seu nome *</Label>
+              <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome completo" />
+            </div>
+            <div>
+              <Label>WhatsApp *</Label>
+              <Input
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(maskPhoneInput(e.target.value))}
+                placeholder="+55 (31) 9 9999-9999"
+                inputMode="tel"
+                autoComplete="tel"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-[var(--brand-dark)]/5 p-4">
+            <div className="text-[11px] uppercase tracking-widest opacity-60">Resumo</div>
+            <div className="mt-2 flex items-baseline justify-between">
+              <div className="text-sm">
+                {dataSel.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}
+                {horaInicio && (<> · <strong>{horaInicio}</strong> · 1h</>)}
+              </div>
+              <div className="text-right">
+                <div className="text-[11px] opacity-60">Total</div>
+                <div className="text-lg font-bold tabular-nums">{formatBRL(PRECO)}</div>
+              </div>
+            </div>
+            <div className="mt-1 flex items-center justify-between text-sm">
+              <span className="opacity-70">Sinal para confirmar (50%)</span>
+              <span className="font-semibold tabular-nums">{formatBRL(SINAL)}</span>
+            </div>
+          </div>
+
+          <Button
+            onClick={() => criar.mutate()}
+            disabled={criar.isPending || !horaInicio}
+            className="w-full h-12 text-base bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90"
+          >
+            {criar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Reservar pacote e pagar sinal <ArrowRight className="w-4 h-4" /></>}
+          </Button>
+          <div className="flex items-center gap-1.5 text-xs opacity-70 justify-center">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Pagamento via PIX na próxima tela.
+          </div>
+        </section>
+
+        <footer className="text-center text-xs opacity-60 pt-2 pb-4">
+          Só precisa alugar o estúdio?{" "}
+          <a href="/agendar" className="underline">Ir para locação simples</a>.
+        </footer>
+      </main>
+    </div>
+  );
+}
