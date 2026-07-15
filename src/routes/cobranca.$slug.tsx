@@ -1,12 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, Check, CheckCircle2, Loader2, MessageCircle, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { waMambaia } from "@/lib/whatsapp";
@@ -99,8 +97,52 @@ function CobrancaPage() {
     enabled: !!data,
   });
   const [copied, setCopied] = useState<"chave" | "valor" | null>(null);
-  const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
-  const [valorPag, setValorPag] = useState<string>("");
+  const autoDownloadRef = useRef(false);
+
+  const confirmar = useMutation({
+    mutationFn: async () => {
+      const valor = reserva?.valor_sinal ?? (data ? data.total : 0);
+      if (!valor || valor <= 0) throw new Error("Valor do sinal indisponível");
+      const { error } = await sb.rpc("confirmar_pagamento_cobranca", {
+        _slug: slug,
+        _tipo: "parcial",
+        _valor: valor,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      autoDownloadRef.current = true;
+      toast.success("Pagamento confirmado! Seu comprovante está sendo gerado.");
+      qc.invalidateQueries({ queryKey: ["cobranca", slug] });
+      qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
+    },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+
+  const baixarPDF = () => {
+    if (!reserva || !reserva.paid_at) return;
+    baixarReservaPDF({
+      cliente: reserva.cliente_nome,
+      whatsapp: reserva.cliente_whatsapp,
+      data: reserva.data,
+      horaInicio: reserva.hora_inicio.slice(0, 5),
+      duracaoMinutos: reserva.duracao_minutos,
+      valorTotal: reserva.valor_total,
+      valorPago: reserva.valor_pago ?? reserva.valor_sinal,
+      tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+      paidAt: reserva.paid_at,
+      slug,
+    });
+  };
+
+  // Baixa automaticamente o PDF assim que a reserva paga aparece após confirmar.
+  useEffect(() => {
+    if (autoDownloadRef.current && reserva?.paid_at) {
+      autoDownloadRef.current = false;
+      try { baixarPDF(); } catch { /* silencioso */ }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reserva?.paid_at]);
 
   if (isLoading) {
     return (
@@ -135,41 +177,6 @@ function CobrancaPage() {
       `Segue o comprovante em anexo.\n\nCliente: ${data.cliente_nome}\nLink: ${typeof window !== "undefined" ? window.location.href : ""}`;
     return waMambaia(msg);
   })();
-
-  const confirmar = useMutation({
-    mutationFn: async () => {
-      const v = parseFloat((valorPag || "").replace(",", "."));
-      if (!Number.isFinite(v) || v <= 0) throw new Error("Informe o valor pago");
-      const { error } = await sb.rpc("confirmar_pagamento_cobranca", {
-        _slug: slug,
-        _tipo: tipoPag,
-        _valor: v,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Pagamento confirmado! Baixe seu comprovante em PDF.");
-      qc.invalidateQueries({ queryKey: ["cobranca", slug] });
-      qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
-    },
-    onError: (e) => toast.error(friendlyErrorMessage(e)),
-  });
-
-  const baixarPDF = () => {
-    if (!reserva || !reserva.paid_at || !reserva.valor_pago || !reserva.tipo_pagamento) return;
-    baixarReservaPDF({
-      cliente: reserva.cliente_nome,
-      whatsapp: reserva.cliente_whatsapp,
-      data: reserva.data,
-      horaInicio: reserva.hora_inicio.slice(0, 5),
-      duracaoMinutos: reserva.duracao_minutos,
-      valorTotal: reserva.valor_total,
-      valorPago: reserva.valor_pago,
-      tipoPagamento: reserva.tipo_pagamento,
-      paidAt: reserva.paid_at,
-      slug,
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">
@@ -298,49 +305,29 @@ function CobrancaPage() {
           <section className="rounded-2xl border-2 border-[var(--brand-lime)] bg-white/5 p-6 space-y-4">
             <div>
               <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">Passo final — obrigatório</div>
-              <h2 className="text-xl font-bold">Já pagou? Confirme aqui para receber seu comprovante</h2>
+              <h2 className="text-xl font-bold">Já pagou o sinal? Confirme aqui</h2>
               <p className="text-sm opacity-80 mt-1">
-                Depois de confirmar, você poderá baixar o PDF com todos os detalhes da reserva.
+                Ao confirmar, sua reserva fica garantida e o comprovante em PDF é gerado automaticamente.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => { setTipoPag("parcial"); setValorPag(String((reserva?.valor_sinal ?? data.total * 0.5).toFixed(2))); }}
-                className={`rounded-xl border p-3 text-left transition ${tipoPag === "parcial" ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/15" : "border-white/10 hover:bg-white/5"}`}
-              >
-                <div className="text-sm font-semibold">Sinal parcial (50%)</div>
-                <div className="text-xs opacity-70 mt-0.5">Pago o sinal, o resto no dia</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setTipoPag("integral"); setValorPag(String(data.total.toFixed(2))); }}
-                className={`rounded-xl border p-3 text-left transition ${tipoPag === "integral" ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/15" : "border-white/10 hover:bg-white/5"}`}
-              >
-                <div className="text-sm font-semibold">Valor integral</div>
-                <div className="text-xs opacity-70 mt-0.5">Paguei os {formatBRL(data.total)} completos</div>
-              </button>
-            </div>
-
-            <div>
-              <Label className="text-[var(--brand-cream)]">Valor que você pagou (R$)</Label>
-              <Input
-                value={valorPag}
-                onChange={(e) => setValorPag(e.target.value)}
-                placeholder="0,00"
-                inputMode="decimal"
-                className="bg-white/10 border-white/20 text-[var(--brand-cream)] placeholder:text-white/40"
-              />
+            <div className="rounded-xl bg-white/5 border border-white/10 p-4 flex items-baseline justify-between">
+              <span className="text-sm opacity-80">Sinal a confirmar</span>
+              <span className="text-2xl font-bold tabular-nums text-[var(--brand-lime)]">
+                {formatBRL(reserva?.valor_sinal ?? data.total)}
+              </span>
             </div>
 
             <Button
               onClick={() => confirmar.mutate()}
-              disabled={confirmar.isPending || !valorPag}
+              disabled={confirmar.isPending || !reserva}
               className="w-full h-12 bg-[var(--brand-lime)] text-[var(--brand-dark)] hover:bg-[var(--brand-lime)]/90 font-semibold text-base"
             >
-              {confirmar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CheckCircle2 className="w-5 h-5" /> Confirmar pagamento</>}
+              {confirmar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CheckCircle2 className="w-5 h-5" /> Confirmar pagamento e baixar PDF</>}
             </Button>
+            <p className="text-[11px] text-center opacity-60">
+              O restante é acertado no dia diretamente com a equipe.
+            </p>
           </section>
         ) : reserva ? (
           <section className="rounded-2xl bg-[var(--brand-lime)] text-[var(--brand-dark)] p-6 space-y-3 shadow-xl">

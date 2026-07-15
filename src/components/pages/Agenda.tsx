@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Loader2, ExternalLink, Copy, Check, XCircle, CheckCircle2, MessageCircle, Trash2 } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, XCircle, CheckCircle2, MessageCircle, Trash2, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "./PageHeader";
@@ -15,6 +15,7 @@ import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { formatPhoneBR } from "@/lib/phone";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { baixarReservaPDF } from "@/lib/reserva-pdf";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
@@ -243,6 +244,28 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           {r.status !== "paga" && (
             <Button size="sm" variant="ghost" onClick={() => setPayOpen(true)}>
               <CheckCircle2 className="w-3 h-3" /> Marcar pago
+            </Button>
+          )}
+          {r.paid_at && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() =>
+                baixarReservaPDF({
+                  cliente: r.cliente_nome,
+                  whatsapp: r.cliente_whatsapp,
+                  data: r.data,
+                  horaInicio: r.hora_inicio.slice(0, 5),
+                  duracaoMinutos: r.duracao_minutos,
+                  valorTotal: r.valor_total,
+                  valorPago: r.valor_pago ?? r.valor_sinal,
+                  tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+                  paidAt: r.paid_at!,
+                  slug: r.cobrancas?.slug ?? r.id,
+                })
+              }
+            >
+              <FileDown className="w-3 h-3" /> Ordem de serviço
             </Button>
           )}
           {r.status !== "cancelada" ? (

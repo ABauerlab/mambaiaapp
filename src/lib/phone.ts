@@ -21,22 +21,31 @@ export function toE164BR(v: string): string {
  */
 export function formatPhoneBR(v: string): string {
   const d = onlyDigits(v);
-  // Remove DDI 55 se veio junto
+  // Remove DDI 55 se veio junto (e o número for maior que o padrão local)
   const local = d.startsWith("55") && d.length > 11 ? d.slice(2) : d;
-  const ddd = local.slice(0, 2);
-  const rest = local.slice(2);
-
-  if (local.length === 0) return "";
-  if (local.length <= 2) return `(${ddd}`;
-  if (rest.length <= 4) return `+55 (${ddd}) ${rest}`;
-  if (rest.length <= 8) return `+55 (${ddd}) ${rest.slice(0, 4)}-${rest.slice(4)}`;
-  // 9 dígitos (celular): 9 XXXX-XXXX
-  return `+55 (${ddd}) ${rest.slice(0, 1)} ${rest.slice(1, 5)}-${rest.slice(5, 9)}`;
+  if (local.length === 10) {
+    // Fixo: (DDD) NNNN-NNNN
+    return `(${local.slice(0, 2)}) ${local.slice(2, 6)}-${local.slice(6)}`;
+  }
+  if (local.length === 11) {
+    // Celular: (DDD) 9 NNNN-NNNN
+    return `(${local.slice(0, 2)}) ${local.slice(2, 3)} ${local.slice(3, 7)}-${local.slice(7)}`;
+  }
+  // Incompleto: devolve apenas os dígitos digitados, sem máscara.
+  return local;
 }
 
-/** Máscara para input controlado — sempre exibe o formato acima. */
+/**
+ * Máscara para input controlado — enquanto o usuário digita, mantemos apenas
+ * os dígitos. Só formatamos quando o número está completo (10 ou 11 dígitos).
+ */
 export function maskPhoneInput(v: string): string {
-  return formatPhoneBR(v);
+  const d = onlyDigits(v);
+  const local = d.startsWith("55") && d.length > 11 ? d.slice(2) : d;
+  // Limita a 11 dígitos (celular BR com 9 na frente).
+  const trimmed = local.slice(0, 11);
+  if (trimmed.length === 10 || trimmed.length === 11) return formatPhoneBR(trimmed);
+  return trimmed;
 }
 
 /** True se o número tem tamanho válido (10 ou 11 dígitos locais). */
