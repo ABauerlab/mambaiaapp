@@ -376,6 +376,55 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Editar reserva</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div>
+              <Label>Data</Label>
+              <Input type="date" value={edData} onChange={(e) => setEdData(e.target.value)} />
+            </div>
+            <div>
+              <Label>Hora de início</Label>
+              <Input type="time" value={edHora} onChange={(e) => setEdHora(e.target.value)} />
+            </div>
+            <div>
+              <Label>Duração (min)</Label>
+              <Input type="number" min={30} step={30} value={edDur} onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))} />
+            </div>
+            <div>
+              <Label>Empreendimento</Label>
+              <Input value={edEmp} onChange={(e) => setEdEmp(e.target.value)} placeholder="opcional" />
+            </div>
+            <div className="col-span-2">
+              <Label>Cliente</Label>
+              <Input value={edNome} onChange={(e) => setEdNome(e.target.value)} />
+            </div>
+            <div className="col-span-2">
+              <Label>WhatsApp</Label>
+              <Input value={edWa} onChange={(e) => setEdWa(maskPhoneInput(e.target.value))} placeholder="(31) 9 9999-9999" inputMode="tel" />
+            </div>
+            <div>
+              <Label>Valor total (R$)</Label>
+              <Input value={edTotal} onChange={(e) => setEdTotal(e.target.value)} inputMode="decimal" />
+            </div>
+            <div>
+              <Label>Sinal (R$)</Label>
+              <Input value={edSinal} onChange={(e) => setEdSinal(e.target.value)} inputMode="decimal" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditOpen(false)}>Cancelar</Button>
+            <Button onClick={() => salvarEdicao.mutate()} disabled={salvarEdicao.isPending}>
+              {salvarEdicao.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+              Salvar alterações
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
