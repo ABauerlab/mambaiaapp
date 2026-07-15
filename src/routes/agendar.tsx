@@ -188,7 +188,7 @@ function AgendarPage() {
             <div className="text-[11px] opacity-60">Estúdio · Praça Sete · BH</div>
           </div>
         </div>
-        <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15">
+        <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15">
           <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
         </a>
       </header>
@@ -206,18 +206,30 @@ function AgendarPage() {
         </section>
 
         {/* Tabela de preços */}
-        <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
-          <div className="text-xs uppercase tracking-widest opacity-60 mb-3">Tabela de preços</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-            <PrecoPill h="1h" v="R$ 100" />
-            <PrecoPill h="2h" v="R$ 180" />
-            <PrecoPill h="3h" v="R$ 250" />
-            <PrecoPill h="4h" v="R$ 300" />
-          </div>
-          <div className="mt-3 text-xs opacity-70">
-            Fração de 30 min: R$ 50. Preços sujeitos a mudança (estamos em reforma).
-            Precisa de mais de 4h? <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="underline">Fale no WhatsApp</a>.
-          </div>
+        <section aria-labelledby="tabela-precos" className="rounded-2xl bg-white/[0.04] border border-white/10 p-5">
+          <h2 id="tabela-precos" className="text-xs uppercase tracking-widest opacity-60 mb-3 font-medium">
+            Tabela de preços
+          </h2>
+          <dl className="divide-y divide-white/10 select-none">
+            {[
+              { h: "1h", v: "R$ 100" },
+              { h: "2h", v: "R$ 180" },
+              { h: "3h", v: "R$ 250" },
+              { h: "4h", v: "R$ 300" },
+            ].map((row) => (
+              <div key={row.h} className="flex items-baseline justify-between py-2.5">
+                <dt className="text-sm opacity-80">{row.h}</dt>
+                <dd className="text-sm font-semibold tabular-nums">{row.v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-3 text-xs opacity-70 leading-relaxed">
+            Fração adicional de 30 min: <strong>R$ 50</strong>. Preços sujeitos a mudança (estamos em reforma).
+            {" "}Precisa de mais de 4h?{" "}
+            <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+              Fale no WhatsApp
+            </a>.
+          </p>
         </section>
 
         {/* Data */}
@@ -333,7 +345,13 @@ function AgendarPage() {
             </div>
             <div>
               <Label>WhatsApp *</Label>
-              <Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(31) 99999-9999" inputMode="tel" />
+              <Input
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(maskPhoneInput(e.target.value))}
+                placeholder="+55 (31) 9 9999-9999"
+                inputMode="tel"
+                autoComplete="tel"
+              />
             </div>
           </div>
 
@@ -372,18 +390,10 @@ function AgendarPage() {
         </section>
 
         <footer className="text-center text-xs opacity-60 pt-2 pb-4">
-          Precisa de horário fora da tabela? <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="underline">Fale conosco</a>.
+          Precisa de horário fora da tabela?{" "}
+          <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline">Fale conosco</a>.
         </footer>
       </main>
-    </div>
-  );
-}
-
-function PrecoPill({ h, v }: { h: string; v: string }) {
-  return (
-    <div className="rounded-xl bg-white/10 border border-white/10 px-3 py-2 flex items-center justify-between">
-      <span className="font-semibold">{h}</span>
-      <span className="tabular-nums">{v}</span>
     </div>
   );
 }
