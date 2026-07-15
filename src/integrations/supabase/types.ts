@@ -336,11 +336,14 @@ export type Database = {
           created_at: string
           data: string
           duracao_minutos: number
+          empreendimento: string | null
           hora_inicio: string
           id: string
+          numero_proposta: number
           observacoes: string | null
           paid_at: string | null
           status: string
+          tipo: string
           tipo_pagamento: string | null
           updated_at: string
           valor_pago: number | null
@@ -354,11 +357,14 @@ export type Database = {
           created_at?: string
           data: string
           duracao_minutos: number
+          empreendimento?: string | null
           hora_inicio: string
           id?: string
+          numero_proposta?: number
           observacoes?: string | null
           paid_at?: string | null
           status?: string
+          tipo?: string
           tipo_pagamento?: string | null
           updated_at?: string
           valor_pago?: number | null
@@ -372,11 +378,14 @@ export type Database = {
           created_at?: string
           data?: string
           duracao_minutos?: number
+          empreendimento?: string | null
           hora_inicio?: string
           id?: string
+          numero_proposta?: number
           observacoes?: string | null
           paid_at?: string | null
           status?: string
+          tipo?: string
           tipo_pagamento?: string | null
           updated_at?: string
           valor_pago?: number | null
@@ -515,6 +524,21 @@ export type Database = {
           valor_total: number
         }[]
       }
+      criar_reserva_pacote: {
+        Args: {
+          _cliente_nome: string
+          _cliente_whatsapp: string
+          _data: string
+          _empreendimento: string
+          _hora_inicio: string
+        }
+        Returns: {
+          cobranca_slug: string
+          reserva_id: string
+          valor_sinal: number
+          valor_total: number
+        }[]
+      }
       get_cobranca_by_slug: {
         Args: { _slug: string }
         Returns: {
@@ -546,10 +570,13 @@ export type Database = {
           cliente_whatsapp: string
           data: string
           duracao_minutos: number
+          empreendimento: string
           hora_inicio: string
           id: string
+          numero_proposta: number
           paid_at: string
           status: string
+          tipo: string
           tipo_pagamento: string
           valor_pago: number
           valor_sinal: number

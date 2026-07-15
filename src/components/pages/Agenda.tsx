@@ -13,9 +13,10 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
-import { formatPhoneBR } from "@/lib/phone";
+import { formatPhoneBR, maskPhoneInput, onlyDigits, isValidPhoneBR } from "@/lib/phone";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { baixarReservaPDF } from "@/lib/reserva-pdf";
+import { Pencil } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
@@ -36,6 +37,9 @@ type Reserva = {
   valor_pago: number | null;
   tipo_pagamento: "integral" | "parcial" | null;
   paid_at: string | null;
+  tipo: "locacao" | "pacote_marcas" | null;
+  empreendimento: string | null;
+  numero_proposta: number;
   cobrancas?: { slug: string; status: string } | null;
 };
 
@@ -160,6 +164,15 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
   const [payOpen, setPayOpen] = useState(false);
   const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
   const [valorPag, setValorPag] = useState<string>(String(r.valor_sinal.toFixed(2)));
+  const [editOpen, setEditOpen] = useState(false);
+  const [edData, setEdData] = useState(r.data);
+  const [edHora, setEdHora] = useState(r.hora_inicio.slice(0, 5));
+  const [edDur, setEdDur] = useState<number>(r.duracao_minutos);
+  const [edNome, setEdNome] = useState(r.cliente_nome);
+  const [edWa, setEdWa] = useState(formatPhoneBR(r.cliente_whatsapp));
+  const [edEmp, setEdEmp] = useState(r.empreendimento ?? "");
+  const [edTotal, setEdTotal] = useState(String(r.valor_total.toFixed(2)));
+  const [edSinal, setEdSinal] = useState(String(r.valor_sinal.toFixed(2)));
 
   const dataFmt = new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
   const waMsg =
@@ -208,6 +221,33 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
     onSuccess: () => { toast.success("Reserva excluída"); onChange(); },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+  const salvarEdicao = useMutation({
+    mutationFn: async () => {
+      if (edNome.trim().length < 2) throw new Error("Informe o nome do cliente");
+      if (!isValidPhoneBR(edWa)) throw new Error("WhatsApp inválido");
+      const total = parseFloat(edTotal.replace(",", "."));
+      const sinal = parseFloat(edSinal.replace(",", "."));
+      if (!Number.isFinite(total) || total <= 0) throw new Error("Valor total inválido");
+      if (!Number.isFinite(sinal) || sinal < 0) throw new Error("Sinal inválido");
+      const patch: Record<string, unknown> = {
+        data: edData,
+        hora_inicio: edHora + ":00",
+        duracao_minutos: edDur,
+        cliente_nome: edNome.trim(),
+        cliente_whatsapp: onlyDigits(edWa),
+        valor_total: total,
+        valor_sinal: sinal,
+        empreendimento: edEmp.trim() || null,
+      };
+      const { error } = await sb.from("reservas").update(patch).eq("id", r.id);
+      if (error) throw error;
+      if (r.cobranca_id) {
+        await sb.from("cobrancas").update({ total: sinal }).eq("id", r.cobranca_id);
+      }
+    },
+    onSuccess: () => { toast.success("Reserva atualizada"); setEditOpen(false); onChange(); },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
 
   return (
     <Card className="p-4">
@@ -216,6 +256,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold tabular-nums">{r.hora_inicio.slice(0, 5)}</span>
             <span className="text-muted-foreground text-sm">· {formatDuracao(r.duracao_minutos)}</span>
+            {r.tipo === "pacote_marcas" && (
+              <Badge className="bg-brand-lime text-brand-dark border-transparent">Pacote Marcas</Badge>
+            )}
             {r.status === "paga" && <Badge className="bg-success text-success-foreground">Paga integral</Badge>}
             {r.status === "confirmada" && <Badge className="bg-primary text-primary-foreground">Sinal pago</Badge>}
             {r.status === "pendente" && <Badge variant="outline">Aguardando sinal</Badge>}
@@ -224,9 +267,12 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <div className="text-sm mt-1">
             <span className="font-medium">{r.cliente_nome}</span>
             <span className="text-muted-foreground"> · {formatPhoneBR(r.cliente_whatsapp)}</span>
+            {r.empreendimento && (
+              <span className="text-muted-foreground"> · {r.empreendimento}</span>
+            )}
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
-            Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
+            Proposta nº {String(r.numero_proposta).padStart(4, "0")} · Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
             {r.valor_pago != null && (
               <> · <span className="text-foreground font-medium">recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})</span></>
             )}
@@ -241,6 +287,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <a href={waHref} target="_blank" rel="noreferrer">
             <Button size="sm" variant="ghost"><MessageCircle className="w-3 h-3" /> WhatsApp</Button>
           </a>
+          <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
+            <Pencil className="w-3 h-3" /> Editar
+          </Button>
           {r.status !== "paga" && (
             <Button size="sm" variant="ghost" onClick={() => setPayOpen(true)}>
               <CheckCircle2 className="w-3 h-3" /> Marcar pago
@@ -262,6 +311,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
                   tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
                   paidAt: r.paid_at!,
                   slug: r.cobrancas?.slug ?? r.id,
+                  numeroProposta: r.numero_proposta ?? 0,
+                  tipo: r.tipo ?? "locacao",
+                  empreendimento: r.empreendimento,
                 })
               }
             >
@@ -320,6 +372,55 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             <Button onClick={() => marcarPago.mutate()} disabled={marcarPago.isPending}>
               {marcarPago.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
               Confirmar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Editar reserva</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div>
+              <Label>Data</Label>
+              <Input type="date" value={edData} onChange={(e) => setEdData(e.target.value)} />
+            </div>
+            <div>
+              <Label>Hora de início</Label>
+              <Input type="time" value={edHora} onChange={(e) => setEdHora(e.target.value)} />
+            </div>
+            <div>
+              <Label>Duração (min)</Label>
+              <Input type="number" min={30} step={30} value={edDur} onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))} />
+            </div>
+            <div>
+              <Label>Empreendimento</Label>
+              <Input value={edEmp} onChange={(e) => setEdEmp(e.target.value)} placeholder="opcional" />
+            </div>
+            <div className="col-span-2">
+              <Label>Cliente</Label>
+              <Input value={edNome} onChange={(e) => setEdNome(e.target.value)} />
+            </div>
+            <div className="col-span-2">
+              <Label>WhatsApp</Label>
+              <Input value={edWa} onChange={(e) => setEdWa(maskPhoneInput(e.target.value))} placeholder="(31) 9 9999-9999" inputMode="tel" />
+            </div>
+            <div>
+              <Label>Valor total (R$)</Label>
+              <Input value={edTotal} onChange={(e) => setEdTotal(e.target.value)} inputMode="decimal" />
+            </div>
+            <div>
+              <Label>Sinal (R$)</Label>
+              <Input value={edSinal} onChange={(e) => setEdSinal(e.target.value)} inputMode="decimal" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditOpen(false)}>Cancelar</Button>
+            <Button onClick={() => salvarEdicao.mutate()} disabled={salvarEdicao.isPending}>
+              {salvarEdicao.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+              Salvar alterações
             </Button>
           </DialogFooter>
         </DialogContent>
