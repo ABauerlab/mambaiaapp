@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, Check, CheckCircle2, Loader2, MessageCircle, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
@@ -99,8 +99,52 @@ function CobrancaPage() {
     enabled: !!data,
   });
   const [copied, setCopied] = useState<"chave" | "valor" | null>(null);
-  const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
-  const [valorPag, setValorPag] = useState<string>("");
+  const autoDownloadRef = useRef(false);
+
+  const confirmar = useMutation({
+    mutationFn: async () => {
+      const valor = reserva?.valor_sinal ?? (data ? data.total : 0);
+      if (!valor || valor <= 0) throw new Error("Valor do sinal indisponível");
+      const { error } = await sb.rpc("confirmar_pagamento_cobranca", {
+        _slug: slug,
+        _tipo: "parcial",
+        _valor: valor,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      autoDownloadRef.current = true;
+      toast.success("Pagamento confirmado! Seu comprovante está sendo gerado.");
+      qc.invalidateQueries({ queryKey: ["cobranca", slug] });
+      qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
+    },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+
+  const baixarPDF = () => {
+    if (!reserva || !reserva.paid_at) return;
+    baixarReservaPDF({
+      cliente: reserva.cliente_nome,
+      whatsapp: reserva.cliente_whatsapp,
+      data: reserva.data,
+      horaInicio: reserva.hora_inicio.slice(0, 5),
+      duracaoMinutos: reserva.duracao_minutos,
+      valorTotal: reserva.valor_total,
+      valorPago: reserva.valor_pago ?? reserva.valor_sinal,
+      tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+      paidAt: reserva.paid_at,
+      slug,
+    });
+  };
+
+  // Baixa automaticamente o PDF assim que a reserva paga aparece após confirmar.
+  useEffect(() => {
+    if (autoDownloadRef.current && reserva?.paid_at) {
+      autoDownloadRef.current = false;
+      try { baixarPDF(); } catch { /* silencioso */ }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reserva?.paid_at]);
 
   if (isLoading) {
     return (
@@ -135,41 +179,6 @@ function CobrancaPage() {
       `Segue o comprovante em anexo.\n\nCliente: ${data.cliente_nome}\nLink: ${typeof window !== "undefined" ? window.location.href : ""}`;
     return waMambaia(msg);
   })();
-
-  const confirmar = useMutation({
-    mutationFn: async () => {
-      const v = parseFloat((valorPag || "").replace(",", "."));
-      if (!Number.isFinite(v) || v <= 0) throw new Error("Informe o valor pago");
-      const { error } = await sb.rpc("confirmar_pagamento_cobranca", {
-        _slug: slug,
-        _tipo: tipoPag,
-        _valor: v,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Pagamento confirmado! Baixe seu comprovante em PDF.");
-      qc.invalidateQueries({ queryKey: ["cobranca", slug] });
-      qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
-    },
-    onError: (e) => toast.error(friendlyErrorMessage(e)),
-  });
-
-  const baixarPDF = () => {
-    if (!reserva || !reserva.paid_at || !reserva.valor_pago || !reserva.tipo_pagamento) return;
-    baixarReservaPDF({
-      cliente: reserva.cliente_nome,
-      whatsapp: reserva.cliente_whatsapp,
-      data: reserva.data,
-      horaInicio: reserva.hora_inicio.slice(0, 5),
-      duracaoMinutos: reserva.duracao_minutos,
-      valorTotal: reserva.valor_total,
-      valorPago: reserva.valor_pago,
-      tipoPagamento: reserva.tipo_pagamento,
-      paidAt: reserva.paid_at,
-      slug,
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">
