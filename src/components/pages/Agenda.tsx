@@ -10,8 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
+import { formatPhoneBR } from "@/lib/phone";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
@@ -29,6 +32,9 @@ type Reserva = {
   cobranca_id: string | null;
   observacoes: string | null;
   created_at: string;
+  valor_pago: number | null;
+  tipo_pagamento: "integral" | "parcial" | null;
+  paid_at: string | null;
   cobrancas?: { slug: string; status: string } | null;
 };
 
@@ -150,13 +156,47 @@ export function Agenda() {
 }
 
 function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
-  const wa = r.cliente_whatsapp.replace(/\D/g, "");
+  const [payOpen, setPayOpen] = useState(false);
+  const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
+  const [valorPag, setValorPag] = useState<string>(String(r.valor_sinal.toFixed(2)));
+
+  const dataFmt = new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+  const waMsg =
+    `Oi ${r.cliente_nome.split(" ")[0]}! Aqui é da Mambaia 💚\n` +
+    `Confirmando sua reserva para ${dataFmt} às ${r.hora_inicio.slice(0, 5)} ` +
+    `(${Math.floor(r.duracao_minutos / 60)}h${r.duracao_minutos % 60 ? r.duracao_minutos % 60 : ""}).\n` +
+    (r.cobrancas?.slug
+      ? `Se ainda não pagou o sinal: ${typeof window !== "undefined" ? window.location.origin : ""}/cobranca/${r.cobrancas.slug}\n`
+      : "") +
+    `Qualquer coisa é só chamar por aqui!`;
+  const waHref = buildWhatsAppUrl(r.cliente_whatsapp, waMsg);
+
   const setStatus = useMutation({
     mutationFn: async (status: Reserva["status"]) => {
       const { error } = await sb.from("reservas").update({ status }).eq("id", r.id);
       if (error) throw error;
     },
     onSuccess: () => { toast.success("Reserva atualizada"); onChange(); },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+  const marcarPago = useMutation({
+    mutationFn: async () => {
+      const v = parseFloat((valorPag || "").replace(",", "."));
+      if (!Number.isFinite(v) || v <= 0) throw new Error("Informe o valor recebido");
+      const isIntegral = tipoPag === "integral";
+      const patch: Record<string, unknown> = {
+        status: isIntegral ? "paga" : "confirmada",
+        paid_at: new Date().toISOString(),
+        valor_pago: v,
+        tipo_pagamento: tipoPag,
+      };
+      const { error } = await sb.from("reservas").update(patch).eq("id", r.id);
+      if (error) throw error;
+      if (r.cobranca_id) {
+        await sb.from("cobrancas").update({ status: "pago", paid_at: new Date().toISOString() }).eq("id", r.cobranca_id);
+      }
+    },
+    onSuccess: () => { toast.success("Pagamento registrado"); setPayOpen(false); onChange(); },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
   const remove = useMutation({
@@ -175,17 +215,20 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold tabular-nums">{r.hora_inicio.slice(0, 5)}</span>
             <span className="text-muted-foreground text-sm">· {formatDuracao(r.duracao_minutos)}</span>
-            {r.status === "paga" && <Badge className="bg-success text-success-foreground">Paga</Badge>}
-            {r.status === "confirmada" && <Badge className="bg-primary text-primary-foreground">Confirmada</Badge>}
+            {r.status === "paga" && <Badge className="bg-success text-success-foreground">Paga integral</Badge>}
+            {r.status === "confirmada" && <Badge className="bg-primary text-primary-foreground">Sinal pago</Badge>}
             {r.status === "pendente" && <Badge variant="outline">Aguardando sinal</Badge>}
             {r.status === "cancelada" && <Badge variant="secondary">Cancelada</Badge>}
           </div>
           <div className="text-sm mt-1">
             <span className="font-medium">{r.cliente_nome}</span>
-            <span className="text-muted-foreground"> · {r.cliente_whatsapp}</span>
+            <span className="text-muted-foreground"> · {formatPhoneBR(r.cliente_whatsapp)}</span>
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
             Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
+            {r.valor_pago != null && (
+              <> · <span className="text-foreground font-medium">recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})</span></>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
@@ -194,14 +237,12 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
               <Button size="sm" variant="ghost"><ExternalLink className="w-3 h-3" /> Cobrança</Button>
             </Link>
           )}
-          {wa.length >= 10 && (
-            <a href={`https://wa.me/${wa.startsWith("55") ? wa : "55" + wa}`} target="_blank" rel="noreferrer">
-              <Button size="sm" variant="ghost"><MessageCircle className="w-3 h-3" /> WhatsApp</Button>
-            </a>
-          )}
+          <a href={waHref} target="_blank" rel="noreferrer">
+            <Button size="sm" variant="ghost"><MessageCircle className="w-3 h-3" /> WhatsApp</Button>
+          </a>
           {r.status !== "paga" && (
-            <Button size="sm" variant="ghost" onClick={() => setStatus.mutate("paga")}>
-              <CheckCircle2 className="w-3 h-3" /> Marcar paga
+            <Button size="sm" variant="ghost" onClick={() => setPayOpen(true)}>
+              <CheckCircle2 className="w-3 h-3" /> Marcar pago
             </Button>
           )}
           {r.status !== "cancelada" ? (
@@ -218,6 +259,48 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </Button>
         </div>
       </div>
+
+      <Dialog open={payOpen} onOpenChange={setPayOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registrar pagamento</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div className="text-sm text-muted-foreground">
+              Reserva de <strong>{r.cliente_nome}</strong> — {dataFmt} às {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => { setTipoPag("parcial"); setValorPag(String(r.valor_sinal.toFixed(2))); }}
+                className={`rounded-lg border p-3 text-left transition ${tipoPag === "parcial" ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
+              >
+                <div className="text-sm font-semibold">Parcial (sinal)</div>
+                <div className="text-xs text-muted-foreground">Sugerido: {formatBRL(r.valor_sinal)}</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTipoPag("integral"); setValorPag(String(r.valor_total.toFixed(2))); }}
+                className={`rounded-lg border p-3 text-left transition ${tipoPag === "integral" ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
+              >
+                <div className="text-sm font-semibold">Integral</div>
+                <div className="text-xs text-muted-foreground">Valor cheio: {formatBRL(r.valor_total)}</div>
+              </button>
+            </div>
+            <div>
+              <Label>Valor recebido (R$)</Label>
+              <Input value={valorPag} onChange={(e) => setValorPag(e.target.value)} inputMode="decimal" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setPayOpen(false)}>Cancelar</Button>
+            <Button onClick={() => marcarPago.mutate()} disabled={marcarPago.isPending}>
+              {marcarPago.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+              Confirmar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

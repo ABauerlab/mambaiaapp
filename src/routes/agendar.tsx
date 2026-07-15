@@ -12,18 +12,22 @@ import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { maskPhoneInput, isValidPhoneBR, onlyDigits } from "@/lib/phone";
+import { waMambaia } from "@/lib/whatsapp";
 import logo from "@/assets/logo-mambaia.svg";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
 
-const WHATSAPP_URL = "https://wa.me/5531998021169";
+const WHATSAPP_GERAL = waMambaia(
+  "Oi Mambaia! Estava vendo a agenda do estúdio no site e queria tirar uma dúvida antes de reservar."
+);
 const OPEN_HOUR = 9;   // 09:00
 const CLOSE_HOUR = 22; // 22:00 (última hora final)
 
 // Tabela oficial (30..240 min)
 const PRECOS: Record<number, number> = {
-  30: 50, 60: 100, 90: 150, 120: 180, 150: 230, 180: 250, 210: 300, 240: 300,
+  30: 50, 60: 100, 90: 150, 120: 180, 150: 230, 180: 250, 210: 280, 240: 300,
 };
 const DURACOES = [30, 60, 90, 120, 150, 180, 210, 240];
 
@@ -54,10 +58,35 @@ export const Route = createFileRoute("/agendar")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Agendar estúdio — Mambaia" },
-      { name: "description", content: "Reserve o estúdio Mambaia na Praça Sete. Escolha o dia, o horário e garanta com 50% de sinal via PIX." },
-      { property: "og:title", content: "Agendar estúdio — Mambaia" },
-      { property: "og:description", content: "Reserve seu horário no estúdio Mambaia. Praça Sete · Belo Horizonte." },
+      { title: "Agendar estúdio Mambaia — Praça Sete, BH" },
+      { name: "description", content: "Reserve o estúdio Mambaia na Praça Sete, Belo Horizonte. Escolha o dia, o horário e garanta com 50% de sinal via PIX. A partir de R$ 100/h." },
+      { name: "keywords", content: "aluguel estúdio BH, estúdio Praça Sete, estúdio criativo Belo Horizonte, Mambaia, aluguel por hora, coworking criativo" },
+      { property: "og:title", content: "Agendar estúdio Mambaia — Praça Sete, BH" },
+      { property: "og:description", content: "Reserve seu horário no estúdio Mambaia. Praça Sete · Belo Horizonte. A partir de R$ 100/h com sinal via PIX." },
+      { property: "og:type", content: "website" },
+      { property: "og:locale", content: "pt_BR" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wNUXIEFdbCVvIBAite7OhASh7G42/social-images/social-1778121832176-logo_mambaia.webp" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Agendar estúdio Mambaia — Praça Sete, BH" },
+      { name: "twitter:description", content: "Reserve seu horário no estúdio Mambaia. Sinal 50% via PIX." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://mambaiabh.com.br/agendar" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Mambaia Estúdio",
+          description: "Estúdio criativo para aluguel por hora na Praça Sete, Belo Horizonte.",
+          address: { "@type": "PostalAddress", addressLocality: "Belo Horizonte", addressRegion: "MG", addressCountry: "BR" },
+          telephone: "+55 31 99802-1169",
+          priceRange: "R$ 50 – R$ 300",
+          url: "https://mambaiabh.com.br/agendar",
+        }),
+      },
     ],
   }),
   component: AgendarPage,
@@ -130,13 +159,13 @@ function AgendarPage() {
     mutationFn: async () => {
       if (!horaInicio) throw new Error("Escolha um horário");
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
-      if (whatsapp.replace(/\D/g, "").length < 10) throw new Error("Informe um WhatsApp válido");
+      if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
       const { data, error } = await sb.rpc("criar_reserva", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
         _duracao_minutos: duracao,
         _cliente_nome: nome.trim(),
-        _cliente_whatsapp: whatsapp.trim(),
+        _cliente_whatsapp: onlyDigits(whatsapp),
       });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
@@ -159,7 +188,7 @@ function AgendarPage() {
             <div className="text-[11px] opacity-60">Estúdio · Praça Sete · BH</div>
           </div>
         </div>
-        <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15">
+        <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15">
           <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
         </a>
       </header>
@@ -177,18 +206,30 @@ function AgendarPage() {
         </section>
 
         {/* Tabela de preços */}
-        <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
-          <div className="text-xs uppercase tracking-widest opacity-60 mb-3">Tabela de preços</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-            <PrecoPill h="1h" v="R$ 100" />
-            <PrecoPill h="2h" v="R$ 180" />
-            <PrecoPill h="3h" v="R$ 250" />
-            <PrecoPill h="4h" v="R$ 300" />
-          </div>
-          <div className="mt-3 text-xs opacity-70">
-            Fração de 30 min: R$ 50. Preços sujeitos a mudança (estamos em reforma).
-            Precisa de mais de 4h? <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="underline">Fale no WhatsApp</a>.
-          </div>
+        <section aria-labelledby="tabela-precos" className="rounded-2xl bg-white/[0.04] border border-white/10 p-5">
+          <h2 id="tabela-precos" className="text-xs uppercase tracking-widest opacity-60 mb-3 font-medium">
+            Tabela de preços
+          </h2>
+          <dl className="divide-y divide-white/10 select-none">
+            {[
+              { h: "1h", v: "R$ 100" },
+              { h: "2h", v: "R$ 180" },
+              { h: "3h", v: "R$ 250" },
+              { h: "4h", v: "R$ 300" },
+            ].map((row) => (
+              <div key={row.h} className="flex items-baseline justify-between py-2.5">
+                <dt className="text-sm opacity-80">{row.h}</dt>
+                <dd className="text-sm font-semibold tabular-nums">{row.v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-3 text-xs opacity-70 leading-relaxed">
+            Fração adicional de 30 min: <strong>R$ 50</strong>. Preços sujeitos a mudança (estamos em reforma).
+            {" "}Precisa de mais de 4h?{" "}
+            <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+              Fale no WhatsApp
+            </a>.
+          </p>
         </section>
 
         {/* Data */}
@@ -304,7 +345,13 @@ function AgendarPage() {
             </div>
             <div>
               <Label>WhatsApp *</Label>
-              <Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(31) 99999-9999" inputMode="tel" />
+              <Input
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(maskPhoneInput(e.target.value))}
+                placeholder="+55 (31) 9 9999-9999"
+                inputMode="tel"
+                autoComplete="tel"
+              />
             </div>
           </div>
 
@@ -343,18 +390,10 @@ function AgendarPage() {
         </section>
 
         <footer className="text-center text-xs opacity-60 pt-2 pb-4">
-          Precisa de horário fora da tabela? <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="underline">Fale conosco</a>.
+          Precisa de horário fora da tabela?{" "}
+          <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline">Fale conosco</a>.
         </footer>
       </main>
-    </div>
-  );
-}
-
-function PrecoPill({ h, v }: { h: string; v: string }) {
-  return (
-    <div className="rounded-xl bg-white/10 border border-white/10 px-3 py-2 flex items-center justify-between">
-      <span className="font-semibold">{h}</span>
-      <span className="tabular-nums">{v}</span>
     </div>
   );
 }

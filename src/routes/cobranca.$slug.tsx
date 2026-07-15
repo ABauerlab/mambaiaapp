@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Copy, Check, CheckCircle2, Loader2, MessageCircle } from "lucide-react";
+import { Copy, Check, CheckCircle2, Loader2, MessageCircle, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { friendlyErrorMessage } from "@/lib/utils";
+import { waMambaia } from "@/lib/whatsapp";
+import { formatPhoneBR } from "@/lib/phone";
+import { baixarReservaPDF } from "@/lib/reserva-pdf";
 import logo from "@/assets/logo-mambaia.svg";
 
 type Cobranca = {
@@ -37,12 +44,42 @@ async function fetchBySlug(slug: string): Promise<Cobranca | null> {
   } as Cobranca;
 }
 
+type Reserva = {
+  id: string;
+  data: string;
+  hora_inicio: string;
+  duracao_minutos: number;
+  cliente_nome: string;
+  cliente_whatsapp: string;
+  valor_total: number;
+  valor_sinal: number;
+  status: string;
+  paid_at: string | null;
+  valor_pago: number | null;
+  tipo_pagamento: "integral" | "parcial" | null;
+};
+
+async function fetchReservaBySlug(slug: string): Promise<Reserva | null> {
+  const { data, error } = await sb.rpc("get_reserva_por_slug", { _slug: slug });
+  if (error) return null;
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) return null;
+  return {
+    ...row,
+    valor_total: typeof row.valor_total === "string" ? parseFloat(row.valor_total) : row.valor_total,
+    valor_sinal: typeof row.valor_sinal === "string" ? parseFloat(row.valor_sinal) : row.valor_sinal,
+    valor_pago: row.valor_pago == null ? null : (typeof row.valor_pago === "string" ? parseFloat(row.valor_pago) : row.valor_pago),
+  } as Reserva;
+}
+
 export const Route = createFileRoute("/cobranca/$slug")({
   ssr: false,
   head: ({ params }) => ({
     meta: [
-      { title: `Proposta — Mambaia` },
-      { name: "description", content: `Proposta de serviço Mambaia · ${params.slug}` },
+      { title: `Proposta Mambaia · ${params.slug}` },
+      { name: "description", content: `Sua proposta personalizada da Mambaia. Pagamento via PIX seguro.` },
+      { property: "og:title", content: "Proposta Mambaia" },
+      { property: "og:description", content: "Sua proposta personalizada da Mambaia. Pagamento via PIX." },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -50,12 +87,20 @@ export const Route = createFileRoute("/cobranca/$slug")({
 });
 
 function CobrancaPage() {
+  const qc = useQueryClient();
   const { slug } = Route.useParams();
   const { data, isLoading, error } = useQuery({
     queryKey: ["cobranca", slug],
     queryFn: () => fetchBySlug(slug),
   });
+  const { data: reserva } = useQuery({
+    queryKey: ["reserva-slug", slug],
+    queryFn: () => fetchReservaBySlug(slug),
+    enabled: !!data,
+  });
   const [copied, setCopied] = useState<"chave" | "valor" | null>(null);
+  const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
+  const [valorPag, setValorPag] = useState<string>("");
 
   if (isLoading) {
     return (
@@ -88,8 +133,43 @@ function CobrancaPage() {
       `Olá! Acabei de fazer o pagamento da proposta "${data.titulo}" ` +
       `no valor de ${formatBRL(data.total)}. ` +
       `Segue o comprovante em anexo.\n\nCliente: ${data.cliente_nome}\nLink: ${typeof window !== "undefined" ? window.location.href : ""}`;
-    return `https://wa.me/5531998021169?text=${encodeURIComponent(msg)}`;
+    return waMambaia(msg);
   })();
+
+  const confirmar = useMutation({
+    mutationFn: async () => {
+      const v = parseFloat((valorPag || "").replace(",", "."));
+      if (!Number.isFinite(v) || v <= 0) throw new Error("Informe o valor pago");
+      const { error } = await sb.rpc("confirmar_pagamento_cobranca", {
+        _slug: slug,
+        _tipo: tipoPag,
+        _valor: v,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Pagamento confirmado! Baixe seu comprovante em PDF.");
+      qc.invalidateQueries({ queryKey: ["cobranca", slug] });
+      qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
+    },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+
+  const baixarPDF = () => {
+    if (!reserva || !reserva.paid_at || !reserva.valor_pago || !reserva.tipo_pagamento) return;
+    baixarReservaPDF({
+      cliente: reserva.cliente_nome,
+      whatsapp: reserva.cliente_whatsapp,
+      data: reserva.data,
+      horaInicio: reserva.hora_inicio.slice(0, 5),
+      duracaoMinutos: reserva.duracao_minutos,
+      valorTotal: reserva.valor_total,
+      valorPago: reserva.valor_pago,
+      tipoPagamento: reserva.tipo_pagamento,
+      paidAt: reserva.paid_at,
+      slug,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">
@@ -110,6 +190,21 @@ function CobrancaPage() {
       </header>
 
       <main className="max-w-3xl mx-auto px-5 md:px-10 pb-16 space-y-6">
+        {reserva && (
+          <section className="rounded-2xl border border-white/10 bg-white/5 p-5 flex items-start gap-3">
+            <CalendarIcon className="w-5 h-5 mt-0.5 text-[var(--brand-lime)] shrink-0" />
+            <div className="text-sm">
+              <div className="opacity-70 text-xs uppercase tracking-widest">Sua reserva</div>
+              <div className="font-semibold mt-0.5 capitalize">
+                {new Date(reserva.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+              </div>
+              <div className="opacity-80">
+                Início <strong>{reserva.hora_inicio.slice(0, 5)}</strong> · {Math.floor(reserva.duracao_minutos / 60)}h{reserva.duracao_minutos % 60 ? `${reserva.duracao_minutos % 60}` : ""}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Hero */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand-green)] to-[var(--brand-lime)] text-[var(--brand-dark)] p-7 md:p-10 shadow-2xl">
           <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/20 blur-3xl" aria-hidden />
@@ -198,6 +293,82 @@ function CobrancaPage() {
           </p>
         </section>
 
+        {/* Confirmar pagamento / baixar PDF */}
+        {!pago ? (
+          <section className="rounded-2xl border-2 border-[var(--brand-lime)] bg-white/5 p-6 space-y-4">
+            <div>
+              <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">Passo final — obrigatório</div>
+              <h2 className="text-xl font-bold">Já pagou? Confirme aqui para receber seu comprovante</h2>
+              <p className="text-sm opacity-80 mt-1">
+                Depois de confirmar, você poderá baixar o PDF com todos os detalhes da reserva.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => { setTipoPag("parcial"); setValorPag(String((reserva?.valor_sinal ?? data.total * 0.5).toFixed(2))); }}
+                className={`rounded-xl border p-3 text-left transition ${tipoPag === "parcial" ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/15" : "border-white/10 hover:bg-white/5"}`}
+              >
+                <div className="text-sm font-semibold">Sinal parcial (50%)</div>
+                <div className="text-xs opacity-70 mt-0.5">Pago o sinal, o resto no dia</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTipoPag("integral"); setValorPag(String(data.total.toFixed(2))); }}
+                className={`rounded-xl border p-3 text-left transition ${tipoPag === "integral" ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/15" : "border-white/10 hover:bg-white/5"}`}
+              >
+                <div className="text-sm font-semibold">Valor integral</div>
+                <div className="text-xs opacity-70 mt-0.5">Paguei os {formatBRL(data.total)} completos</div>
+              </button>
+            </div>
+
+            <div>
+              <Label className="text-[var(--brand-cream)]">Valor que você pagou (R$)</Label>
+              <Input
+                value={valorPag}
+                onChange={(e) => setValorPag(e.target.value)}
+                placeholder="0,00"
+                inputMode="decimal"
+                className="bg-white/10 border-white/20 text-[var(--brand-cream)] placeholder:text-white/40"
+              />
+            </div>
+
+            <Button
+              onClick={() => confirmar.mutate()}
+              disabled={confirmar.isPending || !valorPag}
+              className="w-full h-12 bg-[var(--brand-lime)] text-[var(--brand-dark)] hover:bg-[var(--brand-lime)]/90 font-semibold text-base"
+            >
+              {confirmar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CheckCircle2 className="w-5 h-5" /> Confirmar pagamento</>}
+            </Button>
+          </section>
+        ) : reserva ? (
+          <section className="rounded-2xl bg-[var(--brand-lime)] text-[var(--brand-dark)] p-6 space-y-3 shadow-xl">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-6 h-6" />
+              <h2 className="text-xl font-bold">Pagamento confirmado!</h2>
+            </div>
+            <p className="text-sm">
+              Sua reserva do dia <strong>{new Date(reserva.data + "T12:00:00").toLocaleDateString("pt-BR")}</strong> às <strong>{reserva.hora_inicio.slice(0, 5)}</strong> está garantida.
+              Baixe seu comprovante em PDF para guardar.
+            </p>
+            <Button
+              onClick={baixarPDF}
+              className="w-full h-12 bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90 font-semibold"
+            >
+              <Download className="w-5 h-5" /> Baixar comprovante em PDF
+            </Button>
+            <p className="text-xs text-center opacity-70 flex items-center justify-center gap-1">
+              <FileText className="w-3 h-3" /> Contém data, horário, valor e combinados
+            </p>
+          </section>
+        ) : (
+          <section className="rounded-2xl bg-[var(--brand-lime)] text-[var(--brand-dark)] p-6 text-center">
+            <CheckCircle2 className="w-8 h-8 mx-auto mb-2" />
+            <div className="font-bold">Pagamento confirmado. Obrigada!</div>
+          </section>
+        )}
+
         {data.observacoes && (
           <section className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm whitespace-pre-wrap opacity-90">
             {data.observacoes}
@@ -205,7 +376,10 @@ function CobrancaPage() {
         )}
 
         <footer className="text-center text-xs opacity-50 pt-4">
-          Após o pagamento, envie o comprovante para confirmação. Obrigada! 💚
+          Dúvidas? Fale com a gente:{" "}
+          <a className="underline" href={waMambaia(`Oi! Estou vendo a proposta "${data.titulo}" e queria tirar uma dúvida.`)} target="_blank" rel="noreferrer">
+            {formatPhoneBR("31998021169")}
+          </a>
         </footer>
       </main>
     </div>

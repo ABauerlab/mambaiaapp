@@ -11,8 +11,8 @@ import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
 
-const TITLE = "Mambaia App — Financeiro";
-const DESC = "Gestão financeira da Mambaia, espaço criativo em Belo Horizonte. Controle de gastos, ganhos, saldo entre sócios e relatórios.";
+const TITLE = "Mambaia — Estúdio criativo na Praça Sete, BH";
+const DESC = "Mambaia é um estúdio criativo no coração de Belo Horizonte. Reserve seu horário por hora, com sinal via PIX. Espaço para fotos, gravações, ensaios e encontros criativos.";
 
 function NotFoundComponent() {
   return (
@@ -69,12 +69,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wNUXIEFdbCVvIBAite7OhASh7G42/social-images/social-1778121832176-logo_mambaia.webp" },
+      { property: "og:site_name", content: "Mambaia" },
       { property: "og:locale", content: "pt_BR" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wNUXIEFdbCVvIBAite7OhASh7G42/social-images/social-1778121832176-logo_mambaia.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
