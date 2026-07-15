@@ -13,9 +13,10 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
-import { formatPhoneBR } from "@/lib/phone";
+import { formatPhoneBR, maskPhoneInput, onlyDigits, isValidPhoneBR } from "@/lib/phone";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { baixarReservaPDF } from "@/lib/reserva-pdf";
+import { Pencil } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
@@ -36,6 +37,9 @@ type Reserva = {
   valor_pago: number | null;
   tipo_pagamento: "integral" | "parcial" | null;
   paid_at: string | null;
+  tipo: "locacao" | "pacote_marcas" | null;
+  empreendimento: string | null;
+  numero_proposta: number;
   cobrancas?: { slug: string; status: string } | null;
 };
 
@@ -216,6 +220,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold tabular-nums">{r.hora_inicio.slice(0, 5)}</span>
             <span className="text-muted-foreground text-sm">· {formatDuracao(r.duracao_minutos)}</span>
+            {r.tipo === "pacote_marcas" && (
+              <Badge className="bg-brand-lime text-brand-dark border-transparent">Pacote Marcas</Badge>
+            )}
             {r.status === "paga" && <Badge className="bg-success text-success-foreground">Paga integral</Badge>}
             {r.status === "confirmada" && <Badge className="bg-primary text-primary-foreground">Sinal pago</Badge>}
             {r.status === "pendente" && <Badge variant="outline">Aguardando sinal</Badge>}
@@ -224,9 +231,12 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <div className="text-sm mt-1">
             <span className="font-medium">{r.cliente_nome}</span>
             <span className="text-muted-foreground"> · {formatPhoneBR(r.cliente_whatsapp)}</span>
+            {r.empreendimento && (
+              <span className="text-muted-foreground"> · {r.empreendimento}</span>
+            )}
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
-            Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
+            Proposta nº {String(r.numero_proposta).padStart(4, "0")} · Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
             {r.valor_pago != null && (
               <> · <span className="text-foreground font-medium">recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})</span></>
             )}
@@ -241,6 +251,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <a href={waHref} target="_blank" rel="noreferrer">
             <Button size="sm" variant="ghost"><MessageCircle className="w-3 h-3" /> WhatsApp</Button>
           </a>
+          <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
+            <Pencil className="w-3 h-3" /> Editar
+          </Button>
           {r.status !== "paga" && (
             <Button size="sm" variant="ghost" onClick={() => setPayOpen(true)}>
               <CheckCircle2 className="w-3 h-3" /> Marcar pago
@@ -262,6 +275,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
                   tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
                   paidAt: r.paid_at!,
                   slug: r.cobrancas?.slug ?? r.id,
+                  numeroProposta: r.numero_proposta ?? 0,
+                  tipo: r.tipo ?? "locacao",
+                  empreendimento: r.empreendimento,
                 })
               }
             >
