@@ -164,6 +164,15 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
   const [payOpen, setPayOpen] = useState(false);
   const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
   const [valorPag, setValorPag] = useState<string>(String(r.valor_sinal.toFixed(2)));
+  const [editOpen, setEditOpen] = useState(false);
+  const [edData, setEdData] = useState(r.data);
+  const [edHora, setEdHora] = useState(r.hora_inicio.slice(0, 5));
+  const [edDur, setEdDur] = useState<number>(r.duracao_minutos);
+  const [edNome, setEdNome] = useState(r.cliente_nome);
+  const [edWa, setEdWa] = useState(formatPhoneBR(r.cliente_whatsapp));
+  const [edEmp, setEdEmp] = useState(r.empreendimento ?? "");
+  const [edTotal, setEdTotal] = useState(String(r.valor_total.toFixed(2)));
+  const [edSinal, setEdSinal] = useState(String(r.valor_sinal.toFixed(2)));
 
   const dataFmt = new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
   const waMsg =
@@ -210,6 +219,33 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
       if (error) throw error;
     },
     onSuccess: () => { toast.success("Reserva excluída"); onChange(); },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+  const salvarEdicao = useMutation({
+    mutationFn: async () => {
+      if (edNome.trim().length < 2) throw new Error("Informe o nome do cliente");
+      if (!isValidPhoneBR(edWa)) throw new Error("WhatsApp inválido");
+      const total = parseFloat(edTotal.replace(",", "."));
+      const sinal = parseFloat(edSinal.replace(",", "."));
+      if (!Number.isFinite(total) || total <= 0) throw new Error("Valor total inválido");
+      if (!Number.isFinite(sinal) || sinal < 0) throw new Error("Sinal inválido");
+      const patch: Record<string, unknown> = {
+        data: edData,
+        hora_inicio: edHora + ":00",
+        duracao_minutos: edDur,
+        cliente_nome: edNome.trim(),
+        cliente_whatsapp: onlyDigits(edWa),
+        valor_total: total,
+        valor_sinal: sinal,
+        empreendimento: edEmp.trim() || null,
+      };
+      const { error } = await sb.from("reservas").update(patch).eq("id", r.id);
+      if (error) throw error;
+      if (r.cobranca_id) {
+        await sb.from("cobrancas").update({ total: sinal }).eq("id", r.cobranca_id);
+      }
+    },
+    onSuccess: () => { toast.success("Reserva atualizada"); setEditOpen(false); onChange(); },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
 
