@@ -55,6 +55,9 @@ type Reserva = {
   paid_at: string | null;
   valor_pago: number | null;
   tipo_pagamento: "integral" | "parcial" | null;
+  tipo: "locacao" | "pacote_marcas" | null;
+  empreendimento: string | null;
+  numero_proposta: number;
 };
 
 async function fetchReservaBySlug(slug: string): Promise<Reserva | null> {
@@ -132,6 +135,9 @@ function CobrancaPage() {
       tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
       paidAt: reserva.paid_at,
       slug,
+      numeroProposta: reserva.numero_proposta ?? 0,
+      tipo: reserva.tipo ?? "locacao",
+      empreendimento: reserva.empreendimento,
     });
   };
 
