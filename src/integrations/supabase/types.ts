@@ -339,8 +339,11 @@ export type Database = {
           hora_inicio: string
           id: string
           observacoes: string | null
+          paid_at: string | null
           status: string
+          tipo_pagamento: string | null
           updated_at: string
+          valor_pago: number | null
           valor_sinal: number
           valor_total: number
         }
@@ -354,8 +357,11 @@ export type Database = {
           hora_inicio: string
           id?: string
           observacoes?: string | null
+          paid_at?: string | null
           status?: string
+          tipo_pagamento?: string | null
           updated_at?: string
+          valor_pago?: number | null
           valor_sinal: number
           valor_total: number
         }
@@ -369,8 +375,11 @@ export type Database = {
           hora_inicio?: string
           id?: string
           observacoes?: string | null
+          paid_at?: string | null
           status?: string
+          tipo_pagamento?: string | null
           updated_at?: string
+          valor_pago?: number | null
           valor_sinal?: number
           valor_total?: number
         }
@@ -483,6 +492,14 @@ export type Database = {
     }
     Functions: {
       calc_preco_reserva: { Args: { _minutos: number }; Returns: number }
+      confirmar_pagamento_cobranca: {
+        Args: { _slug: string; _tipo: string; _valor: number }
+        Returns: {
+          cobranca_id: string
+          paid_at: string
+          reserva_id: string
+        }[]
+      }
       criar_reserva: {
         Args: {
           _cliente_nome: string
@@ -520,6 +537,23 @@ export type Database = {
         Returns: {
           duracao_minutos: number
           hora_inicio: string
+        }[]
+      }
+      get_reserva_por_slug: {
+        Args: { _slug: string }
+        Returns: {
+          cliente_nome: string
+          cliente_whatsapp: string
+          data: string
+          duracao_minutos: number
+          hora_inicio: string
+          id: string
+          paid_at: string
+          status: string
+          tipo_pagamento: string
+          valor_pago: number
+          valor_sinal: number
+          valor_total: number
         }[]
       }
     }
