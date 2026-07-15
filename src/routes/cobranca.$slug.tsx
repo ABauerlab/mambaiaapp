@@ -5,8 +5,6 @@ import { Copy, Check, CheckCircle2, Loader2, MessageCircle, Download, FileText, 
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { waMambaia } from "@/lib/whatsapp";
