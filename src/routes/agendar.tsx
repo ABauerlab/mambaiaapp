@@ -390,8 +390,10 @@ function AgendarPage() {
         </section>
 
         <footer className="text-center text-xs opacity-60 pt-2 pb-4">
-          Precisa de horário fora da tabela?{" "}
-          <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline">Fale conosco</a>.
+          É marca ou brechó?{" "}
+          <a href="/pacote-marcas" className="underline font-medium">Conheça o Pacote Marcas</a>
+          {" "}· Precisa de horário fora da tabela?{" "}
+          <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline">Fale no WhatsApp</a>.
         </footer>
       </main>
     </div>
