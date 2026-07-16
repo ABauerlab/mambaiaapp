@@ -15,7 +15,8 @@ import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { formatPhoneBR, maskPhoneInput, onlyDigits, isValidPhoneBR } from "@/lib/phone";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import { baixarReservaPDF } from "@/lib/reserva-pdf";
+import { PdfPreviewDialog } from "@/components/PdfPreviewDialog";
+import type { ReservaPDFInput } from "@/lib/reserva-pdf";
 import { Pencil } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -162,6 +163,7 @@ export function Agenda() {
 
 function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
   const [payOpen, setPayOpen] = useState(false);
+  const [pdfOpen, setPdfOpen] = useState(false);
   const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
   const [valorPag, setValorPag] = useState<string>(String(r.valor_sinal.toFixed(2)));
   const [editOpen, setEditOpen] = useState(false);
@@ -299,23 +301,7 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             <Button
               size="sm"
               variant="ghost"
-              onClick={() =>
-                baixarReservaPDF({
-                  cliente: r.cliente_nome,
-                  whatsapp: r.cliente_whatsapp,
-                  data: r.data,
-                  horaInicio: r.hora_inicio.slice(0, 5),
-                  duracaoMinutos: r.duracao_minutos,
-                  valorTotal: r.valor_total,
-                  valorPago: r.valor_pago ?? r.valor_sinal,
-                  tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
-                  paidAt: r.paid_at!,
-                  slug: r.cobrancas?.slug ?? r.id,
-                  numeroProposta: r.numero_proposta ?? 0,
-                  tipo: r.tipo ?? "locacao",
-                  empreendimento: r.empreendimento,
-                })
-              }
+              onClick={() => setPdfOpen(true)}
             >
               <FileDown className="w-3 h-3" /> Ordem de serviço
             </Button>

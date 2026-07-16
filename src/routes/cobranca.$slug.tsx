@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Copy, Check, CheckCircle2, Loader2, MessageCircle, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
+import { Copy, Check, CheckCircle2, Loader2, MessageCircle, FileText, Calendar as CalendarIcon, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { waMambaia } from "@/lib/whatsapp";
 import { formatPhoneBR } from "@/lib/phone";
-import { baixarReservaPDF } from "@/lib/reserva-pdf";
+import { PdfPreviewDialog } from "@/components/PdfPreviewDialog";
 import logo from "@/assets/logo-mambaia.svg";
 
 type Cobranca = {
@@ -100,7 +100,8 @@ function CobrancaPage() {
     enabled: !!data,
   });
   const [copied, setCopied] = useState<"chave" | "valor" | null>(null);
-  const autoDownloadRef = useRef(false);
+  const autoPreviewRef = useRef(false);
+  const [pdfOpen, setPdfOpen] = useState(false);
 
   const confirmar = useMutation({
     mutationFn: async () => {
@@ -114,40 +115,35 @@ function CobrancaPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      autoDownloadRef.current = true;
-      toast.success("Pagamento confirmado! Seu comprovante está sendo gerado.");
+      autoPreviewRef.current = true;
+      toast.success("Pagamento confirmado!");
       qc.invalidateQueries({ queryKey: ["cobranca", slug] });
       qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
     },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
 
-  const baixarPDF = () => {
-    if (!reserva || !reserva.paid_at) return;
-    baixarReservaPDF({
-      cliente: reserva.cliente_nome,
-      whatsapp: reserva.cliente_whatsapp,
-      data: reserva.data,
-      horaInicio: reserva.hora_inicio.slice(0, 5),
-      duracaoMinutos: reserva.duracao_minutos,
-      valorTotal: reserva.valor_total,
-      valorPago: reserva.valor_pago ?? reserva.valor_sinal,
-      tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
-      paidAt: reserva.paid_at,
-      slug,
-      numeroProposta: reserva.numero_proposta ?? 0,
-      tipo: reserva.tipo ?? "locacao",
-      empreendimento: reserva.empreendimento,
-    });
-  };
+  const reservaPDF = reserva && reserva.paid_at ? {
+    cliente: reserva.cliente_nome,
+    whatsapp: reserva.cliente_whatsapp,
+    data: reserva.data,
+    horaInicio: reserva.hora_inicio.slice(0, 5),
+    duracaoMinutos: reserva.duracao_minutos,
+    valorTotal: reserva.valor_total,
+    valorPago: reserva.valor_pago ?? reserva.valor_sinal,
+    tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+    paidAt: reserva.paid_at,
+    slug,
+    numeroProposta: reserva.numero_proposta ?? 0,
+    tipo: (reserva.tipo ?? "locacao") as "locacao" | "pacote_marcas",
+    empreendimento: reserva.empreendimento,
+  } : null;
 
-  // Baixa automaticamente o PDF assim que a reserva paga aparece após confirmar.
   useEffect(() => {
-    if (autoDownloadRef.current && reserva?.paid_at) {
-      autoDownloadRef.current = false;
-      try { baixarPDF(); } catch { /* silencioso */ }
+    if (autoPreviewRef.current && reserva?.paid_at) {
+      autoPreviewRef.current = false;
+      setPdfOpen(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reserva?.paid_at]);
 
   if (isLoading) {
@@ -346,10 +342,10 @@ function CobrancaPage() {
               Baixe seu comprovante em PDF para guardar.
             </p>
             <Button
-              onClick={baixarPDF}
+              onClick={() => setPdfOpen(true)}
               className="w-full h-12 bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90 font-semibold"
             >
-              <Download className="w-5 h-5" /> Baixar comprovante em PDF
+              <Eye className="w-5 h-5" /> Ver, baixar ou compartilhar PDF
             </Button>
             <p className="text-xs text-center opacity-70 flex items-center justify-center gap-1">
               <FileText className="w-3 h-3" /> Contém data, horário, valor e combinados
@@ -375,6 +371,7 @@ function CobrancaPage() {
           </a>
         </footer>
       </main>
+      <PdfPreviewDialog open={pdfOpen} onOpenChange={setPdfOpen} reserva={reservaPDF} />
     </div>
   );
 }
