@@ -190,3 +190,11 @@ export function baixarReservaPDF(r: ReservaPDFInput) {
   const doc = gerarReservaPDF(r);
   doc.save(nomeArquivoProposta(r));
 }
+
+/** Retorna { blob, url, filename } para preview e compartilhamento. */
+export function gerarReservaPDFBlob(r: ReservaPDFInput): { blob: Blob; url: string; filename: string } {
+  const doc = gerarReservaPDF(r);
+  const blob = doc.output("blob");
+  const url = URL.createObjectURL(blob);
+  return { blob, url, filename: nomeArquivoProposta(r) };
+}
