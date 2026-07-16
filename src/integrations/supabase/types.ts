@@ -500,6 +500,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _mb_slugify: { Args: { _txt: string }; Returns: string }
       calc_preco_reserva: { Args: { _minutos: number }; Returns: number }
       confirmar_pagamento_cobranca: {
         Args: { _slug: string; _tipo: string; _valor: number }
