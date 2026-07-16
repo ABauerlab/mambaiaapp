@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Loader2, CalendarDays, Camera, MessageCircle, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
+import { Loader2, CalendarDays, Camera, MessageCircle, CheckCircle2, ArrowRight, Sparkles, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,6 +74,7 @@ function PacoteMarcasPage() {
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [empreendimento, setEmpreendimento] = useState("");
+  const [qtdMarcas, setQtdMarcas] = useState<number>(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const dataStr = ymd(dataSel);
@@ -115,12 +116,15 @@ function PacoteMarcasPage() {
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
       if (empreendimento.trim().length < 2) throw new Error("Informe o nome da marca ou brechó");
       if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
+      const empFinal = qtdMarcas > 1
+        ? `${empreendimento.trim()} (${qtdMarcas} marcas)`
+        : empreendimento.trim();
       const { data, error } = await sb.rpc("criar_reserva_pacote", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
         _cliente_nome: nome.trim(),
         _cliente_whatsapp: onlyDigits(whatsapp),
-        _empreendimento: empreendimento.trim(),
+        _empreendimento: empFinal,
       });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
@@ -164,10 +168,16 @@ function PacoteMarcasPage() {
 
         <section className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 space-y-3">
           <h2 className="text-xs uppercase tracking-widest opacity-60 font-medium">O que está incluso</h2>
-          <ul className="text-sm space-y-1.5 opacity-90">
+          <p className="text-sm opacity-90">
+            <strong>Você só precisa trazer as peças.</strong> A gente cuida de toda a estrutura: câmera profissional, tripés,
+            iluminação e o olhar da equipe. É o pacote ideal para quem tem <strong>uma ou mais marcas</strong> e não tem tempo
+            (ou estrutura) para produzir fotos de qualidade.
+          </p>
+          <ul className="text-sm space-y-1.5 opacity-90 pt-1">
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça — frente, costas e laterais).</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Edição das imagens prontas para site e Instagram.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Making-of do dia para você usar como conteúdo.</li>
+            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Pode trazer <strong>mais de uma marca</strong> na mesma sessão — só nos conte quantas para a gente preparar tudo.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Estúdio em L com iluminação, Wi-Fi, banheiro e água à vontade.</li>
           </ul>
           <p className="text-xs opacity-70">
@@ -241,14 +251,29 @@ function PacoteMarcasPage() {
         <section className="rounded-2xl bg-[var(--brand-cream)] text-[var(--brand-dark)] p-5 md:p-6 space-y-4">
           <div className="grid md:grid-cols-2 gap-3">
             <div className="md:col-span-2">
-              <Label>Marca ou brechó *</Label>
-              <Input value={empreendimento} onChange={(e) => setEmpreendimento(e.target.value)} placeholder="Ex.: Brechó da Lua" />
+              <Label>Marca(s) ou brechó(s) *</Label>
+              <Input
+                value={empreendimento}
+                onChange={(e) => setEmpreendimento(e.target.value)}
+                placeholder="Ex.: Brechó da Lua · Ateliê Sol"
+              />
+              <p className="text-[11px] opacity-70 mt-1">Se for mais de uma marca, separe por vírgula.</p>
+            </div>
+            <div>
+              <Label>Quantas marcas você vai trazer? *</Label>
+              <Input
+                type="number"
+                min={1}
+                max={10}
+                value={qtdMarcas}
+                onChange={(e) => setQtdMarcas(Math.max(1, Math.min(10, parseInt(e.target.value || "1", 10))))}
+              />
             </div>
             <div>
               <Label>Seu nome *</Label>
               <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome completo" />
             </div>
-            <div>
+            <div className="md:col-span-2">
               <Label>WhatsApp *</Label>
               <Input
                 value={whatsapp}

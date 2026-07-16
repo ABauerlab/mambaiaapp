@@ -411,6 +411,26 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <PdfPreviewDialog
+        open={pdfOpen}
+        onOpenChange={setPdfOpen}
+        reserva={r.paid_at ? {
+          cliente: r.cliente_nome,
+          whatsapp: r.cliente_whatsapp,
+          data: r.data,
+          horaInicio: r.hora_inicio.slice(0, 5),
+          duracaoMinutos: r.duracao_minutos,
+          valorTotal: r.valor_total,
+          valorPago: r.valor_pago ?? r.valor_sinal,
+          tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+          paidAt: r.paid_at,
+          slug: r.cobrancas?.slug ?? r.id,
+          numeroProposta: r.numero_proposta ?? 0,
+          tipo: (r.tipo ?? "locacao") as "locacao" | "pacote_marcas",
+          empreendimento: r.empreendimento,
+        } as ReservaPDFInput : null}
+      />
     </Card>
   );
 }
