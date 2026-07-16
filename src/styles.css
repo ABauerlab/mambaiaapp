@@ -135,6 +135,11 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    overflow-x: hidden;
+  }
+  /* Evita que textos longos (URLs, e-mails, nomes sem espaço) estourem o layout */
+  h1, h2, h3, h4, h5, h6, p, a, li, td, th, label {
+    overflow-wrap: anywhere;
   }
 }
 

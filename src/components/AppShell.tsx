@@ -99,13 +99,16 @@ export function AppShell() {
       </aside>
 
       {/* Mobile header */}
-      <div className="md:hidden fixed top-0 inset-x-0 z-40 bg-sidebar text-sidebar-foreground border-b border-sidebar-border">
-        <div className="flex items-center justify-between px-4 h-14">
-          <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-            <img src={logo} alt="Mambaia" className="w-8 h-8 rounded-md" />
-            <span className="font-semibold">Mambaia</span>
+      <div
+        className="md:hidden fixed top-0 inset-x-0 z-40 bg-sidebar text-sidebar-foreground border-b border-sidebar-border"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
+        <div className="flex items-center justify-between gap-2 px-4 h-14 min-w-0">
+          <Link to="/" className="flex items-center gap-2 min-w-0" onClick={() => setOpen(false)}>
+            <img src={logo} alt="Mambaia" className="w-8 h-8 rounded-md shrink-0" />
+            <span className="font-semibold truncate">Mambaia</span>
           </Link>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             <Link to="/perfil" className="p-1.5" onClick={() => setOpen(false)} aria-label="Perfil">
               <Avatar className="w-7 h-7">
                 {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.display_name} />}
@@ -120,7 +123,7 @@ export function AppShell() {
           </div>
         </div>
         {open && (
-          <nav className="border-t border-sidebar-border p-3 space-y-1">
+          <nav className="border-t border-sidebar-border p-3 space-y-1 max-h-[calc(100vh-3.5rem-env(safe-area-inset-top))] overflow-y-auto">
             {nav.map((item) => {
               const active = location.pathname === item.to;
               const Icon = item.icon;
@@ -151,12 +154,21 @@ export function AppShell() {
         )}
       </div>
 
-      <main className="flex-1 md:ml-0 pt-14 md:pt-0 pb-20 md:pb-0">
+      <main
+        className="flex-1 min-w-0 md:ml-0 md:pt-0 md:pb-0"
+        style={{
+          paddingTop: "calc(3.5rem + env(safe-area-inset-top))",
+          paddingBottom: "calc(5rem + env(safe-area-inset-bottom))",
+        }}
+      >
         <Outlet />
       </main>
 
       {/* Mobile bottom bar */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-sidebar text-sidebar-foreground border-t border-sidebar-border">
+      <nav
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-sidebar text-sidebar-foreground border-t border-sidebar-border"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         <div className="grid grid-cols-5">
           {nav.slice(0, 5).map((item) => {
             const active = location.pathname === item.to;
@@ -166,12 +178,12 @@ export function AppShell() {
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium",
+                  "flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium min-w-0 px-1 text-center leading-tight",
                   active ? "text-[color:var(--brand-lime)]" : "text-sidebar-foreground/70",
                 )}
               >
-                <Icon className={cn("w-5 h-5", item.accent && "text-[color:var(--brand-lime)]")} />
-                {item.label}
+                <Icon className={cn("w-5 h-5 shrink-0", item.accent && "text-[color:var(--brand-lime)]")} />
+                <span className="truncate max-w-full">{item.label}</span>
               </Link>
             );
           })}
