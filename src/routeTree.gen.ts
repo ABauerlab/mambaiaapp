@@ -15,6 +15,7 @@ import { Route as PacoteMarcasRouteImport } from './routes/pacote-marcas'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
@@ -57,6 +58,11 @@ const AgendarRoute = AgendarRouteImport.update({
 } as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CobrancaSlugRoute = CobrancaSlugRouteImport.update({
@@ -132,7 +138,7 @@ const ApiPublicHooksDailyDigestRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppRouteWithChildren
+  '/': typeof IndexRoute
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/pacote-marcas': typeof PacoteMarcasRoute
@@ -154,7 +160,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppRouteWithChildren
+  '/': typeof IndexRoute
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/pacote-marcas': typeof PacoteMarcasRoute
@@ -177,6 +183,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
@@ -245,6 +252,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-digest'
   id:
     | '__root__'
+    | '/'
     | '/_app'
     | '/agendar'
     | '/login'
@@ -268,6 +276,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AgendarRoute: typeof AgendarRoute
   LoginRoute: typeof LoginRoute
@@ -320,6 +329,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cobranca/$slug': {
@@ -456,6 +472,7 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AgendarRoute: AgendarRoute,
   LoginRoute: LoginRoute,
