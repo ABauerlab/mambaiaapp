@@ -25,7 +25,7 @@ function PrimeiroAcesso() {
   useEffect(() => {
     if (loading) return;
     if (!session) navigate({ to: "/login", replace: true });
-    else if (profile && !profile.must_change_password) navigate({ to: "/", replace: true });
+    else if (profile && !profile.must_change_password) navigate({ to: "/dashboard", replace: true });
     else if (profile && !name) setName(profile.display_name);
   }, [session, loading, profile, navigate, name]);
 
@@ -42,7 +42,7 @@ function PrimeiroAcesso() {
     await refreshProfile();
     setBusy(false);
     toast.success("Tudo pronto!");
-    navigate({ to: "/", replace: true });
+    navigate({ to: "/dashboard", replace: true });
   }
 
   return (
