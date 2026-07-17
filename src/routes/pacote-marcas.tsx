@@ -24,8 +24,7 @@ const WHATSAPP_GERAL = waMambaia(
 const OPEN_HOUR = 9;
 const CLOSE_HOUR = 22;
 const DURACAO = 60;
-const PRECO = 350;
-const SINAL = 175;
+const PRECO_UNIT = 350;
 
 function ymd(d: Date): string {
   const y = d.getFullYear();
@@ -78,6 +77,9 @@ function PacoteMarcasPage() {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const dataStr = ymd(dataSel);
+  const qtd = Math.max(1, Math.min(10, qtdMarcas || 1));
+  const precoTotal = PRECO_UNIT * qtd;
+  const sinalTotal = precoTotal / 2;
 
   const ocupados = useQuery({
     queryKey: ["ocupados", dataStr],
@@ -116,15 +118,13 @@ function PacoteMarcasPage() {
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
       if (empreendimento.trim().length < 2) throw new Error("Informe o nome da marca ou brechó");
       if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
-      const empFinal = qtdMarcas > 1
-        ? `${empreendimento.trim()} (${qtdMarcas} marcas)`
-        : empreendimento.trim();
       const { data, error } = await sb.rpc("criar_reserva_pacote", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
         _cliente_nome: nome.trim(),
         _cliente_whatsapp: onlyDigits(whatsapp),
-        _empreendimento: empFinal,
+        _empreendimento: empreendimento.trim(),
+        _qtd_marcas: qtd,
       });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
@@ -161,7 +161,7 @@ function PacoteMarcasPage() {
             </div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">Fotos de catálogo em 1h no Mambaia</h1>
             <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
-              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350</strong>, no coração da Praça Sete.
+              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350 por marca</strong>, no coração da Praça Sete.
             </p>
           </div>
         </section>
@@ -268,6 +268,7 @@ function PacoteMarcasPage() {
                 value={qtdMarcas}
                 onChange={(e) => setQtdMarcas(Math.max(1, Math.min(10, parseInt(e.target.value || "1", 10))))}
               />
+              <p className="text-[11px] opacity-70 mt-1">R$ 350 por marca — o valor total é multiplicado.</p>
             </div>
             <div>
               <Label>Seu nome *</Label>
@@ -291,15 +292,16 @@ function PacoteMarcasPage() {
               <div className="text-sm">
                 {dataSel.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}
                 {horaInicio && (<> · <strong>{horaInicio}</strong> · 1h</>)}
+                {qtd > 1 && (<> · <strong>{qtd} marcas</strong></>)}
               </div>
               <div className="text-right">
-                <div className="text-[11px] opacity-60">Total</div>
-                <div className="text-lg font-bold tabular-nums">{formatBRL(PRECO)}</div>
+                <div className="text-[11px] opacity-60">Total {qtd > 1 ? `(${qtd} × R$ 350)` : ""}</div>
+                <div className="text-lg font-bold tabular-nums">{formatBRL(precoTotal)}</div>
               </div>
             </div>
             <div className="mt-1 flex items-center justify-between text-sm">
               <span className="opacity-70">Sinal para confirmar (50%)</span>
-              <span className="font-semibold tabular-nums">{formatBRL(SINAL)}</span>
+              <span className="font-semibold tabular-nums">{formatBRL(sinalTotal)}</span>
             </div>
           </div>
 
