@@ -81,7 +81,7 @@ export function NovaTransacao() {
     onSuccess: () => {
       toast.success("Transacao registrada");
       qc.invalidateQueries({ queryKey: ["transacoes"] });
-      navigate({ to: "/" });
+      navigate({ to: "/dashboard" });
     },
     onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Nao foi possivel salvar.")),
   });
