@@ -22,14 +22,14 @@ import { useAuth } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type NavItem = {
-  to: "/" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro" | "/criar" | "/agenda";
+  to: "/dashboard" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro" | "/criar" | "/agenda";
   label: string;
   icon: typeof LayoutDashboard;
   accent?: boolean;
 };
 
 const nav: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/nova", label: "Nova", icon: PlusCircle, accent: true },
   { to: "/transacoes", label: "Transações", icon: Receipt },
   { to: "/quadro", label: "Ideias", icon: Lightbulb },
@@ -104,7 +104,7 @@ export function AppShell() {
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex items-center justify-between gap-2 px-4 h-14 min-w-0">
-          <Link to="/" className="flex items-center gap-2 min-w-0" onClick={() => setOpen(false)}>
+          <Link to="/dashboard" className="flex items-center gap-2 min-w-0" onClick={() => setOpen(false)}>
             <img src={logo} alt="Mambaia" className="w-8 h-8 rounded-md shrink-0" />
             <span className="font-semibold truncate">Mambaia</span>
           </Link>

@@ -26,7 +26,7 @@ function LoginPage() {
     if (loading) return;
     if (session) {
       if (profile?.must_change_password) navigate({ to: "/primeiro-acesso", replace: true });
-      else navigate({ to: "/", replace: true });
+      else navigate({ to: "/dashboard", replace: true });
     }
   }, [session, loading, profile, navigate]);
 

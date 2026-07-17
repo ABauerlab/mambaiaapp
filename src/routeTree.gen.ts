@@ -15,7 +15,6 @@ import { Route as PacoteMarcasRouteImport } from './routes/pacote-marcas'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
 import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
@@ -23,6 +22,7 @@ import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
 import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
 import { Route as AppNovaRouteImport } from './routes/_app.nova'
 import { Route as AppFixosRouteImport } from './routes/_app.fixos'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCriarRouteImport } from './routes/_app.criar'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
@@ -59,11 +59,6 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppRoute,
-} as any)
 const CobrancaSlugRoute = CobrancaSlugRouteImport.update({
   id: '/cobranca/$slug',
   path: '/cobranca/$slug',
@@ -99,6 +94,11 @@ const AppFixosRoute = AppFixosRouteImport.update({
   path: '/fixos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCriarRoute = AppCriarRouteImport.update({
   id: '/criar',
   path: '/criar',
@@ -132,7 +132,7 @@ const ApiPublicHooksDailyDigestRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
+  '/': typeof AppRouteWithChildren
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/pacote-marcas': typeof PacoteMarcasRoute
@@ -143,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
+  '/dashboard': typeof AppDashboardRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
   '/perfil': typeof AppPerfilRoute
@@ -153,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof AppRouteWithChildren
   '/agendar': typeof AgendarRoute
   '/login': typeof LoginRoute
   '/pacote-marcas': typeof PacoteMarcasRoute
@@ -163,6 +165,7 @@ export interface FileRoutesByTo {
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
+  '/dashboard': typeof AppDashboardRoute
   '/fixos': typeof AppFixosRoute
   '/nova': typeof AppNovaRoute
   '/perfil': typeof AppPerfilRoute
@@ -170,7 +173,6 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
-  '/': typeof AppIndexRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRoutesById {
@@ -186,6 +188,7 @@ export interface FileRoutesById {
   '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/criar': typeof AppCriarRoute
+  '/_app/dashboard': typeof AppDashboardRoute
   '/_app/fixos': typeof AppFixosRoute
   '/_app/nova': typeof AppNovaRoute
   '/_app/perfil': typeof AppPerfilRoute
@@ -193,7 +196,6 @@ export interface FileRoutesById {
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
-  '/_app/': typeof AppIndexRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
 }
 export interface FileRouteTypes {
@@ -210,6 +212,7 @@ export interface FileRouteTypes {
     | '/auditoria'
     | '/categorias'
     | '/criar'
+    | '/dashboard'
     | '/fixos'
     | '/nova'
     | '/perfil'
@@ -220,6 +223,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/agendar'
     | '/login'
     | '/pacote-marcas'
@@ -230,6 +234,7 @@ export interface FileRouteTypes {
     | '/auditoria'
     | '/categorias'
     | '/criar'
+    | '/dashboard'
     | '/fixos'
     | '/nova'
     | '/perfil'
@@ -237,7 +242,6 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/transacoes'
     | '/cobranca/$slug'
-    | '/'
     | '/api/public/hooks/daily-digest'
   id:
     | '__root__'
@@ -252,6 +256,7 @@ export interface FileRouteTypes {
     | '/_app/auditoria'
     | '/_app/categorias'
     | '/_app/criar'
+    | '/_app/dashboard'
     | '/_app/fixos'
     | '/_app/nova'
     | '/_app/perfil'
@@ -259,7 +264,6 @@ export interface FileRouteTypes {
     | '/_app/relatorios'
     | '/_app/transacoes'
     | '/cobranca/$slug'
-    | '/_app/'
     | '/api/public/hooks/daily-digest'
   fileRoutesById: FileRoutesById
 }
@@ -318,13 +322,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/': {
-      id: '/_app/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/cobranca/$slug': {
       id: '/cobranca/$slug'
       path: '/cobranca/$slug'
@@ -372,6 +369,13 @@ declare module '@tanstack/react-router' {
       path: '/fixos'
       fullPath: '/fixos'
       preLoaderRoute: typeof AppFixosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/criar': {
@@ -425,13 +429,13 @@ interface AppRouteChildren {
   AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppCriarRoute: typeof AppCriarRoute
+  AppDashboardRoute: typeof AppDashboardRoute
   AppFixosRoute: typeof AppFixosRoute
   AppNovaRoute: typeof AppNovaRoute
   AppPerfilRoute: typeof AppPerfilRoute
   AppQuadroRoute: typeof AppQuadroRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
   AppTransacoesRoute: typeof AppTransacoesRoute
-  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -440,13 +444,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppAuditoriaRoute: AppAuditoriaRoute,
   AppCategoriasRoute: AppCategoriasRoute,
   AppCriarRoute: AppCriarRoute,
+  AppDashboardRoute: AppDashboardRoute,
   AppFixosRoute: AppFixosRoute,
   AppNovaRoute: AppNovaRoute,
   AppPerfilRoute: AppPerfilRoute,
   AppQuadroRoute: AppQuadroRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
   AppTransacoesRoute: AppTransacoesRoute,
-  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
