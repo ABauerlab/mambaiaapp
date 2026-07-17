@@ -1,0 +1,728 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import {
+  Camera,
+  Users,
+  Sparkles,
+  Building2,
+  Calendar,
+  MessageCircle,
+  MapPin,
+  Clock,
+  Instagram,
+  ArrowRight,
+  Check,
+  Menu,
+  X,
+  Home as HomeIcon,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import logo from "@/assets/logo-mambaia.svg";
+import estudio1 from "@/assets/studio/estudio-1.asset.json";
+import estudio2 from "@/assets/studio/estudio-2.asset.json";
+import estudio3 from "@/assets/studio/estudio-3.asset.json";
+import estudio4 from "@/assets/studio/estudio-4.asset.json";
+import estudio5 from "@/assets/studio/estudio-5.asset.json";
+
+const SITE = "https://mambaiabh.com.br";
+const WA_NUM = "553132232356";
+const WA_MSG = encodeURIComponent(
+  "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio."
+);
+const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
+const MAPS_LINK =
+  "https://www.google.com/maps/place/MAMBAIA+%E2%80%94+Est%C3%BAdio+Fotogr%C3%A1fico+e+Espa%C3%A7o+Criativo";
+const MAPS_EMBED =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3751.1431918599174!2d-43.941116823885466!3d-19.918369837948333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa69977d90fccb1%3A0xe2b154452693026a!2sMAMBAIA%20%E2%80%94%20Est%C3%BAdio%20Fotogr%C3%A1fico%20e%20Espa%C3%A7o%20Criativo!5e0!3m2!1spt-BR!2sbr!4v1784321625847!5m2!1spt-BR!2sbr";
+const INSTA = "https://instagram.com/mambaiabh";
+
+const TITLE = "Mambaia — Estúdio criativo em Belo Horizonte";
+const DESC =
+  "Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Reserve online seu horário no Mambaia.";
+
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESC },
+      {
+        name: "keywords",
+        content:
+          "estúdio fotográfico BH, aluguel de estúdio Belo Horizonte, coworking BH, espaço para eventos BH, Mambaia, Praça Sete",
+      },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESC },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE },
+      { property: "og:image", content: estudio4.url },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESC },
+      { name: "twitter:image", content: estudio4.url },
+    ],
+    links: [{ rel: "canonical", href: SITE }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Mambaia — Estúdio Fotográfico e Espaço Criativo",
+          image: estudio4.url,
+          url: SITE,
+          telephone: "+55 31 3223-2356",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Praça Sete",
+            addressLocality: "Belo Horizonte",
+            addressRegion: "MG",
+            addressCountry: "BR",
+          },
+          openingHours: ["Mo-Fr 09:00-19:00", "Sa 10:00-17:00"],
+          sameAs: [INSTA, WA_LINK],
+        }),
+      },
+    ],
+  }),
+  component: Landing,
+});
+
+type NavLink = { label: string; href: string };
+const menu: NavLink[] = [
+  { label: "Estúdio", href: "#servicos" },
+  { label: "Galeria", href: "#galeria" },
+  { label: "Sobre", href: "#sobre" },
+  { label: "Contato", href: "#contato" },
+];
+
+function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <header
+      className={cn(
+        "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+        scrolled
+          ? "bg-[#0D2E24]/85 backdrop-blur-md border-b border-white/10"
+          : "bg-transparent",
+      )}
+    >
+      <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between gap-4">
+        <a href="#top" className="flex items-center gap-2 text-white">
+          <img src={logo} alt="Mambaia" className="w-9 h-9 rounded-md" />
+          <span className="font-semibold tracking-wide">MAMBAIA</span>
+        </a>
+        <nav className="hidden md:flex items-center gap-8 text-sm text-white/85">
+          {menu.map((m) => (
+            <a
+              key={m.href}
+              href={m.href}
+              className="hover:text-[#E5C72A] transition-colors"
+            >
+              {m.label}
+            </a>
+          ))}
+        </nav>
+        <div className="flex items-center gap-2">
+          <a
+            href="/agendar"
+            className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-4 py-2 text-sm font-semibold hover:brightness-95 transition"
+          >
+            Agendar estúdio
+          </a>
+          <button
+            className="md:hidden text-white p-2"
+            aria-label="Menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+      {open && (
+        <div className="md:hidden bg-[#0D2E24] border-t border-white/10">
+          <nav className="px-5 py-4 flex flex-col gap-3 text-white/90">
+            {menu.map((m) => (
+              <a
+                key={m.href}
+                href={m.href}
+                onClick={() => setOpen(false)}
+                className="py-2 border-b border-white/5"
+              >
+                {m.label}
+              </a>
+            ))}
+            <a
+              href="/agendar"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-flex justify-center rounded-lg bg-[#E5C72A] text-[#0D2E24] px-4 py-3 font-semibold"
+            >
+              Agendar estúdio
+            </a>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section
+      id="top"
+      className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden"
+    >
+      <img
+        src={estudio4.url}
+        alt="Estúdio Mambaia com vista para Belo Horizonte"
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0D2E24]/70 via-[#0D2E24]/45 to-[#0D2E24]/85" />
+      <div className="relative z-10 max-w-4xl mx-auto px-5 md:px-8 text-center text-white pt-24 pb-16">
+        <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 px-4 py-1.5 text-xs md:text-sm font-medium mb-6 animate-fade-in">
+          <MapPin className="w-3.5 h-3.5 text-[#E5C72A]" />
+          Praça Sete · Belo Horizonte
+        </span>
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.05] animate-fade-in">
+          A criatividade
+          <br />
+          <span className="font-semibold text-[#E5C72A]">encontra espaço.</span>
+        </h1>
+        <p className="mt-6 text-base md:text-xl text-white/85 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in">
+          Estúdio fotográfico, coworking e espaço para eventos no coração
+          de Belo Horizonte. Reserve online, do jeito que combina com você.
+        </p>
+        <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center animate-fade-in">
+          <a
+            href="/agendar"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold text-base hover:brightness-95 transition shadow-lg shadow-black/20"
+          >
+            Agendar estúdio
+            <ArrowRight className="w-4 h-4" />
+          </a>
+          <a
+            href="#galeria"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 text-white px-7 py-3.5 font-medium hover:bg-white/10 transition"
+          >
+            Conhecer o espaço
+          </a>
+        </div>
+        <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
+          {["Estúdio profissional", "Coworking", "Eventos", "Pacote marcas"].map(
+            (t) => (
+              <span key={t} className="inline-flex items-center gap-1.5">
+                <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
+              </span>
+            ),
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type Servico = {
+  icon: typeof Camera;
+  title: string;
+  desc: string;
+  img: string;
+  href: string;
+  cta: string;
+};
+const servicos: Servico[] = [
+  {
+    icon: Camera,
+    title: "Estúdio fotográfico",
+    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. Reserva por hora, a partir de R$ 100.",
+    img: estudio5.url,
+    href: "/agendar",
+    cta: "Agendar sessão",
+  },
+  {
+    icon: Users,
+    title: "Coworking criativo",
+    desc: "Espaço acolhedor para trabalhar, editar ou reunir sua equipe — com café, wi-fi e ambiente inspirador na Praça Sete.",
+    img: estudio3.url,
+    href: "/agendar",
+    cta: "Reservar horário",
+  },
+  {
+    icon: Sparkles,
+    title: "Eventos e encontros",
+    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca no centro de BH.",
+    img: estudio2.url,
+    href: "/agendar",
+    cta: "Agendar evento",
+  },
+  {
+    icon: Building2,
+    title: "Pacote marcas / brechó",
+    desc: "Produção fotográfica completa de 1h por marca — R$ 350. Ideal para catálogos, brechós e pequenas marcas.",
+    img: estudio1.url,
+    href: "/pacote-marcas",
+    cta: "Solicitar pacote",
+  },
+];
+
+function Servicos() {
+  return (
+    <section id="servicos" className="py-20 md:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="max-w-2xl mb-14">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            O que oferecemos
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+            Um espaço, várias possibilidades.
+          </h2>
+          <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
+            Reserve o Mambaia para o que a sua criatividade pedir hoje —
+            fotografia, trabalho, evento ou produção de marca.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {servicos.map((s) => {
+            const Icon = s.icon;
+            return (
+              <article
+                key={s.title}
+                className="group bg-white rounded-2xl border border-black/5 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300"
+              >
+                <div className="aspect-[16/10] overflow-hidden">
+                  <img
+                    src={s.img}
+                    alt={s.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-6 md:p-7">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
+                      <Icon className="w-5 h-5" />
+                    </span>
+                    <h3 className="text-xl font-medium text-[#0D2E24]">
+                      {s.title}
+                    </h3>
+                  </div>
+                  <p className="text-[#1A1A1A]/70 leading-relaxed text-sm md:text-base">
+                    {s.desc}
+                  </p>
+                  <a
+                    href={s.href}
+                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0D2E24] hover:text-[#5F6B2D] transition"
+                  >
+                    {s.cta}
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Galeria() {
+  const shots = [estudio1, estudio2, estudio3, estudio4, estudio5, estudio4];
+  return (
+    <section id="galeria" className="py-20 md:py-28 bg-[#F5F5F5]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+          <div className="max-w-xl">
+            <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+              Nosso espaço
+            </span>
+            <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+              Feito para criar.
+            </h2>
+          </div>
+          <a
+            href={INSTA}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#0D2E24] hover:text-[#5F6B2D]"
+          >
+            <Instagram className="w-4 h-4" />
+            Ver mais no Instagram
+          </a>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          {shots.map((s, i) => (
+            <div
+              key={i}
+              className={cn(
+                "relative overflow-hidden rounded-xl group",
+                i === 0 && "md:col-span-2 md:row-span-2 aspect-square md:aspect-auto",
+                i !== 0 && "aspect-square",
+              )}
+            >
+              <img
+                src={s.url}
+                alt={`Mambaia estúdio ${i + 1}`}
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-[#0D2E24]/0 group-hover:bg-[#0D2E24]/20 transition-colors" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Sobre() {
+  const valores = [
+    "Criatividade",
+    "Conexão",
+    "Autenticidade",
+    "Natureza",
+    "Colaboração",
+    "Liberdade",
+    "Sofisticação",
+  ];
+  return (
+    <section id="sobre" className="py-20 md:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-12 items-center">
+        <div className="border-l-4 border-[#5F6B2D] pl-6 md:pl-10">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            Sobre o Mambaia
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+            Muito mais do que um estúdio.
+          </h2>
+          <p className="mt-5 text-[#1A1A1A]/75 leading-relaxed">
+            O Mambaia nasceu no coração de Belo Horizonte com um propósito
+            simples: dar espaço para quem cria. Aqui, a luz da Praça Sete
+            encontra ambientes pensados para fotografia, trabalho, encontros
+            e ideias que precisam de um lugar para acontecer.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {valores.map((v) => (
+              <span
+                key={v}
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-[#0D2E24]/5 text-[#0D2E24] border border-[#0D2E24]/10"
+              >
+                {v}
+              </span>
+            ))}
+          </div>
+          <a
+            href="#galeria"
+            className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[#0D2E24] hover:text-[#5F6B2D]"
+          >
+            Explorar o espaço <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+        <div className="relative aspect-[4/5] md:aspect-[4/5] rounded-2xl overflow-hidden shadow-xl">
+          <img
+            src={estudio3.url}
+            alt="Ambiente interno do estúdio Mambaia"
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Steps() {
+  const steps = [
+    {
+      icon: Sparkles,
+      title: "Escolha o serviço",
+      desc: "Estúdio, coworking, evento ou pacote de marcas.",
+    },
+    {
+      icon: Calendar,
+      title: "Reserve online",
+      desc: "Selecione data, horário e pague o sinal via PIX.",
+    },
+    {
+      icon: Camera,
+      title: "Venha criar",
+      desc: "Chegue no dia marcado e aproveite o espaço.",
+    },
+  ];
+  return (
+    <section className="py-20 md:py-28 bg-[#0D2E24] text-white">
+      <div className="max-w-6xl mx-auto px-5 md:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <span className="text-xs font-semibold tracking-widest text-[#E5C72A] uppercase">
+            Como funciona
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
+            Reserve em três passos.
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div
+                key={s.title}
+                className="relative rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-7 hover:bg-white/10 transition"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-5xl font-light text-[#E5C72A] leading-none">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <Icon className="w-6 h-6 text-white/80 ml-auto" />
+                </div>
+                <h3 className="text-xl font-medium">{s.title}</h3>
+                <p className="mt-2 text-white/70 text-sm leading-relaxed">
+                  {s.desc}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-12 text-center">
+          <a
+            href="/agendar"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition"
+          >
+            Ver horários disponíveis
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Localizacao() {
+  return (
+    <section id="contato" className="py-20 md:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-10 items-stretch">
+        <div className="rounded-2xl overflow-hidden shadow-lg border border-black/5 min-h-[320px]">
+          <iframe
+            src={MAPS_EMBED}
+            title="Mapa do Mambaia"
+            className="w-full h-full min-h-[320px]"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+        <div>
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            Onde estamos
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+            Nos encontre.
+          </h2>
+          <ul className="mt-6 space-y-4 text-[#1A1A1A]/80">
+            <li className="flex gap-3">
+              <MapPin className="w-5 h-5 text-[#5F6B2D] shrink-0 mt-0.5" />
+              <span>
+                Praça Sete, Centro
+                <br />
+                Belo Horizonte — MG
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <Clock className="w-5 h-5 text-[#5F6B2D] shrink-0 mt-0.5" />
+              <span>
+                Seg à Sex: 09h – 19h
+                <br />
+                Sáb: 10h – 17h
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <MessageCircle className="w-5 h-5 text-[#5F6B2D] shrink-0 mt-0.5" />
+              <span>WhatsApp (31) 3223-2356</span>
+            </li>
+          </ul>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <a
+              href={MAPS_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0D2E24] text-white px-6 py-3 font-medium hover:bg-[#0D2E24]/90 transition"
+            >
+              <MapPin className="w-4 h-4" /> Como chegar
+            </a>
+            <a
+              href={WA_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#0D2E24]/20 text-[#0D2E24] px-6 py-3 font-medium hover:bg-[#0D2E24]/5 transition"
+            >
+              <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CtaFinal() {
+  return (
+    <section className="relative py-24 md:py-32 overflow-hidden">
+      <img
+        src={estudio1.url}
+        alt="Ciclorama do estúdio Mambaia"
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-[#0D2E24]/75" />
+      <div className="relative z-10 max-w-3xl mx-auto text-center text-white px-5">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight">
+          Seu próximo projeto
+          <br />
+          <span className="font-semibold text-[#E5C72A]">começa aqui.</span>
+        </h2>
+        <p className="mt-5 text-white/80 max-w-xl mx-auto">
+          Reserve online em minutos ou fale direto com a nossa equipe.
+        </p>
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href="/agendar"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition shadow-lg shadow-black/20"
+          >
+            Agendar estúdio
+            <ArrowRight className="w-4 h-4" />
+          </a>
+          <a
+            href={WA_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 text-white px-7 py-3.5 font-medium hover:bg-white/10 transition"
+          >
+            <MessageCircle className="w-4 h-4" /> WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-[#0D2E24] text-white/80">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="col-span-2 md:col-span-1">
+          <div className="flex items-center gap-2 text-white">
+            <img src={logo} alt="Mambaia" className="w-10 h-10 rounded-md" />
+            <span className="font-semibold tracking-wide">MAMBAIA</span>
+          </div>
+          <p className="mt-4 text-sm text-white/60 leading-relaxed">
+            Criatividade encontra espaço. Um estúdio criativo em Belo Horizonte.
+          </p>
+        </div>
+        <div>
+          <h4 className="text-white font-semibold text-sm mb-3">Reservas</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a className="hover:text-[#E5C72A]" href="/agendar">Agendar estúdio</a></li>
+            <li><a className="hover:text-[#E5C72A]" href="/pacote-marcas">Pacote marcas</a></li>
+            <li><a className="hover:text-[#E5C72A]" href="#galeria">Galeria</a></li>
+            <li><a className="hover:text-[#E5C72A]" href="#contato">Contato</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-white font-semibold text-sm mb-3">Onde</h4>
+          <ul className="space-y-2 text-sm text-white/70">
+            <li>Praça Sete, Centro</li>
+            <li>Belo Horizonte — MG</li>
+            <li>Seg-Sex: 09h – 19h</li>
+            <li>Sáb: 10h – 17h</li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-white font-semibold text-sm mb-3">Redes</h4>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <a
+                className="inline-flex items-center gap-2 hover:text-[#E5C72A]"
+                href={INSTA}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Instagram className="w-4 h-4" /> @mambaiabh
+              </a>
+            </li>
+            <li>
+              <a
+                className="inline-flex items-center gap-2 hover:text-[#E5C72A]"
+                href={WA_LINK}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MessageCircle className="w-4 h-4" /> WhatsApp
+              </a>
+            </li>
+            <li>
+              <a
+                className="inline-flex items-center gap-2 hover:text-[#E5C72A]"
+                href={MAPS_LINK}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MapPin className="w-4 h-4" /> Google Maps
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 py-5 text-xs text-white/50 flex flex-wrap gap-2 justify-between">
+          <span>© {new Date().getFullYear()} Mambaia Estúdio. Todos os direitos reservados.</span>
+          <Link to="/login" className="hover:text-white/80">Acesso interno</Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function MobileBar() {
+  return (
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <div className="grid grid-cols-3">
+        <a href="#top" className="flex flex-col items-center gap-0.5 py-3 text-[11px] text-[#0D2E24]">
+          <HomeIcon className="w-5 h-5" />
+          Início
+        </a>
+        <a href="/agendar" className="flex flex-col items-center gap-0.5 py-3 text-[11px] font-semibold text-[#0D2E24] bg-[#E5C72A]">
+          <Calendar className="w-5 h-5" />
+          Agendar
+        </a>
+        <a href={WA_LINK} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-0.5 py-3 text-[11px] text-[#0D2E24]">
+          <MessageCircle className="w-5 h-5" />
+          WhatsApp
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Landing() {
+  return (
+    <div className="bg-white text-[#1A1A1A]" style={{ scrollBehavior: "smooth" }}>
+      <Header />
+      <main style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+        <Hero />
+        <Servicos />
+        <Galeria />
+        <Sobre />
+        <Steps />
+        <Localizacao />
+        <CtaFinal />
+      </main>
+      <Footer />
+      <MobileBar />
+      <div className="md:hidden h-16" aria-hidden />
+    </div>
+  );
+}
