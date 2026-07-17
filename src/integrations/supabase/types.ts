@@ -525,21 +525,38 @@ export type Database = {
           valor_total: number
         }[]
       }
-      criar_reserva_pacote: {
-        Args: {
-          _cliente_nome: string
-          _cliente_whatsapp: string
-          _data: string
-          _empreendimento: string
-          _hora_inicio: string
-        }
-        Returns: {
-          cobranca_slug: string
-          reserva_id: string
-          valor_sinal: number
-          valor_total: number
-        }[]
-      }
+      criar_reserva_pacote:
+        | {
+            Args: {
+              _cliente_nome: string
+              _cliente_whatsapp: string
+              _data: string
+              _empreendimento: string
+              _hora_inicio: string
+            }
+            Returns: {
+              cobranca_slug: string
+              reserva_id: string
+              valor_sinal: number
+              valor_total: number
+            }[]
+          }
+        | {
+            Args: {
+              _cliente_nome: string
+              _cliente_whatsapp: string
+              _data: string
+              _empreendimento: string
+              _hora_inicio: string
+              _qtd_marcas?: number
+            }
+            Returns: {
+              cobranca_slug: string
+              reserva_id: string
+              valor_sinal: number
+              valor_total: number
+            }[]
+          }
       get_cobranca_by_slug: {
         Args: { _slug: string }
         Returns: {
