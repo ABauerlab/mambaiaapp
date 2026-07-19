@@ -1,5 +1,5 @@
 /**
- * Utilitários monetários — todos os cálculos em CENTAVOS (inteiros)
+ * Utilitários monetários - todos os cálculos em CENTAVOS (inteiros)
  * para evitar erros de ponto flutuante. Conversão apenas na borda.
  */
 

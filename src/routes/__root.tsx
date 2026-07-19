@@ -11,7 +11,7 @@ import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
 
-const TITLE = "Mambaia — Estúdio criativo na Praça Sete, BH";
+const TITLE = "Mambaia - Estúdio criativo na Praça Sete, BH";
 const DESC = "Mambaia é um estúdio criativo no coração de Belo Horizonte. Reserve seu horário por hora, com sinal via PIX. Espaço para fotos, gravações, ensaios e encontros criativos.";
 
 function NotFoundComponent() {

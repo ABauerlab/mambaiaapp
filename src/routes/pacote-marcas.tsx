@@ -46,10 +46,10 @@ export const Route = createFileRoute("/pacote-marcas")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Pacote Marcas Mambaia — fotos de catálogo em BH" },
+      { title: "Pacote Marcas Mambaia - fotos de catálogo em BH" },
       { name: "description", content: "Pacote fotográfico para marcas e brechós: 1h no estúdio Mambaia com fotografia, edição e making-of por R$ 350. Praça Sete, Belo Horizonte." },
       { name: "keywords", content: "fotos de catálogo BH, ensaio para marca, brechó, fotografia de produto, estúdio Belo Horizonte, Mambaia" },
-      { property: "og:title", content: "Pacote Marcas Mambaia — fotos de catálogo em BH" },
+      { property: "og:title", content: "Pacote Marcas Mambaia - fotos de catálogo em BH" },
       { property: "og:description", content: "1h no estúdio com fotografia, edição e making-of por R$ 350. Ideal para marcas e brechós na Praça Sete." },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
@@ -174,10 +174,10 @@ function PacoteMarcasPage() {
             (ou estrutura) para produzir fotos de qualidade.
           </p>
           <ul className="text-sm space-y-1.5 opacity-90 pt-1">
-            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça — frente, costas e laterais).</li>
+            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça - frente, costas e laterais).</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Edição das imagens prontas para site e Instagram.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Making-of do dia para você usar como conteúdo.</li>
-            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Pode trazer <strong>mais de uma marca</strong> na mesma sessão — só nos conte quantas para a gente preparar tudo.</li>
+            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Pode trazer <strong>mais de uma marca</strong> na mesma sessão - só nos conte quantas para a gente preparar tudo.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Estúdio em L com iluminação, Wi-Fi, banheiro e água à vontade.</li>
           </ul>
           <p className="text-xs opacity-70">
@@ -268,7 +268,7 @@ function PacoteMarcasPage() {
                 value={qtdMarcas}
                 onChange={(e) => setQtdMarcas(Math.max(1, Math.min(10, parseInt(e.target.value || "1", 10))))}
               />
-              <p className="text-[11px] opacity-70 mt-1">R$ 350 por marca — o valor total é multiplicado.</p>
+              <p className="text-[11px] opacity-70 mt-1">R$ 350 por marca - o valor total é multiplicado.</p>
             </div>
             <div>
               <Label>Seu nome *</Label>

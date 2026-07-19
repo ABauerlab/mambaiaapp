@@ -36,7 +36,7 @@ const MAPS_EMBED =
   "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3751.1431918599174!2d-43.941116823885466!3d-19.918369837948333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa69977d90fccb1%3A0xe2b154452693026a!2sMAMBAIA%20%E2%80%94%20Est%C3%BAdio%20Fotogr%C3%A1fico%20e%20Espa%C3%A7o%20Criativo!5e0!3m2!1spt-BR!2sbr!4v1784321625847!5m2!1spt-BR!2sbr";
 const INSTA = "https://instagram.com/mambaiabh";
 
-const TITLE = "Mambaia — Estúdio criativo em Belo Horizonte";
+const TITLE = "Mambaia - Estúdio criativo em Belo Horizonte";
 const DESC =
   "Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Reserve online seu horário no Mambaia.";
 
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          name: "Mambaia — Estúdio Fotográfico e Espaço Criativo",
+          name: "Mambaia - Estúdio Fotográfico e Espaço Criativo",
           image: estudio4.url,
           url: SITE,
           telephone: "+55 31 3223-2356",
@@ -247,7 +247,7 @@ const servicos: Servico[] = [
   {
     icon: Users,
     title: "Coworking criativo",
-    desc: "Espaço acolhedor para trabalhar, editar ou reunir sua equipe — com café, wi-fi e ambiente inspirador na Praça Sete.",
+    desc: "Espaço acolhedor para trabalhar, editar ou reunir sua equipe - com café, wi-fi e ambiente inspirador na Praça Sete.",
     img: estudio3.url,
     href: "/agendar",
     cta: "Reservar horário",
@@ -263,7 +263,7 @@ const servicos: Servico[] = [
   {
     icon: Building2,
     title: "Pacote marcas / brechó",
-    desc: "Produção fotográfica completa de 1h por marca — R$ 350. Ideal para catálogos, brechós e pequenas marcas.",
+    desc: "Produção fotográfica completa de 1h por marca - R$ 350. Ideal para catálogos, brechós e pequenas marcas.",
     img: estudio1.url,
     href: "/pacote-marcas",
     cta: "Solicitar pacote",
@@ -282,7 +282,7 @@ function Servicos() {
             Um espaço, várias possibilidades.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Reserve o Mambaia para o que a sua criatividade pedir hoje —
+            Reserve o Mambaia para o que a sua criatividade pedir hoje -
             fotografia, trabalho, evento ou produção de marca.
           </p>
         </div>
@@ -527,7 +527,7 @@ function Localizacao() {
               <span>
                 Praça Sete, Centro
                 <br />
-                Belo Horizonte — MG
+                Belo Horizonte - MG
               </span>
             </li>
             <li className="flex gap-3">
@@ -634,7 +634,7 @@ function Footer() {
           <h4 className="text-white font-semibold text-sm mb-3">Onde</h4>
           <ul className="space-y-2 text-sm text-white/70">
             <li>Praça Sete, Centro</li>
-            <li>Belo Horizonte — MG</li>
+            <li>Belo Horizonte - MG</li>
             <li>Seg-Sex: 09h – 19h</li>
             <li>Sáb: 10h – 17h</li>
           </ul>

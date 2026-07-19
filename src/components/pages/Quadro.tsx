@@ -500,7 +500,7 @@ function ItemDialog({
               <Select value={form.empresa || "none"} onValueChange={(v) => setForm({ ...form, empresa: v === "none" ? "" : v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">—</SelectItem>
+                  <SelectItem value="none">-</SelectItem>
                   {EMPRESAS.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
                 </SelectContent>
               </Select>

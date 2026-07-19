@@ -92,7 +92,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text(`Proposta comercial nº ${numeroFmt} — ${r.cliente}`, 40, y);
+  doc.text(`Proposta comercial nº ${numeroFmt} - ${r.cliente}`, 40, y);
   y += 22;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
@@ -154,19 +154,19 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.setFontSize(10);
   doc.setTextColor(60, 60, 60);
   const bulletsLocacao = [
-    "Confira o horário reservado — chegue com alguns minutos de folga.",
+    "Confira o horário reservado - chegue com alguns minutos de folga.",
     "Fração adicional cobrada a cada 30 minutos: R$ 50.",
     "Se precisar de mais tempo no dia, alinhe com a equipe pelo WhatsApp.",
     "Deixe o ambiente limpo e organizado, exatamente como estava ao chegar.",
-    "Cuide dos equipamentos e do espaço — a Mambaia é casa nossa e sua.",
+    "Cuide dos equipamentos e do espaço - a Mambaia é casa nossa e sua.",
     "Em caso de imprevisto, avise com antecedência para reagendarmos.",
   ];
   const bulletsPacote = [
-    "Traga as peças organizadas — quanto mais preparado, mais fotos rendemos na hora.",
+    "Traga as peças organizadas - quanto mais preparado, mais fotos rendemos na hora.",
     "Pacote de 1h fixa: fotografia, edição e making-of inclusos.",
     "Entrega das fotos editadas em até 5 dias úteis por link privado.",
     "Uso das imagens é livre para catálogo, site e redes do seu empreendimento.",
-    "Trate os equipamentos e o espaço com carinho — mantenha o estúdio limpo.",
+    "Trate os equipamentos e o espaço com carinho - mantenha o estúdio limpo.",
     "Em caso de imprevisto, avise com antecedência para reagendarmos.",
   ];
   const bullets = isPacote ? bulletsPacote : bulletsLocacao;

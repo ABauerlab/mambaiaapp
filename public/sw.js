@@ -1,4 +1,4 @@
-/* Mambaia App — Service Worker para push notifications */
+/* Mambaia App - Service Worker para push notifications */
 self.addEventListener("install", (event) => {
   self.skipWaiting();
 });

@@ -34,7 +34,7 @@ export const Route = createFileRoute("/api/public/hooks/daily-digest")({
         }
 
         const result = await sendPushToAll({
-          title: "Mambaia — bom dia",
+          title: "Mambaia - bom dia",
           body: parts.join(" • "),
           url: "/quadro",
           tag: "digest-" + today,

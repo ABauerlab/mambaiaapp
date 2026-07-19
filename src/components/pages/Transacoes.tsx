@@ -103,7 +103,7 @@ export function Transacoes() {
                   {t.origem === "fixo" && <Badge variant="outline" className="text-[10px]">fixo</Badge>}
                 </div>
                 <div className="text-xs text-muted-foreground mt-0.5">
-                  {new Date(t.data + "T00:00:00").toLocaleDateString("pt-BR")} · {cat?.nome ?? "—"}
+                  {new Date(t.data + "T00:00:00").toLocaleDateString("pt-BR")} · {cat?.nome ?? "-"}
                   {socio ? ` · ${socio.nome}` : ` · Mambaia`}
                 </div>
               </div>

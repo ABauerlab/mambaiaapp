@@ -328,7 +328,7 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <div className="text-sm text-muted-foreground">
-              Reserva de <strong>{r.cliente_nome}</strong> — {dataFmt} às {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
+              Reserva de <strong>{r.cliente_nome}</strong> - {dataFmt} às {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button

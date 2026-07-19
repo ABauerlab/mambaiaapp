@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import logo from "@/assets/logo-mambaia.svg";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Entrar — Mambaia" }] }),
+  head: () => ({ meta: [{ title: "Entrar - Mambaia" }] }),
   component: LoginPage,
 });
 
@@ -65,7 +65,7 @@ function LoginPage() {
           </Button>
         </form>
         <p className="text-xs text-muted-foreground text-center mt-4">
-          Senha temporária: <code>mambaia2026</code> — você troca no primeiro acesso.
+          Senha temporária: <code>mambaia2026</code> - você troca no primeiro acesso.
         </p>
       </Card>
     </div>

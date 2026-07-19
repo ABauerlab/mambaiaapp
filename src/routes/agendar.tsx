@@ -58,16 +58,16 @@ export const Route = createFileRoute("/agendar")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Agendar estúdio Mambaia — Praça Sete, BH" },
+      { title: "Agendar estúdio Mambaia - Praça Sete, BH" },
       { name: "description", content: "Reserve o estúdio Mambaia na Praça Sete, Belo Horizonte. Escolha o dia, o horário e garanta com 50% de sinal via PIX. A partir de R$ 100/h." },
       { name: "keywords", content: "aluguel estúdio BH, estúdio Praça Sete, estúdio criativo Belo Horizonte, Mambaia, aluguel por hora, coworking criativo" },
-      { property: "og:title", content: "Agendar estúdio Mambaia — Praça Sete, BH" },
+      { property: "og:title", content: "Agendar estúdio Mambaia - Praça Sete, BH" },
       { property: "og:description", content: "Reserve seu horário no estúdio Mambaia. Praça Sete · Belo Horizonte. A partir de R$ 100/h com sinal via PIX." },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wNUXIEFdbCVvIBAite7OhASh7G42/social-images/social-1778121832176-logo_mambaia.webp" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Agendar estúdio Mambaia — Praça Sete, BH" },
+      { name: "twitter:title", content: "Agendar estúdio Mambaia - Praça Sete, BH" },
       { name: "twitter:description", content: "Reserve seu horário no estúdio Mambaia. Sinal 50% via PIX." },
     ],
     links: [
@@ -200,7 +200,7 @@ function AgendarPage() {
             <div className="text-xs uppercase tracking-widest font-semibold opacity-70">Agende seu horário</div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">Reserve o estúdio Mambaia</h1>
             <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
-              Escolha o dia, o horário e a duração. Confirme com <strong>50% de sinal via PIX</strong> — o restante é acertado no dia.
+              Escolha o dia, o horário e a duração. Confirme com <strong>50% de sinal via PIX</strong> - o restante é acertado no dia.
             </p>
           </div>
         </section>
