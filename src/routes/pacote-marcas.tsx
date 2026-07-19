@@ -161,7 +161,7 @@ function PacoteMarcasPage() {
             </div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">Fotos de catálogo em 1h no Mambaia</h1>
             <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
-              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350 por marca</strong>, no coração da Praça Sete.
+              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350 e 1h de estúdio por marca</strong>. Trouxe 2 marcas? São 2h e R$ 700, e assim por diante.
             </p>
           </div>
         </section>
