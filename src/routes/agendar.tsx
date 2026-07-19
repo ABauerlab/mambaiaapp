@@ -110,6 +110,17 @@ function AgendarPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [calendarOpen, setCalendarOpen] = useState(false);
 
+  // pré-preenche nome/whatsapp quando vier do formulário da landing (?nome=&whatsapp=)
+  useMemo(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const n = p.get("nome");
+    const w = p.get("whatsapp");
+    if (n && !nome) setNome(n);
+    if (w && !whatsapp) setWhatsapp(maskPhoneInput(w));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const dataStr = ymd(dataSel);
 
   const ocupados = useQuery({
