@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader2, CalendarDays, Clock, MessageCircle, CheckCircle2, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -111,14 +111,13 @@ function AgendarPage() {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   // pré-preenche nome/whatsapp quando vier do formulário da landing (?nome=&whatsapp=)
-  useMemo(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const p = new URLSearchParams(window.location.search);
     const n = p.get("nome");
     const w = p.get("whatsapp");
-    if (n && !nome) setNome(n);
-    if (w && !whatsapp) setWhatsapp(maskPhoneInput(w));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (n) setNome((prev) => prev || n);
+    if (w) setWhatsapp((prev) => prev || maskPhoneInput(w));
   }, []);
 
   const dataStr = ymd(dataSel);
