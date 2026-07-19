@@ -70,7 +70,7 @@ export function GastosFixos() {
       if (error) throw error;
       void notify({ data: {
         title: "Novo gasto fixo",
-        body: `${parsed.nome} — ${formatBRL(parsed.valor)} (${parsed.frequencia})`,
+        body: `${parsed.nome} - ${formatBRL(parsed.valor)} (${parsed.frequencia})`,
         url: "/fixos",
       }}).catch(() => {});
     },
@@ -191,7 +191,7 @@ export function GastosFixos() {
                   <span className="font-medium text-sm">{f.nome}</span>
                   {!f.ativo && <Badge variant="secondary" className="text-[10px]">pausado</Badge>}
                 </div>
-                <div className="text-xs text-muted-foreground">{recorrencia} · {cat?.nome ?? "—"} · {socio ? socio.nome : "Mambaia"}</div>
+                <div className="text-xs text-muted-foreground">{recorrencia} · {cat?.nome ?? "-"} · {socio ? socio.nome : "Mambaia"}</div>
               </div>
               <div className="font-semibold tabular-nums text-sm">{formatBRL(f.valor)}</div>
               <Button size="sm" variant="outline" onClick={() => lancar.mutate(f.id)} disabled={lancar.isPending}>Lançar</Button>

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/primeiro-acesso")({
-  head: () => ({ meta: [{ title: "Primeiro acesso — Mambaia" }] }),
+  head: () => ({ meta: [{ title: "Primeiro acesso - Mambaia" }] }),
   component: PrimeiroAcesso,
 });
 

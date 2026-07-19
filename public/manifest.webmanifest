@@ -1,7 +1,7 @@
 {
   "name": "Mambaia App",
   "short_name": "Mambaia",
-  "description": "Gestão financeira da Mambaia — espaço criativo em Belo Horizonte",
+  "description": "Gestão financeira da Mambaia - espaço criativo em Belo Horizonte",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A2A20",

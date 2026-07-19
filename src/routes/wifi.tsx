@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "mambaia_wifi_v1";
 const REVIEW_URL = "https://g.page/r/CWoCkyZFVLHiEBM/review";
+const REVIEW_URL_ANDROID_APP = "intent://g.page/r/CWoCkyZFVLHiEBM/review#Intent;scheme=https;package=com.google.android.apps.maps;end";
 const INSTAGRAM_URL = "https://instagram.com/mambaiabh";
+const INSTAGRAM_APP = "instagram://user?username=mambaiabh";
 const WIFI_SSID = "MAMBAIA";
 const WIFI_PASSWORD = "Mambaia*22";
 const UNLOCK_DELAY_MS = 3000;
@@ -62,12 +64,36 @@ function WifiPage() {
     } catch { /* ignore */ }
   }, [googleDone, instaDone]);
 
+  function abrirNoAppOuBrowser(appUrl: string, webUrl: string) {
+    // Tenta abrir o app oficial na MESMA aba (para o cliente voltar com o botão "Voltar")
+    // e cai para a URL web caso o esquema do app não seja tratado pelo sistema.
+    const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+    if (!isMobile) {
+      window.open(webUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    const start = Date.now();
+    const fallback = window.setTimeout(() => {
+      // se o app não abriu em 1.2s, abre a página web normal
+      if (Date.now() - start < 2500) window.location.href = webUrl;
+    }, 1200);
+    try {
+      window.location.href = appUrl;
+    } catch {
+      window.clearTimeout(fallback);
+      window.location.href = webUrl;
+    }
+  }
+
   function abrirGoogle() {
-    window.open(REVIEW_URL, "_blank", "noopener,noreferrer");
+    const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const appUrl = /Android/i.test(ua) ? REVIEW_URL_ANDROID_APP : REVIEW_URL;
+    abrirNoAppOuBrowser(appUrl, REVIEW_URL);
     setTimeout(() => setGoogleConfirmable(true), UNLOCK_DELAY_MS);
   }
   function abrirInsta() {
-    window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
+    abrirNoAppOuBrowser(INSTAGRAM_APP, INSTAGRAM_URL);
     setTimeout(() => setInstaConfirmable(true), UNLOCK_DELAY_MS);
   }
 
@@ -99,6 +125,10 @@ function WifiPage() {
             <p className="text-white/80 text-sm leading-relaxed mb-6">
               Para liberar o Wi-Fi, pedimos duas contribuições rapidinhas com a marca:
             </p>
+            <div className="rounded-xl bg-[color:var(--brand-lime)]/15 border border-[color:var(--brand-lime)]/40 p-3 mb-5 text-xs text-white/90 leading-relaxed">
+              <strong className="text-[color:var(--brand-lime)]">Importante:</strong> quando abrirmos o Google e o Instagram, você
+              precisa <strong>voltar para esta página</strong> para continuar e liberar a senha do Wi-Fi.
+            </div>
             <ul className="space-y-3 mb-6 text-sm">
               <li className="flex items-start gap-3">
                 <Star className="w-5 h-5 text-[color:var(--brand-lime)] flex-shrink-0 mt-0.5" />
@@ -123,7 +153,7 @@ function WifiPage() {
             stepNum={1}
             icon={<Star className="w-6 h-6" />}
             title="Avalie no Google"
-            description="Toque no botão, deixe 5 estrelas no app do Google e volte para continuar."
+            description="Vamos abrir o app do Google Maps. Deixe 5 estrelas e depois volte para esta página (botão voltar do celular) para continuar."
           >
             <Button
               onClick={() => { abrirGoogle(); }}
@@ -147,7 +177,7 @@ function WifiPage() {
             stepNum={2}
             icon={<Instagram className="w-6 h-6" />}
             title="Siga no Instagram"
-            description="Abra o perfil da Mambaia, toque em Seguir (se ainda não segue) e volte para liberar o Wi-Fi."
+            description="Vamos abrir o app do Instagram no perfil da Mambaia. Toque em Seguir e volte para esta página para liberar o Wi-Fi."
           >
             <Button
               onClick={() => { abrirInsta(); }}

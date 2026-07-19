@@ -306,7 +306,7 @@ function CobrancaPage() {
         {!pago ? (
           <section className="rounded-2xl border-2 border-[var(--brand-lime)] bg-white/5 p-6 space-y-4">
             <div>
-              <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">Passo final — obrigatório</div>
+              <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">Passo final - obrigatório</div>
               <h2 className="text-xl font-bold">Já pagou o sinal? Confirme aqui</h2>
               <p className="text-sm opacity-80 mt-1">
                 Ao confirmar, sua reserva fica garantida e o comprovante em PDF é gerado automaticamente.

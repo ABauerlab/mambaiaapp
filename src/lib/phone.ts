@@ -36,7 +36,7 @@ export function formatPhoneBR(v: string): string {
 }
 
 /**
- * Máscara para input controlado — enquanto o usuário digita, mantemos apenas
+ * Máscara para input controlado - enquanto o usuário digita, mantemos apenas
  * os dígitos. Só formatamos quando o número está completo (10 ou 11 dígitos).
  */
 export function maskPhoneInput(v: string): string {

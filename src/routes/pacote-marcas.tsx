@@ -46,10 +46,10 @@ export const Route = createFileRoute("/pacote-marcas")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Pacote Marcas Mambaia — fotos de catálogo em BH" },
+      { title: "Pacote Marcas Mambaia - fotos de catálogo em BH" },
       { name: "description", content: "Pacote fotográfico para marcas e brechós: 1h no estúdio Mambaia com fotografia, edição e making-of por R$ 350. Praça Sete, Belo Horizonte." },
       { name: "keywords", content: "fotos de catálogo BH, ensaio para marca, brechó, fotografia de produto, estúdio Belo Horizonte, Mambaia" },
-      { property: "og:title", content: "Pacote Marcas Mambaia — fotos de catálogo em BH" },
+      { property: "og:title", content: "Pacote Marcas Mambaia - fotos de catálogo em BH" },
       { property: "og:description", content: "1h no estúdio com fotografia, edição e making-of por R$ 350. Ideal para marcas e brechós na Praça Sete." },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
@@ -161,7 +161,7 @@ function PacoteMarcasPage() {
             </div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">Fotos de catálogo em 1h no Mambaia</h1>
             <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
-              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350 por marca</strong>, no coração da Praça Sete.
+              Traga as peças, a gente faz o resto. Um pacote fechado com <strong>fotografia, edição e making-of</strong> por <strong>R$ 350 e 1h de estúdio por marca</strong>. Trouxe 2 marcas? São 2h e R$ 700, e assim por diante.
             </p>
           </div>
         </section>
@@ -169,15 +169,16 @@ function PacoteMarcasPage() {
         <section className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 space-y-3">
           <h2 className="text-xs uppercase tracking-widest opacity-60 font-medium">O que está incluso</h2>
           <p className="text-sm opacity-90">
-            <strong>Você só precisa trazer as peças.</strong> A gente cuida de toda a estrutura: câmera profissional, tripés,
-            iluminação e o olhar da equipe. É o pacote ideal para quem tem <strong>uma ou mais marcas</strong> e não tem tempo
-            (ou estrutura) para produzir fotos de qualidade.
+            <strong>Você só precisa trazer as peças.</strong> A gente cuida de toda a estrutura: câmera profissional,
+            tripés, iluminação e o olhar da equipe. O valor de <strong>R$ 350 vale para 1 marca com 1h de estúdio</strong>.
+            Se você trouxer mais de um empreendimento, cada marca extra soma <strong>+ R$ 350 e + 1h</strong> na sessão -
+            assim garantimos tempo e cuidado individual para cada uma.
           </p>
           <ul className="text-sm space-y-1.5 opacity-90 pt-1">
-            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça — frente, costas e laterais).</li>
+            <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça - frente, costas e laterais).</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Edição das imagens prontas para site e Instagram.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Making-of do dia para você usar como conteúdo.</li>
-            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Pode trazer <strong>mais de uma marca</strong> na mesma sessão — só nos conte quantas para a gente preparar tudo.</li>
+            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Cada marca ganha <strong>1h dedicada + R$ 350</strong>. Ex.: 3 marcas = 3h e R$ 1.050.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Estúdio em L com iluminação, Wi-Fi, banheiro e água à vontade.</li>
           </ul>
           <p className="text-xs opacity-70">
@@ -268,7 +269,9 @@ function PacoteMarcasPage() {
                 value={qtdMarcas}
                 onChange={(e) => setQtdMarcas(Math.max(1, Math.min(10, parseInt(e.target.value || "1", 10))))}
               />
-              <p className="text-[11px] opacity-70 mt-1">R$ 350 por marca — o valor total é multiplicado.</p>
+              <p className="text-[11px] opacity-70 mt-1">
+                R$ 350 e 1h de estúdio para <strong>cada</strong> marca. O valor total e a duração são multiplicados pela quantidade.
+              </p>
             </div>
             <div>
               <Label>Seu nome *</Label>

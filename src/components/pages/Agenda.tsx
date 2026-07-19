@@ -143,8 +143,14 @@ export function Agenda() {
       <div className="space-y-4">
         {grupos.map(([dia, lista]) => (
           <div key={dia}>
-            <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2 px-1">
-              {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+            <div className="sticky top-0 z-10 -mx-4 md:mx-0 px-4 md:px-3 py-2 mb-3 bg-brand-dark text-brand-cream rounded-md flex items-baseline gap-3 shadow-sm">
+              <span className="text-2xl md:text-3xl font-bold tabular-nums leading-none">
+                {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit" })}
+              </span>
+              <span className="text-sm md:text-base font-medium capitalize">
+                {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", month: "long", year: "numeric" })}
+              </span>
+              <span className="ml-auto text-xs opacity-75">{lista.length} reserva{lista.length === 1 ? "" : "s"}</span>
             </div>
             <div className="space-y-2">
               {lista.map((r) => <ReservaCard key={r.id} r={r} onChange={() => qc.invalidateQueries({ queryKey: ["reservas"] })} />)}
@@ -328,7 +334,7 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <div className="text-sm text-muted-foreground">
-              Reserva de <strong>{r.cliente_nome}</strong> — {dataFmt} às {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
+              Reserva de <strong>{r.cliente_nome}</strong> - {dataFmt} às {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button

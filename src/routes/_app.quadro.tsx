@@ -3,5 +3,5 @@ import { Quadro } from "@/components/pages/Quadro";
 
 export const Route = createFileRoute("/_app/quadro")({
   component: Quadro,
-  head: () => ({ meta: [{ title: "Ideias & Tarefas — Mambaia" }] }),
+  head: () => ({ meta: [{ title: "Ideias & Tarefas - Mambaia" }] }),
 });

@@ -305,7 +305,7 @@ export function Dashboard() {
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{t.descricao}</div>
                   <div className="text-xs text-muted-foreground">
-                    {new Date(t.data + "T00:00:00").toLocaleDateString("pt-BR")} · {cat?.nome ?? "—"}
+                    {new Date(t.data + "T00:00:00").toLocaleDateString("pt-BR")} · {cat?.nome ?? "-"}
                     {socio && ` · ${socio.nome}`}
                   </div>
                 </div>
