@@ -30,15 +30,20 @@ const WA_MSG = encodeURIComponent(
   "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio."
 );
 const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
+const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Belo Horizonte - MG";
 const MAPS_LINK =
-  "https://www.google.com/maps/place/MAMBAIA+%E2%80%94+Est%C3%BAdio+Fotogr%C3%A1fico+e+Espa%C3%A7o+Criativo";
+  "https://www.google.com/maps/search/?api=1&query=" +
+  encodeURIComponent("Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Belo Horizonte - MG");
 const MAPS_EMBED =
-  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3751.1431918599174!2d-43.941116823885466!3d-19.918369837948333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa69977d90fccb1%3A0xe2b154452693026a!2sMAMBAIA%20%E2%80%94%20Est%C3%BAdio%20Fotogr%C3%A1fico%20e%20Espa%C3%A7o%20Criativo!5e0!3m2!1spt-BR!2sbr!4v1784321625847!5m2!1spt-BR!2sbr";
+  "https://www.google.com/maps?q=" +
+  encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Belo Horizonte - MG") +
+  "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
 
-const TITLE = "Mambaia - Estúdio criativo em Belo Horizonte";
+const TITLE = "Mambaia | Estúdio criativo na Praça Sete, Belo Horizonte";
 const DESC =
-  "Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Reserve online seu horário no Mambaia.";
+  "Estúdio fotográfico com ciclorama, coworking e espaço para eventos no Centro de BH. Reserve online por hora, com sinal via PIX. R. Rio de Janeiro, 462 - Sala 2217.";
+const OG_IMAGE = `${SITE}${estudio4.url}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
