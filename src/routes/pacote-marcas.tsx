@@ -269,7 +269,9 @@ function PacoteMarcasPage() {
                 value={qtdMarcas}
                 onChange={(e) => setQtdMarcas(Math.max(1, Math.min(10, parseInt(e.target.value || "1", 10))))}
               />
-              <p className="text-[11px] opacity-70 mt-1">R$ 350 por marca - o valor total é multiplicado.</p>
+              <p className="text-[11px] opacity-70 mt-1">
+                R$ 350 e 1h de estúdio para <strong>cada</strong> marca. O valor total e a duração são multiplicados pela quantidade.
+              </p>
             </div>
             <div>
               <Label>Seu nome *</Label>
