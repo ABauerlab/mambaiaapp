@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /primeiro-acesso
+Disallow: /cobranca/
+Disallow: /_app/
+Sitemap: https://mambaiabh.com.br/sitemap.xml
