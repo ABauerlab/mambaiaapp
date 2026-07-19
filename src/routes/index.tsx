@@ -313,14 +313,6 @@ function Servicos() {
                 key={s.title}
                 className="group bg-white rounded-2xl border border-black/5 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img
-                    src={s.img}
-                    alt={s.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                  />
-                </div>
                 <div className="p-6 md:p-7">
                   <div className="flex items-center gap-3 mb-3">
                     <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
