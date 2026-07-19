@@ -169,15 +169,16 @@ function PacoteMarcasPage() {
         <section className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 space-y-3">
           <h2 className="text-xs uppercase tracking-widest opacity-60 font-medium">O que está incluso</h2>
           <p className="text-sm opacity-90">
-            <strong>Você só precisa trazer as peças.</strong> A gente cuida de toda a estrutura: câmera profissional, tripés,
-            iluminação e o olhar da equipe. É o pacote ideal para quem tem <strong>uma ou mais marcas</strong> e não tem tempo
-            (ou estrutura) para produzir fotos de qualidade.
+            <strong>Você só precisa trazer as peças.</strong> A gente cuida de toda a estrutura: câmera profissional,
+            tripés, iluminação e o olhar da equipe. O valor de <strong>R$ 350 vale para 1 marca com 1h de estúdio</strong>.
+            Se você trouxer mais de um empreendimento, cada marca extra soma <strong>+ R$ 350 e + 1h</strong> na sessão -
+            assim garantimos tempo e cuidado individual para cada uma.
           </p>
           <ul className="text-sm space-y-1.5 opacity-90 pt-1">
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Fotografia de produto (3 a 5 ângulos por peça - frente, costas e laterais).</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Edição das imagens prontas para site e Instagram.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Making-of do dia para você usar como conteúdo.</li>
-            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Pode trazer <strong>mais de uma marca</strong> na mesma sessão - só nos conte quantas para a gente preparar tudo.</li>
+            <li className="flex gap-2"><Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Cada marca ganha <strong>1h dedicada + R$ 350</strong>. Ex.: 3 marcas = 3h e R$ 1.050.</li>
             <li className="flex gap-2"><Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Estúdio em L com iluminação, Wi-Fi, banheiro e água à vontade.</li>
           </ul>
           <p className="text-xs opacity-70">
