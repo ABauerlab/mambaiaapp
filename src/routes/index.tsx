@@ -17,6 +17,8 @@ import {
   Home as HomeIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { maskPhoneInput, isValidPhoneBR, onlyDigits } from "@/lib/phone";
+import { toast } from "sonner";
 import logo from "@/assets/logo-mambaia.svg";
 import estudio1 from "@/assets/studio/estudio-1.asset.json";
 import estudio2 from "@/assets/studio/estudio-2.asset.json";
