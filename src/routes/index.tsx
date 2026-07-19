@@ -201,11 +201,12 @@ function Hero() {
         className="absolute inset-0 w-full h-full object-cover"
         loading="eager"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0D2E24]/70 via-[#0D2E24]/45 to-[#0D2E24]/85" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0D2E24]/90 via-[#0D2E24]/70 to-[#0D2E24]/95" />
+      <div className="absolute inset-0 bg-black/25" />
       <div className="relative z-10 max-w-4xl mx-auto px-5 md:px-8 text-center text-white pt-24 pb-16">
         <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 px-4 py-1.5 text-xs md:text-sm font-medium mb-6 animate-fade-in">
           <MapPin className="w-3.5 h-3.5 text-[#E5C72A]" />
-          Praça Sete · Belo Horizonte
+          Centro de Belo Horizonte · Praça Sete
         </span>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.05] animate-fade-in">
           A criatividade
