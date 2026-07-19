@@ -258,7 +258,7 @@ const servicos: Servico[] = [
   {
     icon: Camera,
     title: "Estúdio fotográfico",
-    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. Reserva por hora, a partir de R$ 100.",
+    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. Aluguel por hora a partir de R$ 100, com sinal via PIX.",
     img: estudio5.url,
     href: "/agendar",
     cta: "Agendar sessão",
@@ -266,7 +266,7 @@ const servicos: Servico[] = [
   {
     icon: Users,
     title: "Coworking criativo",
-    desc: "Espaço acolhedor para trabalhar, editar ou reunir sua equipe - com café, wi-fi e ambiente inspirador na Praça Sete.",
+    desc: "Ambiente inspirador para trabalhar, editar ou reunir a equipe. Café, Wi-Fi e vista da cidade no coração do Centro.",
     img: estudio3.url,
     href: "/agendar",
     cta: "Reservar horário",
@@ -274,7 +274,7 @@ const servicos: Servico[] = [
   {
     icon: Sparkles,
     title: "Eventos e encontros",
-    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca no centro de BH.",
+    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca no Centro de BH.",
     img: estudio2.url,
     href: "/agendar",
     cta: "Agendar evento",
@@ -282,7 +282,7 @@ const servicos: Servico[] = [
   {
     icon: Building2,
     title: "Pacote marcas / brechó",
-    desc: "Produção fotográfica completa de 1h por marca - R$ 350. Ideal para catálogos, brechós e pequenas marcas.",
+    desc: "Produção fotográfica completa: R$ 350 por marca, com 1h de estúdio para cada. Ideal para catálogos e brechós.",
     img: estudio1.url,
     href: "/pacote-marcas",
     cta: "Solicitar pacote",
