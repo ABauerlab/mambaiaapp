@@ -11,8 +11,9 @@ import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
 
-const TITLE = "Mambaia - Estúdio criativo na Praça Sete, BH";
-const DESC = "Mambaia é um estúdio criativo no coração de Belo Horizonte. Reserve seu horário por hora, com sinal via PIX. Espaço para fotos, gravações, ensaios e encontros criativos.";
+const TITLE = "Mambaia | Estúdio criativo em Belo Horizonte";
+const DESC = "Estúdio fotográfico, coworking e espaço para eventos no Centro de BH. Reserve por hora com sinal via PIX. R. Rio de Janeiro, 462 - Sala 2217.";
+const OG_IMAGE = "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg";
 
 function NotFoundComponent() {
   return (
@@ -71,9 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Mambaia" },
       { property: "og:locale", content: "pt_BR" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "800" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
