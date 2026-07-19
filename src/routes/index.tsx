@@ -30,13 +30,13 @@ const WA_MSG = encodeURIComponent(
   "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio."
 );
 const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
-const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Centro, Belo Horizonte - MG";
+const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Belo Horizonte - MG";
 const MAPS_LINK =
   "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent("Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Centro, Belo Horizonte - MG");
+  encodeURIComponent("Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Belo Horizonte - MG");
 const MAPS_EMBED =
   "https://www.google.com/maps?q=" +
-  encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Centro, Belo Horizonte - MG") +
+  encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Belo Horizonte - MG") +
   "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
 
