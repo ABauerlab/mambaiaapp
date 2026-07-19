@@ -30,13 +30,13 @@ const WA_MSG = encodeURIComponent(
   "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio."
 );
 const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
-const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Belo Horizonte - MG";
+const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Centro, Belo Horizonte - MG";
 const MAPS_LINK =
   "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent("Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Belo Horizonte - MG");
+  encodeURIComponent("Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Centro, Belo Horizonte - MG");
 const MAPS_EMBED =
   "https://www.google.com/maps?q=" +
-  encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Belo Horizonte - MG") +
+  encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Centro, Belo Horizonte - MG") +
   "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
 
@@ -536,17 +536,17 @@ function Localizacao() {
             <li className="flex gap-3">
               <MapPin className="w-5 h-5 text-[#5F6B2D] shrink-0 mt-0.5" />
               <span>
-                Praça Sete, Centro
+                R. Rio de Janeiro, 462 - Sala 2217
                 <br />
-                Belo Horizonte - MG
+                Centro, Belo Horizonte - MG
               </span>
             </li>
             <li className="flex gap-3">
               <Clock className="w-5 h-5 text-[#5F6B2D] shrink-0 mt-0.5" />
               <span>
-                Seg à Sex: 09h – 19h
+                Seg à Sex: 09h - 19h
                 <br />
-                Sáb: 10h – 17h
+                Sáb: 10h - 17h
               </span>
             </li>
             <li className="flex gap-3">
@@ -644,10 +644,10 @@ function Footer() {
         <div>
           <h4 className="text-white font-semibold text-sm mb-3">Onde</h4>
           <ul className="space-y-2 text-sm text-white/70">
-            <li>Praça Sete, Centro</li>
-            <li>Belo Horizonte - MG</li>
-            <li>Seg-Sex: 09h – 19h</li>
-            <li>Sáb: 10h – 17h</li>
+            <li>R. Rio de Janeiro, 462 - Sala 2217</li>
+            <li>Centro, Belo Horizonte - MG</li>
+            <li>Seg-Sex: 09h - 19h</li>
+            <li>Sáb: 10h - 17h</li>
           </ul>
         </div>
         <div>

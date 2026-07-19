@@ -83,7 +83,7 @@ export const Route = createFileRoute("/agendar")({
           description: "Estúdio criativo para aluguel por hora na Praça Sete, Belo Horizonte.",
           address: { "@type": "PostalAddress", addressLocality: "Belo Horizonte", addressRegion: "MG", addressCountry: "BR" },
           telephone: "+55 31 99802-1169",
-          priceRange: "R$ 50 – R$ 300",
+          priceRange: "R$ 50 - R$ 300",
           url: "https://mambaiabh.com.br/agendar",
         }),
       },

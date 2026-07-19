@@ -41,7 +41,7 @@ export function isInRange(dateStr: string, r: DateRangeValue): boolean {
 export function formatRange(r: DateRangeValue): string {
   const f = (d: Date) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
   if (r.from.toDateString() === r.to.toDateString()) return f(r.from);
-  return `${f(r.from)} – ${f(r.to)}`;
+  return `${f(r.from)} - ${f(r.to)}`;
 }
 
 export function DateRangeFilter({ value, onChange, className }: { value: DateRangeValue; onChange: (r: DateRangeValue) => void; className?: string }) {
