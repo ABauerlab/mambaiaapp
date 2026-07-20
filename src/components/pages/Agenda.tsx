@@ -132,6 +132,17 @@ export function Agenda() {
             {reservas?.length ?? 0} reserva{(reservas?.length ?? 0) === 1 ? "" : "s"} no período
           </div>
         </div>
+        <div className="mt-4 rounded-lg bg-brand-dark text-brand-cream px-4 py-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span className="text-[10px] uppercase tracking-widest opacity-70">Período selecionado</span>
+          <span className="text-sm md:text-base font-semibold capitalize">
+            {new Date(from + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
+            {" "}até{" "}
+            {new Date(to + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
+          </span>
+          <span className="ml-auto text-xs opacity-80">
+            {grupos.length} dia{grupos.length === 1 ? "" : "s"} com reservas
+          </span>
+        </div>
       </Card>
 
       {isLoading && (

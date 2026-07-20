@@ -4,10 +4,10 @@ import { Star, Instagram, Wifi, Copy, Check, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo-mambaia.svg";
 import { Button } from "@/components/ui/button";
+import { openMaps } from "@/lib/openMaps";
 
 const STORAGE_KEY = "mambaia_wifi_v1";
 const REVIEW_URL = "https://g.page/r/CWoCkyZFVLHiEBM/review";
-const REVIEW_URL_ANDROID_APP = "intent://g.page/r/CWoCkyZFVLHiEBM/review#Intent;scheme=https;package=com.google.android.apps.maps;end";
 const INSTAGRAM_URL = "https://instagram.com/mambaiabh";
 const INSTAGRAM_APP = "instagram://user?username=mambaiabh";
 const WIFI_SSID = "MAMBAIA";
@@ -26,11 +26,19 @@ type Step = "intro" | "google" | "instagram" | "done";
 export const Route = createFileRoute("/wifi")({
   head: () => ({
     meta: [
-      { title: "Wi-Fi Mambaia" },
-      { name: "description", content: "Conecte-se ao Wi-Fi da Mambaia." },
+      { title: "Wi-Fi Mambaia | Conecte-se ao estúdio" },
+      { name: "description", content: "Libere o Wi-Fi da Mambaia com um clique - basta seguir o passo a passo e voltar para a página." },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "theme-color", content: "#1F3D2B" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { property: "og:title", content: "Wi-Fi Mambaia" },
+      { property: "og:description", content: "Conecte-se ao Wi-Fi do estúdio Mambaia em poucos passos." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://mambaiabh.com.br/wifi" },
+      { property: "og:image", content: "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://mambaiabh.com.br/wifi" }],
   }),
   component: WifiPage,
 });
@@ -87,9 +95,9 @@ function WifiPage() {
   }
 
   function abrirGoogle() {
-    const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
-    const appUrl = /Android/i.test(ua) ? REVIEW_URL_ANDROID_APP : REVIEW_URL;
-    abrirNoAppOuBrowser(appUrl, REVIEW_URL);
+    // Deep-link into the native Google Maps app when possible,
+    // fall back to the web review URL when it isn't installed.
+    openMaps({ reviewUrl: REVIEW_URL, query: "Mambaia Estúdio Belo Horizonte" });
     setTimeout(() => setGoogleConfirmable(true), UNLOCK_DELAY_MS);
   }
   function abrirInsta() {
