@@ -744,19 +744,45 @@ function Landing() {
 function LeadForm() {
   const [nome, setNome] = useState("");
   const [wa, setWa] = useState("");
+  const [honey, setHoney] = useState(""); // honeypot - bots costumam preencher
+  const [mountedAt] = useState(() => Date.now());
+  const [confirmed, setConfirmed] = useState<null | { nome: string; wa: string }>(null);
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Honeypot: campo escondido; humano nunca preenche.
+    if (honey.trim().length > 0) return;
+    // Tempo mínimo pra evitar bots que enviam o form imediatamente.
+    if (Date.now() - mountedAt < 1200) { toast.error("Aguarde um instante e tente novamente."); return; }
     if (nome.trim().length < 2) { toast.error("Informe seu nome"); return; }
     if (!isValidPhoneBR(wa)) { toast.error("WhatsApp inválido - use DDD + número"); return; }
+    // Bloqueio anti-repetição: mesmo par nome+whatsapp em janela curta.
+    try {
+      const key = "mambaia_lead_last";
+      const raw = localStorage.getItem(key);
+      const sig = `${nome.trim().toLowerCase()}|${onlyDigits(wa)}`;
+      if (raw) {
+        const prev = JSON.parse(raw) as { sig: string; ts: number };
+        if (prev.sig === sig && Date.now() - prev.ts < 60_000) {
+          toast.error("Recebemos seu contato há instantes. Vamos te chamar no WhatsApp.");
+          return;
+        }
+      }
+      localStorage.setItem(key, JSON.stringify({ sig, ts: Date.now() }));
+    } catch { /* ignore storage errors */ }
+    setConfirmed({ nome: nome.trim(), wa });
+  };
+
+  const seguir = () => {
+    if (!confirmed) return;
     const msg = encodeURIComponent(
-      `Oi Mambaia! Meu nome é ${nome.trim()} (WhatsApp ${wa}). Vim pelo site e queria falar sobre uma reserva no estúdio.`,
+      `Oi Mambaia! Meu nome é ${confirmed.nome} (WhatsApp ${confirmed.wa}). Vim pelo site e queria falar sobre uma reserva no estúdio.`,
     );
-    // dispara o WhatsApp já preenchido...
     window.open(`https://wa.me/${WA_NUM}?text=${msg}`, "_blank", "noopener,noreferrer");
-    // ...e leva o cliente para a agenda com os dados prontos
-    const q = new URLSearchParams({ nome: nome.trim(), whatsapp: onlyDigits(wa) }).toString();
+    const q = new URLSearchParams({ nome: confirmed.nome, whatsapp: onlyDigits(confirmed.wa) }).toString();
     window.location.href = `/agendar?${q}`;
   };
+
   return (
     <section id="reservar" className="bg-[#0D2E24] text-white">
       <div className="max-w-5xl mx-auto px-5 md:px-8 py-12 md:py-16 grid md:grid-cols-2 gap-8 items-center">
@@ -771,7 +797,49 @@ function LeadForm() {
             Preencha nome e WhatsApp: já abrimos a nossa conversa e te levamos direto para a agenda com seus dados prontos.
           </p>
         </div>
+        {confirmed ? (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 space-y-4 backdrop-blur">
+            <div className="flex items-center gap-2 text-[#E5C72A]">
+              <Check className="w-5 h-5" />
+              <span className="text-sm font-semibold uppercase tracking-widest">Confirme seus dados</span>
+            </div>
+            <div className="rounded-lg bg-white/10 p-4 text-sm space-y-1">
+              <div><span className="text-white/60">Nome:</span> <strong>{confirmed.nome}</strong></div>
+              <div><span className="text-white/60">WhatsApp:</span> <strong>{confirmed.wa}</strong></div>
+            </div>
+            <p className="text-xs text-white/70">
+              Ao continuar vamos abrir a conversa no WhatsApp e te levar para a agenda com esses dados prontos.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                type="button"
+                onClick={seguir}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
+              >
+                Continuar <ArrowRight className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmed(null)}
+                className="rounded-lg border border-white/20 text-white px-5 py-3 text-sm hover:bg-white/10 transition"
+              >
+                Corrigir
+              </button>
+            </div>
+          </div>
+        ) : (
         <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 space-y-3 backdrop-blur">
+          {/* honeypot: hidden from humans, tempting to bots */}
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honey}
+            onChange={(e) => setHoney(e.target.value)}
+            name="empresa"
+            aria-hidden="true"
+            className="hidden"
+          />
           <div>
             <label className="text-[11px] uppercase tracking-widest text-white/70">Nome</label>
             <input
@@ -780,6 +848,9 @@ function LeadForm() {
               placeholder="Como podemos te chamar?"
               className="mt-1 w-full rounded-lg bg-white text-[#0D2E24] px-4 py-3 outline-none focus:ring-2 focus:ring-[#E5C72A]"
               autoComplete="name"
+              required
+              minLength={2}
+              maxLength={80}
             />
           </div>
           <div>
@@ -790,6 +861,7 @@ function LeadForm() {
               placeholder="(31) 9 9999-9999"
               inputMode="tel"
               autoComplete="tel"
+              required
               className="mt-1 w-full rounded-lg bg-white text-[#0D2E24] px-4 py-3 outline-none focus:ring-2 focus:ring-[#E5C72A]"
             />
           </div>
@@ -803,6 +875,7 @@ function LeadForm() {
             Sem spam. Usamos seu contato apenas para organizar a reserva.
           </p>
         </form>
+        )}
       </div>
     </section>
   );
