@@ -6,6 +6,7 @@ export const Route = createFileRoute("/_app/agenda")({
     meta: [
       { title: "Agenda do estúdio - Mambaia App" },
       { name: "description", content: "Gerencie as reservas do estúdio Mambaia." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Agenda,
