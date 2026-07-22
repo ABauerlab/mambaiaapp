@@ -93,6 +93,7 @@ function PacoteMarcasPage() {
   const [empreendimento, setEmpreendimento] = useState("");
   const [qtdMarcas, setQtdMarcas] = useState<number>(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [aceito, setAceito] = useState(false);
 
   const dataStr = ymd(dataSel);
   const qtd = Math.max(1, Math.min(10, qtdMarcas || 1));
@@ -136,6 +137,7 @@ function PacoteMarcasPage() {
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
       if (empreendimento.trim().length < 2) throw new Error("Informe o nome da marca ou brechó");
       if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
+      if (!aceito) throw new Error("Leia e aceite o termo de reserva para continuar");
       const { data, error } = await sb.rpc("criar_reserva_pacote", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
