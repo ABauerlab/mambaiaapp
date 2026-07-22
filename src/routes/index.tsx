@@ -738,6 +738,7 @@ function Landing() {
         <Hero />
         <LeadForm />
         <Servicos />
+        <Medidas />
         <Galeria />
         <Sobre />
         <Steps />
