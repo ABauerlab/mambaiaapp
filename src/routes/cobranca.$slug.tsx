@@ -367,7 +367,7 @@ function CobrancaPage() {
         <footer className="text-center text-xs opacity-50 pt-4">
           Dúvidas? Fale com a gente:{" "}
           <a className="underline" href={waMambaia(`Oi! Estou vendo a proposta "${data.titulo}" e queria tirar uma dúvida.`)} target="_blank" rel="noreferrer">
-            {formatPhoneBR("31998021169")}
+            {formatPhoneBR("3132232356")}
           </a>
         </footer>
       </main>
