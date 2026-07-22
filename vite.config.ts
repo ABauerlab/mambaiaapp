@@ -5,6 +5,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  root: process.cwd(),
   plugins: [
     tsconfigPaths(),
     tailwindcss(),
@@ -13,6 +14,7 @@ export default defineConfig({
       autoCodeSplitting: true,
       routesDirectory: "./src/routes",
       generatedRouteTree: "./src/routeTree.gen.ts",
+      projectRoot: process.cwd(),
     }),
     viteReact(),
   ],
