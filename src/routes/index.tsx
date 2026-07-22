@@ -202,6 +202,12 @@ function Hero() {
         alt="Estúdio Mambaia com vista para Belo Horizonte"
         className="absolute inset-0 w-full h-full object-cover"
         loading="eager"
+        decoding="async"
+        // @ts-expect-error fetchpriority is a valid HTML hint but not typed in React yet
+        fetchpriority="high"
+        width={1920}
+        height={1280}
+        sizes="100vw"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#0D2E24]/90 via-[#0D2E24]/70 to-[#0D2E24]/95" />
       <div className="absolute inset-0 bg-black/25" />
