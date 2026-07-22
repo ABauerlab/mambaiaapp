@@ -1,7 +1,21 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Loader2, ExternalLink, Copy, Check, XCircle, CheckCircle2, MessageCircle, Trash2, FileDown } from "lucide-react";
+import {
+  Loader2,
+  ExternalLink,
+  Copy,
+  Check,
+  XCircle,
+  CheckCircle2,
+  MessageCircle,
+  Trash2,
+  FileDown,
+  Lock,
+  Unlock,
+  Pencil,
+  PlusCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "./PageHeader";
@@ -17,7 +31,6 @@ import { formatPhoneBR, maskPhoneInput, onlyDigits, isValidPhoneBR } from "@/lib
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { PdfPreviewDialog } from "@/components/PdfPreviewDialog";
 import type { ReservaPDFInput } from "@/lib/reserva-pdf";
-import { Pencil } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
@@ -72,10 +85,19 @@ export function Agenda() {
   const qc = useQueryClient();
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const in60 = useMemo(() => {
-    const d = new Date(); d.setDate(d.getDate() + 60); return d.toISOString().slice(0, 10);
+    const d = new Date();
+    d.setDate(d.getDate() + 60);
+    return d.toISOString().slice(0, 10);
   }, []);
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(in60);
+
+  // Modal para Bloquear Horário
+  const [blockOpen, setBlockOpen] = useState(false);
+  const [blockData, setBlockData] = useState(today);
+  const [blockHora, setBlockHora] = useState("09:00");
+  const [blockDuracao, setBlockDuracao] = useState<number>(120);
+  const [blockMotivo, setBlockMotivo] = useState("");
 
   const { data: reservas, isLoading } = useQuery({
     queryKey: ["reservas", from, to],
@@ -91,6 +113,33 @@ export function Agenda() {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const criarBloqueio = useMutation({
+    mutationFn: async () => {
+      const motivo = blockMotivo.trim() || "Uso interno / Indisponível";
+      const { error } = await sb.from("reservas").insert({
+        data: blockData,
+        hora_inicio: blockHora + ":00",
+        duracao_minutos: blockDuracao,
+        cliente_nome: `BLOQUEIO: ${motivo}`,
+        cliente_whatsapp: "00000000000",
+        valor_total: 0,
+        valor_sinal: 0,
+        status: "confirmada",
+        observacoes: `Bloqueio de agenda: ${motivo}`,
+        tipo: "locacao",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Horário bloqueado na agenda");
+      setBlockOpen(false);
+      setBlockMotivo("");
+      qc.invalidateQueries({ queryKey: ["reservas"] });
+      qc.invalidateQueries({ queryKey: ["ocupados"] });
+    },
+    onError: (e) => toast.error(friendlyErrorMessage(e)),
+  });
+
   const grupos = useMemo(() => {
     const map = new Map<string, Reserva[]>();
     (reservas ?? []).forEach((r) => {
@@ -104,15 +153,20 @@ export function Agenda() {
     <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <PageHeader
         title="Agenda do estúdio"
-        description="Gerencie as reservas do Mambaia. O link público está sempre disponível para o cliente."
+        description="Gerencie as reservas e bloqueios do estúdio. Horários bloqueados não aparecem como disponíveis para o cliente."
         action={
           <div className="flex gap-2 flex-wrap">
+            <Button variant="default" className="bg-amber-600 hover:bg-amber-700 text-white" onClick={() => setBlockOpen(true)}>
+              <Lock className="w-4 h-4 mr-1.5" /> Bloquear horário
+            </Button>
             <Button variant="outline" onClick={copyLink}>
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               Copiar link público
             </Button>
             <a href="/agendar" target="_blank" rel="noreferrer">
-              <Button variant="ghost"><ExternalLink className="w-4 h-4" /> Abrir</Button>
+              <Button variant="ghost">
+                <ExternalLink className="w-4 h-4" /> Abrir
+              </Button>
             </a>
           </div>
         }
@@ -129,18 +183,18 @@ export function Agenda() {
             <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
           </div>
           <div className="text-sm text-muted-foreground">
-            {reservas?.length ?? 0} reserva{(reservas?.length ?? 0) === 1 ? "" : "s"} no período
+            {reservas?.length ?? 0} item{(reservas?.length ?? 0) === 1 ? "" : "s"} no período
           </div>
         </div>
         <div className="mt-4 rounded-lg bg-brand-dark text-brand-cream px-4 py-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-[10px] uppercase tracking-widest opacity-70">Período selecionado</span>
           <span className="text-sm md:text-base font-semibold capitalize">
-            {new Date(from + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
-            {" "}até{" "}
+            {new Date(from + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}{" "}
+            até{" "}
             {new Date(to + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
           </span>
           <span className="ml-auto text-xs opacity-80">
-            {grupos.length} dia{grupos.length === 1 ? "" : "s"} com reservas
+            {grupos.length} dia{grupos.length === 1 ? "" : "s"} com agendamentos
           </span>
         </div>
       </Card>
@@ -161,24 +215,102 @@ export function Agenda() {
               <span className="text-sm md:text-base font-medium capitalize">
                 {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", month: "long", year: "numeric" })}
               </span>
-              <span className="ml-auto text-xs opacity-75">{lista.length} reserva{lista.length === 1 ? "" : "s"}</span>
+              <span className="ml-auto text-xs opacity-75">
+                {lista.length} agendamento{lista.length === 1 ? "" : "s"}
+              </span>
             </div>
             <div className="space-y-2">
-              {lista.map((r) => <ReservaCard key={r.id} r={r} onChange={() => qc.invalidateQueries({ queryKey: ["reservas"] })} />)}
+              {lista.map((r) => (
+                <ReservaCard
+                  key={r.id}
+                  r={r}
+                  onChange={() => {
+                    qc.invalidateQueries({ queryKey: ["reservas"] });
+                    qc.invalidateQueries({ queryKey: ["ocupados"] });
+                  }}
+                />
+              ))}
             </div>
           </div>
         ))}
         {!isLoading && grupos.length === 0 && (
           <Card className="p-8 text-center text-sm text-muted-foreground">
-            Nenhuma reserva no período selecionado.
+            Nenhuma reserva ou bloqueio no período selecionado.
           </Card>
         )}
       </div>
+
+      {/* Modal para Bloquear Horário */}
+      <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-amber-600" />
+              Bloquear horário na agenda
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 pt-2">
+            <p className="text-xs text-muted-foreground">
+              O horário bloqueado ficará indisponível para reservas no site público.
+            </p>
+            <div>
+              <Label>Data</Label>
+              <Input type="date" value={blockData} onChange={(e) => setBlockData(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Hora de início</Label>
+                <Input type="time" value={blockHora} onChange={(e) => setBlockHora(e.target.value)} />
+              </div>
+              <div>
+                <Label>Duração</Label>
+                <select
+                  value={blockDuracao}
+                  onChange={(e) => setBlockDuracao(parseInt(e.target.value, 10))}
+                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  <option value={30}>30 minutos</option>
+                  <option value={60}>1 hora</option>
+                  <option value={120}>2 horas</option>
+                  <option value={180}>3 horas</option>
+                  <option value={240}>4 horas</option>
+                  <option value={480}>8 horas (Turno)</option>
+                  <option value={780}>Dia inteiro (09h às 22h)</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <Label>Motivo / Observação (opcional)</Label>
+              <Input
+                value={blockMotivo}
+                onChange={(e) => setBlockMotivo(e.target.value)}
+                placeholder="Ex: Manutenção, Ensaio Mambaia, Fechado..."
+              />
+            </div>
+          </div>
+          <DialogFooter className="pt-2">
+            <Button variant="ghost" onClick={() => setBlockOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+              onClick={() => criarBloqueio.mutate()}
+              disabled={criarBloqueio.isPending}
+            >
+              {criarBloqueio.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              Bloquear Horário
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
 function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
+  const isBloqueio = r.cliente_nome.startsWith("BLOQUEIO") || r.cliente_whatsapp === "00000000000";
+  const motivoBloqueio = isBloqueio ? r.cliente_nome.replace(/^BLOQUEIO:\s*/, "") : "";
+
   const [payOpen, setPayOpen] = useState(false);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
@@ -209,9 +341,13 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
       const { error } = await sb.from("reservas").update({ status }).eq("id", r.id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Reserva atualizada"); onChange(); },
+    onSuccess: () => {
+      toast.success("Reserva atualizada");
+      onChange();
+    },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+
   const marcarPago = useMutation({
     mutationFn: async () => {
       const v = parseFloat((valorPag || "").replace(",", "."));
@@ -229,44 +365,124 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
         await sb.from("cobrancas").update({ status: "pago", paid_at: new Date().toISOString() }).eq("id", r.cobranca_id);
       }
     },
-    onSuccess: () => { toast.success("Pagamento registrado"); setPayOpen(false); onChange(); },
+    onSuccess: () => {
+      toast.success("Pagamento registrado");
+      setPayOpen(false);
+      onChange();
+    },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+
   const remove = useMutation({
     mutationFn: async () => {
       const { error } = await sb.from("reservas").delete().eq("id", r.id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Reserva excluída"); onChange(); },
+    onSuccess: () => {
+      toast.success(isBloqueio ? "Bloqueio removido" : "Reserva excluída");
+      onChange();
+    },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+
   const salvarEdicao = useMutation({
     mutationFn: async () => {
-      if (edNome.trim().length < 2) throw new Error("Informe o nome do cliente");
-      if (!isValidPhoneBR(edWa)) throw new Error("WhatsApp inválido");
+      if (edNome.trim().length < 2) throw new Error("Informe o nome");
       const total = parseFloat(edTotal.replace(",", "."));
       const sinal = parseFloat(edSinal.replace(",", "."));
-      if (!Number.isFinite(total) || total <= 0) throw new Error("Valor total inválido");
-      if (!Number.isFinite(sinal) || sinal < 0) throw new Error("Sinal inválido");
       const patch: Record<string, unknown> = {
         data: edData,
         hora_inicio: edHora + ":00",
         duracao_minutos: edDur,
         cliente_nome: edNome.trim(),
-        cliente_whatsapp: onlyDigits(edWa),
-        valor_total: total,
-        valor_sinal: sinal,
+        cliente_whatsapp: isBloqueio ? "00000000000" : onlyDigits(edWa),
+        valor_total: Number.isFinite(total) ? total : 0,
+        valor_sinal: Number.isFinite(sinal) ? sinal : 0,
         empreendimento: edEmp.trim() || null,
       };
       const { error } = await sb.from("reservas").update(patch).eq("id", r.id);
       if (error) throw error;
-      if (r.cobranca_id) {
-        await sb.from("cobrancas").update({ total: sinal }).eq("id", r.cobranca_id);
-      }
     },
-    onSuccess: () => { toast.success("Reserva atualizada"); setEditOpen(false); onChange(); },
+    onSuccess: () => {
+      toast.success("Atualizado com sucesso");
+      setEditOpen(false);
+      onChange();
+    },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+
+  if (isBloqueio) {
+    return (
+      <Card className="p-4 border-amber-500/30 bg-amber-500/5">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+              <span className="font-semibold tabular-nums">{r.hora_inicio.slice(0, 5)}</span>
+              <span className="text-muted-foreground text-sm">· {formatDuracao(r.duracao_minutos)}</span>
+              <Badge variant="outline" className="border-amber-500/50 text-amber-700 dark:text-amber-400 bg-amber-500/10">
+                Horário Bloqueado
+              </Badge>
+            </div>
+            <div className="text-sm mt-1 font-medium text-foreground">
+              {motivoBloqueio || "Uso interno / Indisponível"}
+            </div>
+          </div>
+          <div className="flex items-center gap-1">
+            <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
+              <Pencil className="w-3.5 h-3.5 mr-1" /> Editar
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-destructive hover:text-destructive"
+              onClick={() => {
+                if (confirm("Desbloquear este horário na agenda?")) remove.mutate();
+              }}
+            >
+              <Unlock className="w-3.5 h-3.5 mr-1" /> Desbloquear
+            </Button>
+          </div>
+        </div>
+
+        {/* Modal Edição de Bloqueio */}
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Editar Bloqueio de Horário</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 pt-2">
+              <div>
+                <Label>Data</Label>
+                <Input type="date" value={edData} onChange={(e) => setEdData(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Hora de início</Label>
+                  <Input type="time" value={edHora} onChange={(e) => setEdHora(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Duração (min)</Label>
+                  <Input type="number" step={30} min={30} value={edDur} onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))} />
+                </div>
+              </div>
+              <div>
+                <Label>Motivo / Identificador</Label>
+                <Input value={edNome} onChange={(e) => setEdNome(e.target.value)} />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setEditOpen(false)}>Cancelar</Button>
+              <Button onClick={() => salvarEdicao.mutate()} disabled={salvarEdicao.isPending}>
+                {salvarEdicao.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
+                Salvar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-4">
@@ -286,25 +502,30 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           <div className="text-sm mt-1">
             <span className="font-medium">{r.cliente_nome}</span>
             <span className="text-muted-foreground"> · {formatPhoneBR(r.cliente_whatsapp)}</span>
-            {r.empreendimento && (
-              <span className="text-muted-foreground"> · {r.empreendimento}</span>
-            )}
+            {r.empreendimento && <span className="text-muted-foreground"> · {r.empreendimento}</span>}
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
             Proposta nº {String(r.numero_proposta).padStart(4, "0")} · Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
             {r.valor_pago != null && (
-              <> · <span className="text-foreground font-medium">recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})</span></>
+              <>
+                {" "}
+                · <span className="text-foreground font-medium">recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})</span>
+              </>
             )}
           </div>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
           {r.cobrancas?.slug && (
             <Link to="/cobranca/$slug" params={{ slug: r.cobrancas.slug }} target="_blank">
-              <Button size="sm" variant="ghost"><ExternalLink className="w-3 h-3" /> Cobrança</Button>
+              <Button size="sm" variant="ghost">
+                <ExternalLink className="w-3 h-3" /> Cobrança
+              </Button>
             </Link>
           )}
           <a href={waHref} target="_blank" rel="noreferrer">
-            <Button size="sm" variant="ghost"><MessageCircle className="w-3 h-3" /> WhatsApp</Button>
+            <Button size="sm" variant="ghost">
+              <MessageCircle className="w-3 h-3" /> WhatsApp
+            </Button>
           </a>
           <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
             <Pencil className="w-3 h-3" /> Editar
@@ -315,11 +536,7 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             </Button>
           )}
           {r.paid_at && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setPdfOpen(true)}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setPdfOpen(true)}>
               <FileDown className="w-3 h-3" /> Ordem de serviço
             </Button>
           )}
@@ -332,7 +549,13 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
               Reabrir
             </Button>
           )}
-          <Button size="sm" variant="ghost" onClick={() => { if (confirm("Excluir esta reserva?")) remove.mutate(); }}>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              if (confirm("Excluir esta reserva?")) remove.mutate();
+            }}
+          >
             <Trash2 className="w-3 h-3 text-destructive" />
           </Button>
         </div>
@@ -350,7 +573,10 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => { setTipoPag("parcial"); setValorPag(String(r.valor_sinal.toFixed(2))); }}
+                onClick={() => {
+                  setTipoPag("parcial");
+                  setValorPag(String(r.valor_sinal.toFixed(2)));
+                }}
                 className={`rounded-lg border p-3 text-left transition ${tipoPag === "parcial" ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
               >
                 <div className="text-sm font-semibold">Parcial (sinal)</div>
@@ -358,7 +584,10 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
               </button>
               <button
                 type="button"
-                onClick={() => { setTipoPag("integral"); setValorPag(String(r.valor_total.toFixed(2))); }}
+                onClick={() => {
+                  setTipoPag("integral");
+                  setValorPag(String(r.valor_total.toFixed(2)));
+                }}
                 className={`rounded-lg border p-3 text-left transition ${tipoPag === "integral" ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
               >
                 <div className="text-sm font-semibold">Integral</div>
@@ -371,7 +600,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setPayOpen(false)}>Cancelar</Button>
+            <Button variant="ghost" onClick={() => setPayOpen(false)}>
+              Cancelar
+            </Button>
             <Button onClick={() => marcarPago.mutate()} disabled={marcarPago.isPending}>
               {marcarPago.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
               Confirmar
@@ -420,7 +651,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditOpen(false)}>Cancelar</Button>
+            <Button variant="ghost" onClick={() => setEditOpen(false)}>
+              Cancelar
+            </Button>
             <Button onClick={() => salvarEdicao.mutate()} disabled={salvarEdicao.isPending}>
               {salvarEdicao.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
               Salvar alterações
@@ -432,21 +665,25 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
       <PdfPreviewDialog
         open={pdfOpen}
         onOpenChange={setPdfOpen}
-        reserva={r.paid_at ? {
-          cliente: r.cliente_nome,
-          whatsapp: r.cliente_whatsapp,
-          data: r.data,
-          horaInicio: r.hora_inicio.slice(0, 5),
-          duracaoMinutos: r.duracao_minutos,
-          valorTotal: r.valor_total,
-          valorPago: r.valor_pago ?? r.valor_sinal,
-          tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
-          paidAt: r.paid_at,
-          slug: r.cobrancas?.slug ?? r.id,
-          numeroProposta: r.numero_proposta ?? 0,
-          tipo: (r.tipo ?? "locacao") as "locacao" | "pacote_marcas",
-          empreendimento: r.empreendimento,
-        } as ReservaPDFInput : null}
+        reserva={
+          r.paid_at
+            ? ({
+                cliente: r.cliente_nome,
+                whatsapp: r.cliente_whatsapp,
+                data: r.data,
+                horaInicio: r.hora_inicio.slice(0, 5),
+                duracaoMinutos: r.duracao_minutos,
+                valorTotal: r.valor_total,
+                valorPago: r.valor_pago ?? r.valor_sinal,
+                tipoPagamento: (r.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+                paidAt: r.paid_at,
+                slug: r.cobrancas?.slug ?? r.id,
+                numeroProposta: r.numero_proposta ?? 0,
+                tipo: (r.tipo ?? "locacao") as "locacao" | "pacote_marcas",
+                empreendimento: r.empreendimento,
+              } as ReservaPDFInput)
+            : null
+        }
       />
     </Card>
   );

@@ -64,9 +64,6 @@ function LoginPage() {
             Entrar
           </Button>
         </form>
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          Senha temporária: <code>mambaia2026</code> - você troca no primeiro acesso.
-        </p>
       </Card>
     </div>
   );

@@ -87,7 +87,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.setFontSize(9);
   doc.text(isPacote ? "Ordem de serviço · Pacote Marcas" : "Ordem de serviço · Locação", W - 210, 80);
 
-  let y = 200;
+  let y = 190;
   doc.setTextColor(30, 30, 30);
 
   doc.setFont("helvetica", "bold");
@@ -102,94 +102,80 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
       : "Seu horário no estúdio Mambaia está garantido. Guarde este comprovante.",
     40, y,
   );
-  y += 30;
+  y += 25;
 
   doc.setFillColor(244, 239, 225);
-  doc.roundedRect(40, y, W - 80, isPacote ? 150 : 130, 8, 8, "F");
+  doc.roundedRect(40, y, W - 80, isPacote ? 130 : 115, 8, 8, "F");
   doc.setTextColor(BRAND_DARK);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text(isPacote ? "SEU PACOTE" : "SUA RESERVA", 60, y + 24);
+  doc.text(isPacote ? "SEU PACOTE" : "SUA RESERVA", 60, y + 20);
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.text(formatDataBR(r.data), 60, y + 50);
+  doc.setFontSize(13);
+  doc.text(formatDataBR(r.data), 60, y + 42);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-  doc.text(`Início: ${r.horaInicio}  ·  Duração: ${formatDuracao(r.duracaoMinutos)}`, 60, y + 70);
-  doc.text("Cliente: " + r.cliente, 60, y + 90);
-  doc.text("WhatsApp: " + formatPhoneBR(r.whatsapp), 60, y + 108);
+  doc.setFontSize(11);
+  doc.text(`Início: ${r.horaInicio}  ·  Duração: ${formatDuracao(r.duracaoMinutos)}`, 60, y + 60);
+  doc.text("Cliente: " + r.cliente, 60, y + 78);
+  doc.text("WhatsApp: " + formatPhoneBR(r.whatsapp), 60, y + 94);
   if (isPacote && r.empreendimento) {
-    doc.text("Empreendimento: " + r.empreendimento, 60, y + 126);
-    y += 170;
+    doc.text("Empreendimento: " + r.empreendimento, 60, y + 110);
+    y += 145;
   } else {
-    y += 150;
+    y += 130;
   }
 
   doc.setFillColor(240, 245, 235);
-  doc.roundedRect(40, y, W - 80, 90, 8, 8, "F");
+  doc.roundedRect(40, y, W - 80, 80, 8, 8, "F");
   doc.setTextColor(BRAND_DARK);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("PAGAMENTO", 60, y + 24);
+  doc.text("PAGAMENTO", 60, y + 20);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   const tipo = r.tipoPagamento === "integral" ? "Integral (100%)" : "Sinal parcial (50%)";
-  doc.text("Tipo: " + tipo, 60, y + 46);
-  doc.text("Valor pago: " + formatBRL(r.valorPago), 60, y + 62);
-  doc.text("Valor total: " + formatBRL(r.valorTotal), 260, y + 62);
-  doc.text("Recebido em: " + formatDateTimeBR(r.paidAt), 60, y + 78);
+  doc.text("Tipo: " + tipo, 60, y + 38);
+  doc.text("Valor pago: " + formatBRL(r.valorPago), 60, y + 54);
+  doc.text("Valor total: " + formatBRL(r.valorTotal), 260, y + 54);
+  doc.text("Recebido em: " + formatDateTimeBR(r.paidAt), 60, y + 68);
   if (r.tipoPagamento === "parcial") {
     doc.setFont("helvetica", "bold");
-    doc.text("Restante no dia: " + formatBRL(Math.max(0, r.valorTotal - r.valorPago)), 260, y + 78);
+    doc.text("Restante no dia: " + formatBRL(Math.max(0, r.valorTotal - r.valorPago)), 260, y + 68);
   }
-  y += 110;
+  y += 95;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(BRAND_DARK);
-  doc.text("COMBINADOS IMPORTANTES", 40, y);
+  doc.text("TERMO DE RESERVA E CANCELAMENTO", 40, y);
   y += 16;
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(60, 60, 60);
-  const bulletsLocacao = [
+  doc.setFontSize(9);
+  doc.setTextColor(50, 50, 50);
+
+  const bulletsGeneral = [
+    "O cancelamento deverá ser comunicado com, no mínimo, 48 (quarenta e oito) horas de antecedência em relação ao horário da reserva. Nesses casos, o cliente poderá remarcar a locação uma única vez, em até 90 (noventa) dias, sem custo adicional, mediante disponibilidade da agenda.",
+    "Cancelamentos comunicados com menos de 48 (quarenta e oito) horas de antecedência, bem como o não comparecimento na data e horário agendados, implicarão a perda do direito à remarcação e ao reembolso, permanecendo os valores pagos com a Mambaia.",
     "Chegue com 15 minutos de antecedência para se acomodar sem correria.",
-    "Fração adicional cobrada a cada 30 minutos: R$ 50.",
-    "Se precisar de mais tempo no dia, alinhe com a equipe pelo WhatsApp.",
+    "Fração adicional cobrada a cada 30 minutos: R$ 50. Alinhe ampliações com a equipe.",
     "Deixe o ambiente limpo e organizado, exatamente como estava ao chegar.",
-    "Cuide dos equipamentos e do espaço: a Mambaia é casa nossa e sua.",
-    "Não é permitido consumir bebidas nem alimentos no estúdio, e é proibido fumar.",
-    "O sinal pago não é reembolsável.",
-    "Cancelamento com antecedência dá direito a remarcar em até 90 dias, sem novo custo.",
+    "Não é permitido consumir bebidas nem alimentos no estúdio, e é proibido fumar no espaço.",
     "Medidas do estúdio (formato em L): 3,00 m de largura × 2,50 m de profundidade × 2,96 m de altura.",
   ];
-  const bulletsPacote = [
-    "Chegue com 15 minutos de antecedência para se acomodar sem correria.",
-    "Traga as peças organizadas: quanto mais preparado, mais fotos rendemos na hora.",
-    "R$ 350 e 1h de estúdio por marca. Trouxe 2 marcas? São 2h e R$ 700, e assim por diante.",
-    "Fotografia, edição e making-of inclusos no valor de cada marca.",
-    "Entrega das fotos editadas em até 5 dias úteis por link privado.",
-    "Uso das imagens é livre para catálogo, site e redes do seu empreendimento.",
-    "Trate os equipamentos e o espaço com carinho e mantenha o estúdio limpo.",
-    "Não é permitido consumir bebidas nem alimentos no estúdio, e é proibido fumar.",
-    "O sinal pago não é reembolsável.",
-    "Cancelamento com antecedência dá direito a remarcar em até 90 dias, sem novo custo.",
-    "Medidas do estúdio (formato em L): 3,00 m de largura × 2,50 m de profundidade × 2,96 m de altura.",
-  ];
-  const bullets = isPacote ? bulletsPacote : bulletsLocacao;
-  for (const b of bullets) {
+
+  for (const b of bulletsGeneral) {
     const lines = doc.splitTextToSize("• " + b, W - 80);
     doc.text(lines, 40, y);
-    y += lines.length * 14;
+    y += lines.length * 12 + 2;
   }
 
   doc.setDrawColor(200, 200, 200);
-  doc.line(40, H - 60, W - 40, H - 60);
-  doc.setFontSize(9);
+  doc.line(40, H - 50, W - 40, H - 50);
+  doc.setFontSize(8.5);
   doc.setTextColor(120, 120, 120);
-  doc.text("Mambaia · Praça Sete, Belo Horizonte · WhatsApp (31) 3223-2356", 40, H - 40);
-  doc.text(`Código da proposta: ${codigo}  ·  ref. ${r.slug}`, 40, H - 25);
+  doc.text("Mambaia · Praça Sete, Belo Horizonte · WhatsApp (31) 3223-2356", 40, H - 32);
+  doc.text(`Código da proposta: ${codigo}  ·  ref. ${r.slug}`, 40, H - 18);
 
   return doc;
 }

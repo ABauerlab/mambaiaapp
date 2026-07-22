@@ -402,10 +402,10 @@ function AgendarPage() {
 
           <div className="rounded-xl border border-[var(--brand-dark)]/15 bg-white p-4 text-xs leading-relaxed">
             <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2 font-semibold">Termo de reserva</div>
-            <ul className="space-y-1.5 opacity-90 list-disc pl-4">
+            <ul className="space-y-2 opacity-90 list-disc pl-4">
+              <li>O cancelamento deverá ser comunicado com, no mínimo, <strong>48 (quarenta e oito) horas de antecedência</strong> em relação ao horário da reserva. Nesses casos, o cliente poderá remarcar a locação uma única vez, em até 90 (noventa) dias, sem custo adicional, mediante disponibilidade da agenda.</li>
+              <li>Cancelamentos comunicados com menos de 48 (quarenta e oito) horas de antecedência, bem como o não comparecimento na data e horário agendados, implicarão a perda do direito à remarcação e ao reembolso, permanecendo os valores pagos com a Mambaia.</li>
               <li>Comprometo-me a deixar o estúdio nas mesmas condições em que encontrei, limpo e organizado.</li>
-              <li>Compreendo que o valor do sinal <strong>não é reembolsável</strong> em nenhuma hipótese.</li>
-              <li>Em caso de cancelamento avisado com antecedência, tenho direito a <strong>remarcar uma nova data em até 90 dias</strong>, sem custo adicional.</li>
               <li>Estúdio em L: <strong>3,00 m × 2,50 m × 2,96 m</strong> (largura × profundidade × altura).</li>
               <li>Não é permitido consumir bebidas ou alimentos no estúdio, nem fumar no espaço.</li>
             </ul>
