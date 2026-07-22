@@ -701,10 +701,82 @@ function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-5 md:px-8 py-5 text-xs text-white/50 flex flex-wrap gap-2 justify-between">
           <span>© {new Date().getFullYear()} Mambaia Estúdio. Todos os direitos reservados.</span>
-          <Link to="/login" className="hover:text-white/80">Acesso interno</Link>
+          <div className="flex items-center gap-4">
+            <span>
+              Plataforma desenvolvida por{" "}
+              <a
+                href="https://bauerlab.com.br/"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-[#E5C72A] hover:text-white transition"
+              >
+                BauerLab
+              </a>
+            </span>
+            <Link to="/login" className="hover:text-white/80">Acesso interno</Link>
+          </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function Medidas() {
+  return (
+    <section id="medidas" className="py-16 md:py-24 bg-[#F5F5F5]">
+      <div className="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-[1.1fr_1fr] gap-10 items-center">
+        <div>
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            Medidas do estúdio
+          </span>
+          <h2 className="mt-3 text-3xl md:text-4xl font-light tracking-tight text-[#0D2E24]">
+            Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
+          </h2>
+          <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
+            Formato em L com ciclorama branco, luz natural pela janela e altura generosa
+            para iluminação profissional. Ótimo para look book, produto, entrevistas e
+            gravações.
+          </p>
+          <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
+            {[
+              { label: "Largura", v: "3,00 m" },
+              { label: "Profundidade", v: "2,50 m" },
+              { label: "Altura", v: "2,96 m" },
+            ].map((m) => (
+              <div
+                key={m.label}
+                className="rounded-xl bg-white border border-black/5 p-4 text-center shadow-sm"
+              >
+                <dt className="text-[10px] uppercase tracking-widest text-[#5F6B2D]">
+                  {m.label}
+                </dt>
+                <dd className="mt-1 text-lg font-semibold tabular-nums text-[#0D2E24]">
+                  {m.v}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-xs text-[#1A1A1A]/60">
+            Dúvidas sobre encaixe de cenário ou equipamento?{" "}
+            <a href={WA_LINK} target="_blank" rel="noreferrer" className="underline underline-offset-2 font-semibold text-[#0D2E24]">
+              Fale com a gente no WhatsApp
+            </a>.
+          </p>
+        </div>
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border border-black/5">
+          <img
+            src={estudio5.url}
+            alt="Ciclorama branco do estúdio Mambaia com iluminação profissional"
+            loading="lazy"
+            decoding="async"
+            width={1600}
+            height={1200}
+            sizes="(min-width: 768px) 45vw, 100vw"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    </section>
   );
 }
 
