@@ -21,7 +21,7 @@ export type QuadroItem = {
   updated_at: string;
 };
 
-export const EMPRESAS = ["Mambaia", "Kodara", "Asari", "BauerLab", "Kriya"] as const;
+export const EMPRESAS = ["Mambaia", "Asari", "BauerLab", "Kriya"] as const;
 
 export async function fetchQuadroItens(): Promise<QuadroItem[]> {
   const { data, error } = await supabase

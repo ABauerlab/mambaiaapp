@@ -2,28 +2,26 @@
  * Sistema de cotas da Mambaia.
  *
  * Regra fixa de divisao de gastos e ganhos:
- *   - Kodara:  2/6 (~33,33%)
- *   - Eduardo: 2/6 (~33,33%)
- *   - Joao:    1/6 (~16,67%)
- *   - Laura:   1/6 (~16,67%)
+ *   - Bauer:   1/3
+ *   - Laura:   1/3
+ *   - Eduardo: 1/3
  *
- * Socio identificado pelo `nome` (case-insensitive, primeiro nome basta).
- * Toda a aritmetica e feita em CENTAVOS (inteiros). A sobra de
- * arredondamento sempre vai para Kodara primeiro (a maior cotista) - assim
- * a soma das partes e matematicamente igual ao total, sem perder 1 centavo.
+ * Divisao igual entre os 3 socios cotistas. Toda a aritmetica e feita em
+ * CENTAVOS (inteiros). A sobra de arredondamento vai para Bauer primeiro,
+ * depois Eduardo, depois Laura - assim a soma das partes e matematicamente
+ * igual ao total, sem perder 1 centavo.
  */
 
 export type SocioBasic = { id: string; nome: string };
 
-/** Pesos relativos sobre 6. Total = 6. */
+/** Pesos relativos - divisao igual 1/3 entre os 3 socios cotistas. */
 export const PESOS_BASE: Record<string, number> = {
-  kodara: 2,
-  eduardo: 2,
-  joao: 1,
+  bauer: 1,
+  eduardo: 1,
   laura: 1,
 };
 
-const ORDEM_PRIORIDADE_SOBRA = ["kodara", "eduardo", "joao", "laura"];
+const ORDEM_PRIORIDADE_SOBRA = ["bauer", "eduardo", "laura"];
 
 function semAcento(s: string): string {
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -108,21 +106,19 @@ export const MAMBAIA_CAIXA_ID = "__mambaia_caixa__";
 if (import.meta.env?.DEV) {
   const test = (cents: number) => {
     const fake: SocioBasic[] = [
-      { id: "k", nome: "Kodara" },
+      { id: "b", nome: "Bauer" },
       { id: "e", nome: "Eduardo" },
-      { id: "j", nome: "Joao Victor" },
       { id: "l", nome: "Laura Ottoni" },
     ];
     const r = splitByCota(cents, fake);
-    const sum = (r.get("k") ?? 0) + (r.get("e") ?? 0) + (r.get("j") ?? 0) + (r.get("l") ?? 0);
+    const sum = (r.get("b") ?? 0) + (r.get("e") ?? 0) + (r.get("l") ?? 0);
     console.assert(sum === cents, "splitByCota " + cents + " soma " + sum);
   };
   test(10000); test(10001); test(99); test(1); test(123456); test(7);
   // subset igual
   const fake2: SocioBasic[] = [
-    { id: "k", nome: "Kodara" }, { id: "e", nome: "Eduardo" },
-    { id: "j", nome: "Joao Victor" }, { id: "l", nome: "Laura Ottoni" },
+    { id: "b", nome: "Bauer" }, { id: "e", nome: "Eduardo" }, { id: "l", nome: "Laura Ottoni" },
   ];
   const r2 = splitByCota(100, fake2, ["e", "j"]);
-  console.assert((r2.get("e") ?? 0) === 50 && (r2.get("j") ?? 0) === 50, "subset igual");
+  console.assert((r2.get("e") ?? 0) === 100, "subset igual (apenas e presente)");
 }
