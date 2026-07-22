@@ -160,7 +160,9 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
     "Deixe o ambiente limpo e organizado, exatamente como estava ao chegar.",
     "Cuide dos equipamentos e do espaço: a Mambaia é casa nossa e sua.",
     "Não é permitido consumir bebidas nem alimentos no estúdio, e é proibido fumar.",
-    "Em caso de imprevisto, avise com antecedência para reagendarmos.",
+    "O sinal pago não é reembolsável.",
+    "Cancelamento com antecedência dá direito a remarcar em até 90 dias, sem novo custo.",
+    "Medidas do estúdio (formato em L): 3,00 m de largura × 2,50 m de profundidade × 2,96 m de altura.",
   ];
   const bulletsPacote = [
     "Chegue com 15 minutos de antecedência para se acomodar sem correria.",
@@ -171,7 +173,9 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
     "Uso das imagens é livre para catálogo, site e redes do seu empreendimento.",
     "Trate os equipamentos e o espaço com carinho e mantenha o estúdio limpo.",
     "Não é permitido consumir bebidas nem alimentos no estúdio, e é proibido fumar.",
-    "Em caso de imprevisto, avise com antecedência para reagendarmos.",
+    "O sinal pago não é reembolsável.",
+    "Cancelamento com antecedência dá direito a remarcar em até 90 dias, sem novo custo.",
+    "Medidas do estúdio (formato em L): 3,00 m de largura × 2,50 m de profundidade × 2,96 m de altura.",
   ];
   const bullets = isPacote ? bulletsPacote : bulletsLocacao;
   for (const b of bullets) {
@@ -184,7 +188,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.line(40, H - 60, W - 40, H - 60);
   doc.setFontSize(9);
   doc.setTextColor(120, 120, 120);
-  doc.text("Mambaia · Praça Sete, Belo Horizonte · WhatsApp (31) 9 9802-1169", 40, H - 40);
+  doc.text("Mambaia · Praça Sete, Belo Horizonte · WhatsApp (31) 3223-2356", 40, H - 40);
   doc.text(`Código da proposta: ${codigo}  ·  ref. ${r.slug}`, 40, H - 25);
 
   return doc;
