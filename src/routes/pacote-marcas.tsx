@@ -328,9 +328,29 @@ function PacoteMarcasPage() {
             </div>
           </div>
 
+          <div className="rounded-xl border border-[var(--brand-dark)]/15 bg-white p-4 text-xs leading-relaxed">
+            <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2 font-semibold">Termo de reserva</div>
+            <ul className="space-y-1.5 opacity-90 list-disc pl-4">
+              <li>Comprometo-me a deixar o estúdio nas mesmas condições em que encontrei, limpo e organizado.</li>
+              <li>Compreendo que o valor do sinal <strong>não é reembolsável</strong> em nenhuma hipótese.</li>
+              <li>Em caso de cancelamento avisado com antecedência, tenho direito a <strong>remarcar uma nova data em até 90 dias</strong>, sem custo adicional.</li>
+              <li>Estúdio em L: <strong>3,00 m × 2,50 m × 2,96 m</strong> (largura × profundidade × altura).</li>
+              <li>Não é permitido consumir bebidas ou alimentos no estúdio, nem fumar no espaço.</li>
+            </ul>
+            <label className="mt-3 flex items-start gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={aceito}
+                onChange={(e) => setAceito(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-[var(--brand-dark)] shrink-0"
+              />
+              <span className="text-xs font-medium">Li e entendi as condições acima e aceito os termos da reserva.</span>
+            </label>
+          </div>
+
           <Button
             onClick={() => criar.mutate()}
-            disabled={criar.isPending || !horaInicio}
+            disabled={criar.isPending || !horaInicio || !aceito}
             className="w-full h-12 text-base bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90"
           >
             {criar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Reservar pacote e pagar sinal <ArrowRight className="w-4 h-4" /></>}
