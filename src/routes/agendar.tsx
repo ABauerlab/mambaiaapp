@@ -122,6 +122,7 @@ function AgendarPage() {
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [aceito, setAceito] = useState(false);
 
   // pré-preenche nome/whatsapp quando vier do formulário da landing (?nome=&whatsapp=)
   useEffect(() => {
@@ -183,6 +184,7 @@ function AgendarPage() {
       if (!horaInicio) throw new Error("Escolha um horário");
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
       if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
+      if (!aceito) throw new Error("Leia e aceite o termo de reserva para continuar");
       const { data, error } = await sb.rpc("criar_reserva", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
