@@ -594,6 +594,10 @@ function CtaFinal() {
         alt="Ciclorama do estúdio Mambaia"
         className="absolute inset-0 w-full h-full object-cover"
         loading="lazy"
+        decoding="async"
+        width={1920}
+        height={1280}
+        sizes="100vw"
       />
       <div className="absolute inset-0 bg-[#0D2E24]/75" />
       <div className="relative z-10 max-w-3xl mx-auto text-center text-white px-5">
