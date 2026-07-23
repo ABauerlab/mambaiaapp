@@ -29,6 +29,7 @@ import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
 import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
+import { Route as ApiPublicHooksNovaReservaRouteImport } from './routes/api/public/hooks/nova-reserva'
 import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
 
 const WifiRoute = WifiRouteImport.update({
@@ -130,6 +131,12 @@ const AppAcertosRoute = AppAcertosRouteImport.update({
   path: '/acertos',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicHooksNovaReservaRoute =
+  ApiPublicHooksNovaReservaRouteImport.update({
+    id: '/api/public/hooks/nova-reserva',
+    path: '/api/public/hooks/nova-reserva',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksDailyDigestRoute =
   ApiPublicHooksDailyDigestRouteImport.update({
     id: '/api/public/hooks/daily-digest',
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -180,6 +188,7 @@ export interface FileRoutesByTo {
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -204,6 +213,7 @@ export interface FileRoutesById {
   '/_app/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/transacoes'
     | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/nova-reserva'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/transacoes'
     | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/nova-reserva'
   id:
     | '__root__'
     | '/'
@@ -273,6 +285,7 @@ export interface FileRouteTypes {
     | '/_app/transacoes'
     | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/nova-reserva'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -285,6 +298,7 @@ export interface RootRouteChildren {
   WifiRoute: typeof WifiRoute
   CobrancaSlugRoute: typeof CobrancaSlugRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
+  ApiPublicHooksNovaReservaRoute: typeof ApiPublicHooksNovaReservaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -429,6 +443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAcertosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/hooks/nova-reserva': {
+      id: '/api/public/hooks/nova-reserva'
+      path: '/api/public/hooks/nova-reserva'
+      fullPath: '/api/public/hooks/nova-reserva'
+      preLoaderRoute: typeof ApiPublicHooksNovaReservaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/daily-digest': {
       id: '/api/public/hooks/daily-digest'
       path: '/api/public/hooks/daily-digest'
@@ -481,6 +502,7 @@ const rootRouteChildren: RootRouteChildren = {
   WifiRoute: WifiRoute,
   CobrancaSlugRoute: CobrancaSlugRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
+  ApiPublicHooksNovaReservaRoute: ApiPublicHooksNovaReservaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
