@@ -104,6 +104,7 @@ export function Agenda() {
     queryKey: ["reservas", from, to],
     queryFn: () => fetchReservas(from, to),
   });
+  useRealtimeInvalidate("reservas", ["reservas", "ocupados"]);
 
   const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/agendar` : "/agendar";
   const [copied, setCopied] = useState(false);
