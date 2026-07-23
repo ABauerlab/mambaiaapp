@@ -29,6 +29,8 @@ import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
 import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
+import { Route as ApiPublicHooksReservaLembretesRouteImport } from './routes/api/public/hooks/reserva-lembretes'
+import { Route as ApiPublicHooksNovaReservaRouteImport } from './routes/api/public/hooks/nova-reserva'
 import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
 
 const WifiRoute = WifiRouteImport.update({
@@ -130,6 +132,18 @@ const AppAcertosRoute = AppAcertosRouteImport.update({
   path: '/acertos',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicHooksReservaLembretesRoute =
+  ApiPublicHooksReservaLembretesRouteImport.update({
+    id: '/api/public/hooks/reserva-lembretes',
+    path: '/api/public/hooks/reserva-lembretes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksNovaReservaRoute =
+  ApiPublicHooksNovaReservaRouteImport.update({
+    id: '/api/public/hooks/nova-reserva',
+    path: '/api/public/hooks/nova-reserva',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksDailyDigestRoute =
   ApiPublicHooksDailyDigestRouteImport.update({
     id: '/api/public/hooks/daily-digest',
@@ -158,6 +172,8 @@ export interface FileRoutesByFullPath {
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
+  '/api/public/hooks/reserva-lembretes': typeof ApiPublicHooksReservaLembretesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -180,6 +196,8 @@ export interface FileRoutesByTo {
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
+  '/api/public/hooks/reserva-lembretes': typeof ApiPublicHooksReservaLembretesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -204,6 +222,8 @@ export interface FileRoutesById {
   '/_app/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
+  '/api/public/hooks/reserva-lembretes': typeof ApiPublicHooksReservaLembretesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,6 +248,8 @@ export interface FileRouteTypes {
     | '/transacoes'
     | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/nova-reserva'
+    | '/api/public/hooks/reserva-lembretes'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -250,6 +272,8 @@ export interface FileRouteTypes {
     | '/transacoes'
     | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/nova-reserva'
+    | '/api/public/hooks/reserva-lembretes'
   id:
     | '__root__'
     | '/'
@@ -273,6 +297,8 @@ export interface FileRouteTypes {
     | '/_app/transacoes'
     | '/cobranca/$slug'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/nova-reserva'
+    | '/api/public/hooks/reserva-lembretes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -285,6 +311,8 @@ export interface RootRouteChildren {
   WifiRoute: typeof WifiRoute
   CobrancaSlugRoute: typeof CobrancaSlugRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
+  ApiPublicHooksNovaReservaRoute: typeof ApiPublicHooksNovaReservaRoute
+  ApiPublicHooksReservaLembretesRoute: typeof ApiPublicHooksReservaLembretesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -429,6 +457,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAcertosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/hooks/reserva-lembretes': {
+      id: '/api/public/hooks/reserva-lembretes'
+      path: '/api/public/hooks/reserva-lembretes'
+      fullPath: '/api/public/hooks/reserva-lembretes'
+      preLoaderRoute: typeof ApiPublicHooksReservaLembretesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/nova-reserva': {
+      id: '/api/public/hooks/nova-reserva'
+      path: '/api/public/hooks/nova-reserva'
+      fullPath: '/api/public/hooks/nova-reserva'
+      preLoaderRoute: typeof ApiPublicHooksNovaReservaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/daily-digest': {
       id: '/api/public/hooks/daily-digest'
       path: '/api/public/hooks/daily-digest'
@@ -481,6 +523,8 @@ const rootRouteChildren: RootRouteChildren = {
   WifiRoute: WifiRoute,
   CobrancaSlugRoute: CobrancaSlugRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
+  ApiPublicHooksNovaReservaRoute: ApiPublicHooksNovaReservaRoute,
+  ApiPublicHooksReservaLembretesRoute: ApiPublicHooksReservaLembretesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -13,6 +13,7 @@ import { Lightbulb, CheckSquare, Inbox, Plus, Pencil, Trash2, Archive, Calendar 
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { notifyImmediate } from "@/lib/push.functions";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -91,6 +92,7 @@ export function Quadro() {
   const qc = useQueryClient();
   const { data: itens, isLoading } = useQuery({ queryKey: ["quadro_itens"], queryFn: fetchQuadroItens });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
+  useRealtimeInvalidate("quadro_itens", ["quadro_itens"]);
 
   const [tab, setTab] = useState<"ativos" | "arquivados">("ativos");
   const [filtroTipo, setFiltroTipo] = useState<"todos" | QuadroTipo>("todos");

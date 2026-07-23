@@ -7,6 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { notifyImmediate } from "@/lib/push.functions";
 import { fetchGastosFixos, fetchCategorias, fetchSocios, type GastoFixo } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 import { formatBRL } from "@/lib/money";
 import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
@@ -56,6 +57,7 @@ export function GastosFixos() {
   const { data: fixos } = useQuery({ queryKey: ["fixos"], queryFn: fetchGastosFixos });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
+  useRealtimeInvalidate("gastos_fixos", ["fixos"]);
 
   const [showForm, setShowForm] = useState(false);
   const [nome, setNome] = useState("");

@@ -61,20 +61,7 @@ const num = (v: unknown): number => (typeof v === "string" ? parseFloat(v) : (v 
 export async function fetchSocios(): Promise<Socio[]> {
   const { data, error } = await supabase.from("socios").select("*").order("ordem");
   if (error) throw error;
-  const list = (data ?? []) as Socio[];
-  
-  // Garantir Kodara no sistema para seleção (ideias, quem pagou, marcas)
-  if (!list.some((s) => s.nome.trim().toLowerCase() === "kodara")) {
-    const kodaraDummy: Socio = {
-      id: "kodara-id",
-      nome: "Kodara",
-      cor: "#A6D608",
-      ordem: 99,
-    };
-    list.push(kodaraDummy);
-  }
-
-  return list;
+  return (data ?? []) as Socio[];
 }
 
 export async function fetchCategorias(): Promise<Categoria[]> {

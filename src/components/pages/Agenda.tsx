@@ -19,6 +19,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "./PageHeader";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -103,6 +104,7 @@ export function Agenda() {
     queryKey: ["reservas", from, to],
     queryFn: () => fetchReservas(from, to),
   });
+  useRealtimeInvalidate("reservas", ["reservas", "ocupados"]);
 
   const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/agendar` : "/agendar";
   const [copied, setCopied] = useState(false);

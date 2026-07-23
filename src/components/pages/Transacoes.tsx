@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight, Trash2, PlusCircle, Search, Wallet, Loader2 } from "lucide-react";
 import { fetchTransacoes, fetchSocios, fetchCategorias } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 import { formatBRL } from "@/lib/money";
 import { PageHeader } from "./PageHeader";
 import { DateRangeFilter, defaultMonthRange, isInRange, type DateRangeValue } from "@/components/DateRangeFilter";
@@ -26,6 +27,7 @@ export function Transacoes() {
   const { data: transacoes } = useQuery({ queryKey: ["transacoes"], queryFn: fetchTransacoes });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
+  useRealtimeInvalidate("transacoes", ["transacoes"]);
 
   const [filtro, setFiltro] = useState("");
   const [tipo, setTipo] = useState<"todos" | "despesa" | "receita">("todos");
