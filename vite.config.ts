@@ -10,15 +10,7 @@ export default defineConfig({
   plugins: [
     tsconfigPaths(),
     tailwindcss(),
-    tanstackStart({
-      customViteReactPlugin: true,
-      tsr: {
-        target: "react",
-        autoCodeSplitting: true,
-        routesDirectory: "./src/routes",
-        generatedRouteTree: "./src/routeTree.gen.ts",
-      },
-    }),
+    tanstackStart(),
     viteReact(),
     cloudflare({ viteEnvironment: { name: "ssr" } }),
   ],
