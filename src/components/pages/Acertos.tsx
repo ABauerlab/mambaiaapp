@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Loader2, CheckCircle2, ArrowRight, Wallet, FileSearch } from "lucide-react";
 import { fetchTransacoes, fetchSocios, fetchAcertos } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 import {
   computeNetBalances, sugerirAcertos, transacoesAbertasParaBalance, MAMBAIA_CAIXA_ID,
 } from "@/lib/balance";
