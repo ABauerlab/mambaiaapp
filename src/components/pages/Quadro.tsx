@@ -91,6 +91,7 @@ export function Quadro() {
   const qc = useQueryClient();
   const { data: itens, isLoading } = useQuery({ queryKey: ["quadro_itens"], queryFn: fetchQuadroItens });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
+  useRealtimeInvalidate("quadro_itens", ["quadro_itens"]);
 
   const [tab, setTab] = useState<"ativos" | "arquivados">("ativos");
   const [filtroTipo, setFiltroTipo] = useState<"todos" | QuadroTipo>("todos");
