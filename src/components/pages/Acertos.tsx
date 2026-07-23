@@ -21,6 +21,8 @@ export function Acertos() {
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
   const { data: transacoes } = useQuery({ queryKey: ["transacoes"], queryFn: fetchTransacoes });
   const { data: acertos } = useQuery({ queryKey: ["acertos"], queryFn: fetchAcertos });
+  useRealtimeInvalidate("acertos", ["acertos"]);
+  useRealtimeInvalidate("transacoes", ["transacoes"]);
   const [registering, setRegistering] = useState<string | null>(null);
   const [range, setRange] = useState<DateRangeValue>(() => defaultMonthRange());
 
