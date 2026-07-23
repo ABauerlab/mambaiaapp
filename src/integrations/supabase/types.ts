@@ -155,6 +155,8 @@ export type Database = {
           id: string
           mes: number | null
           nome: string
+          parcelas_pagas: number
+          parcelas_total: number | null
           socio_padrao_id: string | null
           valor: number
         }
@@ -169,6 +171,8 @@ export type Database = {
           id?: string
           mes?: number | null
           nome: string
+          parcelas_pagas?: number
+          parcelas_total?: number | null
           socio_padrao_id?: string | null
           valor: number
         }
@@ -183,6 +187,8 @@ export type Database = {
           id?: string
           mes?: number | null
           nome?: string
+          parcelas_pagas?: number
+          parcelas_total?: number | null
           socio_padrao_id?: string | null
           valor?: number
         }
@@ -339,6 +345,8 @@ export type Database = {
           empreendimento: string | null
           hora_inicio: string
           id: string
+          lembrete_1h_enviado_at: string | null
+          lembrete_24h_enviado_at: string | null
           numero_proposta: number
           observacoes: string | null
           paid_at: string | null
@@ -360,6 +368,8 @@ export type Database = {
           empreendimento?: string | null
           hora_inicio: string
           id?: string
+          lembrete_1h_enviado_at?: string | null
+          lembrete_24h_enviado_at?: string | null
           numero_proposta?: number
           observacoes?: string | null
           paid_at?: string | null
@@ -381,6 +391,8 @@ export type Database = {
           empreendimento?: string | null
           hora_inicio?: string
           id?: string
+          lembrete_1h_enviado_at?: string | null
+          lembrete_24h_enviado_at?: string | null
           numero_proposta?: number
           observacoes?: string | null
           paid_at?: string | null
