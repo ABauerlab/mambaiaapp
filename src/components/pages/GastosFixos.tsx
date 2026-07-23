@@ -57,6 +57,7 @@ export function GastosFixos() {
   const { data: fixos } = useQuery({ queryKey: ["fixos"], queryFn: fetchGastosFixos });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
+  useRealtimeInvalidate("gastos_fixos", ["fixos"]);
 
   const [showForm, setShowForm] = useState(false);
   const [nome, setNome] = useState("");
