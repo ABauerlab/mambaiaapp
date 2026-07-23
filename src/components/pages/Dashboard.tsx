@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMemo, useState } from "react";
 import { DateRangeFilter, defaultMonthRange, isInRange, formatRange } from "@/components/DateRangeFilter";
+import { useRealtimeInvalidate } from "@/hooks/useRealtimeInvalidate";
 
 const BRAND_COLORS = ["#A6D608", "#1F3D2B", "#DFFF4F", "#5A8A2E", "#7FB320", "#3A6440"];
 
@@ -32,6 +33,8 @@ export function Dashboard() {
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
   const { data: acertos } = useQuery({ queryKey: ["acertos"], queryFn: fetchAcertos });
+  useRealtimeInvalidate("transacoes", ["transacoes"]);
+  useRealtimeInvalidate("acertos", ["acertos"]);
   const [range, setRange] = useState(defaultMonthRange());
 
   const stats = useMemo(() => {
