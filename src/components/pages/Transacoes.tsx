@@ -27,6 +27,7 @@ export function Transacoes() {
   const { data: transacoes } = useQuery({ queryKey: ["transacoes"], queryFn: fetchTransacoes });
   const { data: socios } = useQuery({ queryKey: ["socios"], queryFn: fetchSocios });
   const { data: categorias } = useQuery({ queryKey: ["categorias"], queryFn: fetchCategorias });
+  useRealtimeInvalidate("transacoes", ["transacoes"]);
 
   const [filtro, setFiltro] = useState("");
   const [tipo, setTipo] = useState<"todos" | "despesa" | "receita">("todos");
