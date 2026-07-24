@@ -4,7 +4,12 @@ import { Bell, BellOff, BellRing } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getVapidPublicKey, subscribePush, unsubscribePush, sendTestPush } from "@/lib/push.functions";
+import {
+  getVapidPublicKey,
+  subscribePush,
+  unsubscribePush,
+  sendTestPush,
+} from "@/lib/push.functions";
 
 function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
   const padding = "=".repeat((4 - (base64.length % 4)) % 4);
@@ -28,7 +33,8 @@ export function PushNotificationsCard() {
   const test = useServerFn(sendTestPush);
 
   useEffect(() => {
-    const ok = typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window;
+    const ok =
+      typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window;
     setSupported(ok);
     if (!ok) return;
     setPermission(Notification.permission);

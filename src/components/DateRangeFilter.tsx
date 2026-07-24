@@ -8,23 +8,35 @@ import type { DateRange } from "react-day-picker";
 
 export type DateRangeValue = { from: Date; to: Date };
 
-function startOfDay(d: Date) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
-function endOfDay(d: Date) { const x = new Date(d); x.setHours(23,59,59,999); return x; }
+function startOfDay(d: Date) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function endOfDay(d: Date) {
+  const x = new Date(d);
+  x.setHours(23, 59, 59, 999);
+  return x;
+}
 
 export function rangePresets() {
   const today = new Date();
-  const ini = (n: number) => { const d = new Date(); d.setDate(d.getDate() - n); return startOfDay(d); };
+  const ini = (n: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() - n);
+    return startOfDay(d);
+  };
   const mesAtualIni = new Date(today.getFullYear(), today.getMonth(), 1);
   const mesAtualFim = new Date(today.getFullYear(), today.getMonth() + 1, 0);
   const mesPassadoIni = new Date(today.getFullYear(), today.getMonth() - 1, 1);
   const mesPassadoFim = new Date(today.getFullYear(), today.getMonth(), 0);
   return {
-    hoje:        { from: startOfDay(today), to: endOfDay(today) },
-    sete:        { from: ini(6),            to: endOfDay(today) },
-    trinta:      { from: ini(29),           to: endOfDay(today) },
-    mesAtual:    { from: mesAtualIni,       to: endOfDay(mesAtualFim) },
-    mesPassado:  { from: mesPassadoIni,     to: endOfDay(mesPassadoFim) },
-    ano:         { from: new Date(today.getFullYear(), 0, 1), to: endOfDay(today) },
+    hoje: { from: startOfDay(today), to: endOfDay(today) },
+    sete: { from: ini(6), to: endOfDay(today) },
+    trinta: { from: ini(29), to: endOfDay(today) },
+    mesAtual: { from: mesAtualIni, to: endOfDay(mesAtualFim) },
+    mesPassado: { from: mesPassadoIni, to: endOfDay(mesPassadoFim) },
+    ano: { from: new Date(today.getFullYear(), 0, 1), to: endOfDay(today) },
   } as Record<string, DateRangeValue>;
 }
 
@@ -44,15 +56,32 @@ export function formatRange(r: DateRangeValue): string {
   return `${f(r.from)} - ${f(r.to)}`;
 }
 
-export function DateRangeFilter({ value, onChange, className }: { value: DateRangeValue; onChange: (r: DateRangeValue) => void; className?: string }) {
+export function DateRangeFilter({
+  value,
+  onChange,
+  className,
+}: {
+  value: DateRangeValue;
+  onChange: (r: DateRangeValue) => void;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   const presets = rangePresets();
   const [tmp, setTmp] = useState<DateRange | undefined>({ from: value.from, to: value.to });
 
-  function apply(r: DateRangeValue) { onChange(r); setOpen(false); }
+  function apply(r: DateRangeValue) {
+    onChange(r);
+    setOpen(false);
+  }
 
   return (
-    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (o) setTmp({ from: value.from, to: value.to }); }}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (o) setTmp({ from: value.from, to: value.to });
+      }}
+    >
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className={cn("h-9", className)}>
           <CalIcon className="w-4 h-4 mr-2" />
@@ -78,9 +107,17 @@ export function DateRangeFilter({ value, onChange, className }: { value: DateRan
               className={cn("p-2 pointer-events-auto")}
             />
             <div className="flex justify-end gap-2 px-2 pb-2">
-              <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
-              <Button size="sm" disabled={!tmp?.from || !tmp?.to}
-                onClick={() => { if (tmp?.from && tmp?.to) apply({ from: startOfDay(tmp.from), to: endOfDay(tmp.to) }); }}>
+              <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+                Cancelar
+              </Button>
+              <Button
+                size="sm"
+                disabled={!tmp?.from || !tmp?.to}
+                onClick={() => {
+                  if (tmp?.from && tmp?.to)
+                    apply({ from: startOfDay(tmp.from), to: endOfDay(tmp.to) });
+                }}
+              >
                 Aplicar
               </Button>
             </div>

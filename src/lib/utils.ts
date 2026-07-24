@@ -10,10 +10,18 @@ export function cn(...inputs: ClassValue[]) {
  * user-friendly Portuguese message. Logs the raw error to the console
  * so devs can still debug, but never leaks schema/constraint names to UI.
  */
-export function friendlyErrorMessage(e: unknown, fallback = "Algo deu errado. Tente novamente."): string {
+export function friendlyErrorMessage(
+  e: unknown,
+  fallback = "Algo deu errado. Tente novamente.",
+): string {
   // Zod errors carry user-facing validation messages - safe to show.
   // We avoid importing zod here to keep utils light; check by shape.
-  if (e && typeof e === "object" && "issues" in e && Array.isArray((e as { issues: unknown[] }).issues)) {
+  if (
+    e &&
+    typeof e === "object" &&
+    "issues" in e &&
+    Array.isArray((e as { issues: unknown[] }).issues)
+  ) {
     const first = (e as { issues: Array<{ message?: string }> }).issues[0];
     if (first?.message) return first.message;
   }

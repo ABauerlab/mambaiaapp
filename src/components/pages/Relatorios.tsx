@@ -23,12 +23,21 @@ export function Relatorios() {
 
   const exportCsv = () => {
     const rows = [["mes", "receita", "despesa", "lucro"]];
-    meses.forEach(([m, v]) => rows.push([m, v.receita.toFixed(2), v.despesa.toFixed(2), (v.receita - v.despesa).toFixed(2)]));
+    meses.forEach(([m, v]) =>
+      rows.push([
+        m,
+        v.receita.toFixed(2),
+        v.despesa.toFixed(2),
+        (v.receita - v.despesa).toFixed(2),
+      ]),
+    );
     const csv = rows.map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "mambaia-relatorio.csv"; a.click();
+    a.href = url;
+    a.download = "mambaia-relatorio.csv";
+    a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -37,7 +46,12 @@ export function Relatorios() {
       <PageHeader
         title="Relatórios"
         description="Resumo mensal de receitas, despesas e lucro"
-        action={<Button onClick={exportCsv} variant="outline"><Download className="w-4 h-4 mr-2" />Exportar CSV</Button>}
+        action={
+          <Button onClick={exportCsv} variant="outline">
+            <Download className="w-4 h-4 mr-2" />
+            Exportar CSV
+          </Button>
+        }
       />
       <Card className="divide-y divide-border">
         {meses.map(([m, v]) => {
@@ -47,11 +61,15 @@ export function Relatorios() {
               <div className="font-medium">{m}</div>
               <div className="text-[color:var(--success)]">+{formatBRL(v.receita)}</div>
               <div className="text-muted-foreground">−{formatBRL(v.despesa)}</div>
-              <div className={lucro >= 0 ? "font-semibold" : "font-semibold text-destructive"}>{formatBRL(lucro)}</div>
+              <div className={lucro >= 0 ? "font-semibold" : "font-semibold text-destructive"}>
+                {formatBRL(lucro)}
+              </div>
             </div>
           );
         })}
-        {meses.length === 0 && <div className="text-center py-12 text-sm text-muted-foreground">Sem dados ainda.</div>}
+        {meses.length === 0 && (
+          <div className="text-center py-12 text-sm text-muted-foreground">Sem dados ainda.</div>
+        )}
       </Card>
     </div>
   );

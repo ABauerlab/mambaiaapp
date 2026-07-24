@@ -28,7 +28,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function loadProfile(userId: string) {
-    const { data } = await supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle();
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
     setProfile((data as Profile | null) ?? null);
   }
 
@@ -36,7 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
       if (s?.user) {
-        setTimeout(() => { void loadProfile(s.user.id); }, 0);
+        setTimeout(() => {
+          void loadProfile(s.user.id);
+        }, 0);
       } else {
         setProfile(null);
       }
@@ -56,8 +62,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         user: session?.user ?? null,
         profile,
-        refreshProfile: async () => { if (session?.user) await loadProfile(session.user.id); },
-        signOut: async () => { await supabase.auth.signOut(); },
+        refreshProfile: async () => {
+          if (session?.user) await loadProfile(session.user.id);
+        },
+        signOut: async () => {
+          await supabase.auth.signOut();
+        },
       }}
     >
       {children}

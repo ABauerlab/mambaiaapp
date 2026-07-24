@@ -18,19 +18,17 @@ const subSchema = z.object({
 export const subscribePush = createServerFn({ method: "POST" })
   .inputValidator((d) => subSchema.parse(d))
   .handler(async ({ data }) => {
-    const { error } = await supabaseAdmin
-      .from("push_subscriptions")
-      .upsert(
-        {
-          endpoint: data.endpoint,
-          p256dh: data.p256dh,
-          auth: data.auth,
-          user_agent: data.user_agent ?? null,
-          socio_id: data.socio_id ?? null,
-          last_seen_at: new Date().toISOString(),
-        },
-        { onConflict: "endpoint" },
-      );
+    const { error } = await supabaseAdmin.from("push_subscriptions").upsert(
+      {
+        endpoint: data.endpoint,
+        p256dh: data.p256dh,
+        auth: data.auth,
+        user_agent: data.user_agent ?? null,
+        socio_id: data.socio_id ?? null,
+        last_seen_at: new Date().toISOString(),
+      },
+      { onConflict: "endpoint" },
+    );
     if (error) throw new Error(error.message);
     return { ok: true };
   });

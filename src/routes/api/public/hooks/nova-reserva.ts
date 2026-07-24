@@ -21,7 +21,10 @@ export const Route = createFileRoute("/api/public/hooks/nova-reserva")({
           .eq("id", body.reserva_id)
           .maybeSingle();
         if (error || !r) {
-          return Response.json({ ok: false, error: error?.message ?? "not found" }, { status: 404 });
+          return Response.json(
+            { ok: false, error: error?.message ?? "not found" },
+            { status: 404 },
+          );
         }
         const dataFmt = new Date((r.data as string) + "T12:00:00").toLocaleDateString("pt-BR", {
           day: "2-digit",

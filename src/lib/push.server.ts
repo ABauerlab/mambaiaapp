@@ -19,7 +19,9 @@ export type PushPayload = {
   tag?: string;
 };
 
-export async function sendPushToAll(payload: PushPayload): Promise<{ sent: number; removed: number }> {
+export async function sendPushToAll(
+  payload: PushPayload,
+): Promise<{ sent: number; removed: number }> {
   configure();
   const { data: subs, error } = await supabaseAdmin.from("push_subscriptions").select("*");
   if (error) throw error;

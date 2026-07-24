@@ -42,7 +42,10 @@ export async function createQuadroItem(input: Partial<QuadroItem>) {
 }
 
 export async function updateQuadroItem(id: string, patch: Partial<QuadroItem>) {
-  const { error } = await supabase.from("quadro_itens").update(patch as never).eq("id", id);
+  const { error } = await supabase
+    .from("quadro_itens")
+    .update(patch as never)
+    .eq("id", id);
   if (error) throw error;
 }
 

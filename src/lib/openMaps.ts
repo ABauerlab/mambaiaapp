@@ -5,9 +5,9 @@
 export type OpenMapsOptions = {
   lat?: number;
   lng?: number;
-  query?: string;      // free-text address or place name
-  placeId?: string;    // Google Place ID (preferred when available)
-  reviewUrl?: string;  // pre-built https://g.page/... review URL
+  query?: string; // free-text address or place name
+  placeId?: string; // Google Place ID (preferred when available)
+  reviewUrl?: string; // pre-built https://g.page/... review URL
   label?: string;
 };
 
@@ -47,7 +47,9 @@ export function openMaps(opts: OpenMapsOptions): string {
       const intent = `intent://${opts.reviewUrl.replace(/^https?:\/\//, "")}#Intent;scheme=https;package=com.google.android.apps.maps;end`;
       window.location.href = intent;
       // Safety fallback: some Android browsers ignore intent:// silently.
-      window.setTimeout(() => { window.location.href = url; }, 1500);
+      window.setTimeout(() => {
+        window.location.href = url;
+      }, 1500);
       return url;
     }
     // iOS + others: just open the review URL. Google Maps app usually
@@ -76,6 +78,8 @@ export function openMaps(opts: OpenMapsOptions): string {
   // Android generic
   const intent = `intent://maps.google.com/maps?q=${encodeURIComponent(q)}#Intent;scheme=https;package=com.google.android.apps.maps;end`;
   window.location.href = intent;
-  window.setTimeout(() => { window.location.href = url; }, 1500);
+  window.setTimeout(() => {
+    window.location.href = url;
+  }, 1500);
   return url;
 }

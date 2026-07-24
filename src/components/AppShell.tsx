@@ -22,7 +22,17 @@ import { useAuth } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type NavItem = {
-  to: "/dashboard" | "/nova" | "/transacoes" | "/acertos" | "/fixos" | "/relatorios" | "/categorias" | "/quadro" | "/criar" | "/agenda";
+  to:
+    | "/dashboard"
+    | "/nova"
+    | "/transacoes"
+    | "/acertos"
+    | "/fixos"
+    | "/relatorios"
+    | "/categorias"
+    | "/quadro"
+    | "/criar"
+    | "/agenda";
   label: string;
   icon: typeof LayoutDashboard;
   accent?: boolean;
@@ -80,9 +90,14 @@ export function AppShell() {
           })}
         </nav>
         <div className="p-3 border-t border-sidebar-border space-y-1">
-          <Link to="/perfil" className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent">
+          <Link
+            to="/perfil"
+            className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent"
+          >
             <Avatar className="w-8 h-8">
-              {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.display_name} />}
+              {profile?.avatar_url && (
+                <AvatarImage src={profile.avatar_url} alt={profile.display_name} />
+              )}
               <AvatarFallback className="text-xs bg-sidebar-accent text-sidebar-foreground">
                 {(profile?.display_name ?? "?").slice(0, 2).toUpperCase()}
               </AvatarFallback>
@@ -92,7 +107,10 @@ export function AppShell() {
               <div className="text-[11px] text-sidebar-foreground/60 truncate">Editar perfil</div>
             </div>
           </Link>
-          <button onClick={() => void signOut()} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-sidebar-foreground/70 hover:bg-sidebar-accent">
+          <button
+            onClick={() => void signOut()}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-sidebar-foreground/70 hover:bg-sidebar-accent"
+          >
             <LogOut className="w-3.5 h-3.5" /> Sair
           </button>
         </div>
@@ -104,14 +122,20 @@ export function AppShell() {
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex items-center justify-between gap-2 px-4 h-14 min-w-0">
-          <Link to="/dashboard" className="flex items-center gap-2 min-w-0" onClick={() => setOpen(false)}>
+          <Link
+            to="/dashboard"
+            className="flex items-center gap-2 min-w-0"
+            onClick={() => setOpen(false)}
+          >
             <img src={logo} alt="Mambaia" className="w-8 h-8 rounded-md shrink-0" />
             <span className="font-semibold truncate">Mambaia</span>
           </Link>
           <div className="flex items-center gap-1 shrink-0">
             <Link to="/perfil" className="p-1.5" onClick={() => setOpen(false)} aria-label="Perfil">
               <Avatar className="w-7 h-7">
-                {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.display_name} />}
+                {profile?.avatar_url && (
+                  <AvatarImage src={profile.avatar_url} alt={profile.display_name} />
+                )}
                 <AvatarFallback className="text-[10px] bg-sidebar-accent text-sidebar-foreground">
                   {(profile?.display_name ?? "?").slice(0, 2).toUpperCase()}
                 </AvatarFallback>
@@ -144,10 +168,20 @@ export function AppShell() {
                 </Link>
               );
             })}
-            <Link to="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/80">
+            <Link
+              to="/perfil"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/80"
+            >
               <User className="w-4 h-4" /> Meu perfil
             </Link>
-            <button onClick={() => { setOpen(false); void signOut(); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/80">
+            <button
+              onClick={() => {
+                setOpen(false);
+                void signOut();
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/80"
+            >
               <LogOut className="w-4 h-4" /> Sair
             </button>
           </nav>
@@ -182,7 +216,12 @@ export function AppShell() {
                   active ? "text-[color:var(--brand-lime)]" : "text-sidebar-foreground/70",
                 )}
               >
-                <Icon className={cn("w-5 h-5 shrink-0", item.accent && "text-[color:var(--brand-lime)]")} />
+                <Icon
+                  className={cn(
+                    "w-5 h-5 shrink-0",
+                    item.accent && "text-[color:var(--brand-lime)]",
+                  )}
+                />
                 <span className="truncate max-w-full">{item.label}</span>
               </Link>
             );

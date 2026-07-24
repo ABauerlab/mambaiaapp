@@ -53,11 +53,25 @@ function LoginPage() {
         <form onSubmit={onSubmit} className="space-y-3">
           <div>
             <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+            />
           </div>
           <div>
             <Label htmlFor="pwd">Senha</Label>
-            <Input id="pwd" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+            <Input
+              id="pwd"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
           </div>
           <Button type="submit" className="w-full" disabled={busy}>
             {busy && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}

@@ -49,7 +49,13 @@ const itemSchema = z.object({
 
 const schema = z.object({
   cliente_nome: z.string().trim().min(1, "Cliente obrigatório").max(120),
-  cliente_email: z.string().trim().email().max(160).nullable().or(z.literal("").transform(() => null)),
+  cliente_email: z
+    .string()
+    .trim()
+    .email()
+    .max(160)
+    .nullable()
+    .or(z.literal("").transform(() => null)),
   titulo: z.string().trim().min(1, "Título obrigatório").max(160),
   descricao: z.string().trim().max(2000).nullable(),
   itens: z.array(itemSchema).min(1, "Adicione pelo menos um item"),
@@ -65,7 +71,8 @@ function makeSlug(): string {
 }
 
 async function fetchCobrancas(): Promise<Cobranca[]> {
-  const { data, error } = await sb.from("cobrancas")
+  const { data, error } = await sb
+    .from("cobrancas")
     .select("*")
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -79,7 +86,10 @@ async function fetchCobrancas(): Promise<Cobranca[]> {
 export function Criar() {
   const qc = useQueryClient();
   const { user } = useAuth();
-  const { data: cobrancas, isLoading } = useQuery({ queryKey: ["cobrancas"], queryFn: fetchCobrancas });
+  const { data: cobrancas, isLoading } = useQuery({
+    queryKey: ["cobrancas"],
+    queryFn: fetchCobrancas,
+  });
   const [showForm, setShowForm] = useState(false);
 
   return (
@@ -115,7 +125,8 @@ export function Criar() {
         ))}
         {!isLoading && (cobrancas ?? []).length === 0 && (
           <Card className="p-8 text-center text-sm text-muted-foreground">
-            Nenhuma cobrança ainda. Clique em <span className="font-medium">Nova cobrança</span> para criar a primeira.
+            Nenhuma cobrança ainda. Clique em <span className="font-medium">Nova cobrança</span>{" "}
+            para criar a primeira.
           </Card>
         )}
       </div>
@@ -160,10 +171,7 @@ function FormCobranca({ userId, onDone }: { userId: string | null; onDone: () =>
         total: parsed.itens.reduce((a, b) => a + b.valor, 0),
         created_by: userId,
       };
-      const { data, error } = await sb.from("cobrancas")
-        .insert(payload)
-        .select("slug")
-        .single();
+      const { data, error } = await sb.from("cobrancas").insert(payload).select("slug").single();
       if (error) throw error;
       return (data as { slug: string }).slug;
     },
@@ -181,26 +189,49 @@ function FormCobranca({ userId, onDone }: { userId: string | null; onDone: () =>
       <div className="grid md:grid-cols-2 gap-3">
         <div>
           <Label>Cliente *</Label>
-          <Input value={cliente} onChange={(e) => setCliente(e.target.value)} placeholder="Nome do cliente" />
+          <Input
+            value={cliente}
+            onChange={(e) => setCliente(e.target.value)}
+            placeholder="Nome do cliente"
+          />
         </div>
         <div>
           <Label>E-mail (opcional)</Label>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="cliente@email.com" type="email" />
+          <Input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="cliente@email.com"
+            type="email"
+          />
         </div>
       </div>
       <div>
         <Label>Título da proposta *</Label>
-        <Input value={titulo} onChange={(e) => setTitulo(e.target.value)} placeholder="Ex: Identidade visual completa" />
+        <Input
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+          placeholder="Ex: Identidade visual completa"
+        />
       </div>
       <div>
         <Label>Descrição</Label>
-        <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} placeholder="Detalhe a proposta para o cliente" />
+        <Textarea
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+          rows={3}
+          placeholder="Detalhe a proposta para o cliente"
+        />
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-2">
           <Label>Itens / serviços *</Label>
-          <Button type="button" size="sm" variant="ghost" onClick={() => setItens((arr) => [...arr, { nome: "", valor: "" }])}>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={() => setItens((arr) => [...arr, { nome: "", valor: "" }])}
+          >
             <Plus className="w-3 h-3" /> Item
           </Button>
         </div>
@@ -209,12 +240,20 @@ function FormCobranca({ userId, onDone }: { userId: string | null; onDone: () =>
             <div key={i} className="grid grid-cols-[1fr_140px_auto] gap-2">
               <Input
                 value={it.nome}
-                onChange={(e) => setItens((arr) => arr.map((x, ix) => (ix === i ? { ...x, nome: e.target.value } : x)))}
+                onChange={(e) =>
+                  setItens((arr) =>
+                    arr.map((x, ix) => (ix === i ? { ...x, nome: e.target.value } : x)),
+                  )
+                }
                 placeholder={`Item ${i + 1}`}
               />
               <Input
                 value={it.valor}
-                onChange={(e) => setItens((arr) => arr.map((x, ix) => (ix === i ? { ...x, valor: e.target.value } : x)))}
+                onChange={(e) =>
+                  setItens((arr) =>
+                    arr.map((x, ix) => (ix === i ? { ...x, valor: e.target.value } : x)),
+                  )
+                }
                 placeholder="0,00"
                 inputMode="decimal"
               />
@@ -247,13 +286,24 @@ function FormCobranca({ userId, onDone }: { userId: string | null; onDone: () =>
       </div>
       <div>
         <Label>Observações</Label>
-        <Textarea value={obs} onChange={(e) => setObs(e.target.value)} rows={2} placeholder="Prazo, condições, etc." />
+        <Textarea
+          value={obs}
+          onChange={(e) => setObs(e.target.value)}
+          rows={2}
+          placeholder="Prazo, condições, etc."
+        />
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" onClick={onDone}>Cancelar</Button>
+        <Button variant="ghost" onClick={onDone}>
+          Cancelar
+        </Button>
         <Button onClick={() => create.mutate()} disabled={create.isPending}>
-          {create.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+          {create.isPending ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Sparkles className="w-4 h-4" />
+          )}
           Criar e copiar link
         </Button>
       </div>
@@ -264,11 +314,15 @@ function FormCobranca({ userId, onDone }: { userId: string | null; onDone: () =>
 function CobrancaCard({ c }: { c: Cobranca }) {
   const qc = useQueryClient();
   const [copied, setCopied] = useState(false);
-  const url = typeof window !== "undefined" ? `${window.location.origin}/cobranca/${c.slug}` : `/cobranca/${c.slug}`;
+  const url =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/cobranca/${c.slug}`
+      : `/cobranca/${c.slug}`;
 
   const setStatus = useMutation({
     mutationFn: async (status: Cobranca["status"]) => {
-      const { error } = await sb.from("cobrancas")
+      const { error } = await sb
+        .from("cobrancas")
         .update({ status, paid_at: status === "pago" ? new Date().toISOString() : null })
         .eq("id", c.id);
       if (error) throw error;
@@ -302,12 +356,15 @@ function CobrancaCard({ c }: { c: Cobranca }) {
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold">{c.titulo}</span>
-            {c.status === "pago" && <Badge className="bg-success text-success-foreground">Pago</Badge>}
+            {c.status === "pago" && (
+              <Badge className="bg-success text-success-foreground">Pago</Badge>
+            )}
             {c.status === "cancelado" && <Badge variant="secondary">Cancelado</Badge>}
             {c.status === "pendente" && <Badge variant="outline">Pendente</Badge>}
           </div>
           <div className="text-sm text-muted-foreground mt-0.5">
-            {c.cliente_nome} · {formatBRL(c.total)} · {new Date(c.created_at).toLocaleDateString("pt-BR")}
+            {c.cliente_nome} · {formatBRL(c.total)} ·{" "}
+            {new Date(c.created_at).toLocaleDateString("pt-BR")}
           </div>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
@@ -315,7 +372,9 @@ function CobrancaCard({ c }: { c: Cobranca }) {
             {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />} Copiar link
           </Button>
           <Link to="/cobranca/$slug" params={{ slug: c.slug }} target="_blank">
-            <Button size="sm" variant="ghost"><ExternalLink className="w-3 h-3" /> Abrir</Button>
+            <Button size="sm" variant="ghost">
+              <ExternalLink className="w-3 h-3" /> Abrir
+            </Button>
           </Link>
           {c.status !== "pago" ? (
             <Button size="sm" variant="ghost" onClick={() => setStatus.mutate("pago")}>
@@ -329,7 +388,9 @@ function CobrancaCard({ c }: { c: Cobranca }) {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => { if (confirm("Excluir esta cobrança?")) remove.mutate(); }}
+            onClick={() => {
+              if (confirm("Excluir esta cobrança?")) remove.mutate();
+            }}
           >
             <Trash2 className="w-3 h-3 text-destructive" />
           </Button>

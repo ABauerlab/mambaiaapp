@@ -32,12 +32,23 @@ function formatDuracao(min: number): string {
 
 function formatDataBR(iso: string): string {
   const d = new Date(iso + "T12:00:00");
-  return d.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+  return d.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 function formatDateTimeBR(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function slugNome(nome: string): string {
@@ -50,7 +61,9 @@ function slugNome(nome: string): string {
     .slice(0, 40);
 }
 
-export function nomeArquivoProposta(r: Pick<ReservaPDFInput, "numeroProposta" | "cliente">): string {
+export function nomeArquivoProposta(
+  r: Pick<ReservaPDFInput, "numeroProposta" | "cliente">,
+): string {
   return `proposta-comercial-${r.numeroProposta}-${slugNome(r.cliente)}.pdf`;
 }
 
@@ -85,7 +98,11 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.text("PAGAMENTO CONFIRMADO", W - 210, 65);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.text(isPacote ? "Ordem de serviço · Pacote Marcas" : "Ordem de serviço · Locação", W - 210, 80);
+  doc.text(
+    isPacote ? "Ordem de serviço · Pacote Marcas" : "Ordem de serviço · Locação",
+    W - 210,
+    80,
+  );
 
   let y = 190;
   doc.setTextColor(30, 30, 30);
@@ -100,7 +117,8 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
     isPacote
       ? "Seu pacote fotográfico no estúdio Mambaia está garantido. Guarde este comprovante."
       : "Seu horário no estúdio Mambaia está garantido. Guarde este comprovante.",
-    40, y,
+    40,
+    y,
   );
   y += 25;
 
@@ -186,7 +204,11 @@ export function baixarReservaPDF(r: ReservaPDFInput) {
 }
 
 /** Retorna { blob, url, filename } para preview e compartilhamento. */
-export function gerarReservaPDFBlob(r: ReservaPDFInput): { blob: Blob; url: string; filename: string } {
+export function gerarReservaPDFBlob(r: ReservaPDFInput): {
+  blob: Blob;
+  url: string;
+  filename: string;
+} {
   const doc = gerarReservaPDF(r);
   const blob = doc.output("blob");
   const url = URL.createObjectURL(blob);

@@ -28,8 +28,13 @@ export function Categorias() {
       const { error } = await supabase.from("categorias").insert(parsed);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Categoria criada"); qc.invalidateQueries({ queryKey: ["categorias"] }); setNome(""); },
-    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível criar a categoria.")),
+    onSuccess: () => {
+      toast.success("Categoria criada");
+      qc.invalidateQueries({ queryKey: ["categorias"] });
+      setNome("");
+    },
+    onError: (e: unknown) =>
+      toast.error(friendlyErrorMessage(e, "Não foi possível criar a categoria.")),
   });
 
   const del = useMutation({
@@ -37,7 +42,10 @@ export function Categorias() {
       const { error } = await supabase.from("categorias").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["categorias"] }); toast.success("Removida"); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["categorias"] });
+      toast.success("Removida");
+    },
     onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível remover.")),
   });
 
@@ -51,27 +59,56 @@ export function Categorias() {
         <div className="flex flex-col md:flex-row gap-2">
           <div className="flex gap-1 p-1 bg-secondary rounded-md">
             {(["despesa", "receita"] as const).map((t) => (
-              <button key={t} onClick={() => setTipo(t)}
-                className={`px-3 py-1.5 text-xs font-medium rounded ${tipo === t ? "bg-background shadow-sm" : "text-muted-foreground"}`}>
+              <button
+                key={t}
+                onClick={() => setTipo(t)}
+                className={`px-3 py-1.5 text-xs font-medium rounded ${tipo === t ? "bg-background shadow-sm" : "text-muted-foreground"}`}
+              >
                 {t === "despesa" ? "Gasto" : "Ganho"}
               </button>
             ))}
           </div>
-          <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da categoria" maxLength={50} className="flex-1" />
+          <Input
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            placeholder="Nome da categoria"
+            maxLength={50}
+            className="flex-1"
+          />
           <Button onClick={() => create.mutate()} disabled={create.isPending || !nome.trim()}>
-            {create.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Plus className="w-4 h-4 mr-1" />Adicionar</>}
+            {create.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-1" />
+                Adicionar
+              </>
+            )}
           </Button>
         </div>
       </Card>
       <div className="grid md:grid-cols-2 gap-4">
-        {[{ title: "Gastos", items: despesas }, { title: "Ganhos", items: receitas }].map((g) => (
+        {[
+          { title: "Gastos", items: despesas },
+          { title: "Ganhos", items: receitas },
+        ].map((g) => (
           <Card key={g.title} className="p-5">
-            <h3 className="font-semibold mb-3 text-sm">{g.title} ({g.items.length})</h3>
+            <h3 className="font-semibold mb-3 text-sm">
+              {g.title} ({g.items.length})
+            </h3>
             <div className="space-y-1">
               {g.items.map((c) => (
-                <div key={c.id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-muted/50">
+                <div
+                  key={c.id}
+                  className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-muted/50"
+                >
                   <span className="text-sm">{c.nome}</span>
-                  <button onClick={() => { if (confirm(`Remover "${c.nome}"?`)) del.mutate(c.id); }} className="text-muted-foreground hover:text-destructive">
+                  <button
+                    onClick={() => {
+                      if (confirm(`Remover "${c.nome}"?`)) del.mutate(c.id);
+                    }}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>

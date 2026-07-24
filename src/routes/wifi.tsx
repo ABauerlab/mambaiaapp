@@ -16,9 +16,9 @@ const UNLOCK_DELAY_MS = 3000;
 
 const UPSELL_INSTAS = [
   { handle: "kriyastudio.co", desc: "Estúdio criativo" },
-  { handle: "vistakodara",    desc: "Slow fashion" },
-  { handle: "use.asari",      desc: "Acessórios" },
-  { handle: "abauerlab",      desc: "Estética & beleza" },
+  { handle: "vistakodara", desc: "Slow fashion" },
+  { handle: "use.asari", desc: "Acessórios" },
+  { handle: "abauerlab", desc: "Estética & beleza" },
 ];
 
 type Step = "intro" | "google" | "instagram" | "done";
@@ -27,15 +27,26 @@ export const Route = createFileRoute("/wifi")({
   head: () => ({
     meta: [
       { title: "Wi-Fi Mambaia | Conecte-se ao estúdio" },
-      { name: "description", content: "Libere o Wi-Fi da Mambaia com um clique - basta seguir o passo a passo e voltar para a página." },
+      {
+        name: "description",
+        content:
+          "Libere o Wi-Fi da Mambaia com um clique - basta seguir o passo a passo e voltar para a página.",
+      },
       { name: "robots", content: "noindex, nofollow" },
       { name: "theme-color", content: "#1F3D2B" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { property: "og:title", content: "Wi-Fi Mambaia" },
-      { property: "og:description", content: "Conecte-se ao Wi-Fi do estúdio Mambaia em poucos passos." },
+      {
+        property: "og:description",
+        content: "Conecte-se ao Wi-Fi do estúdio Mambaia em poucos passos.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://mambaiabh.com.br/wifi" },
-      { property: "og:image", content: "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg" },
+      {
+        property: "og:image",
+        content:
+          "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg",
+      },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "https://mambaiabh.com.br/wifi" }],
@@ -62,14 +73,18 @@ function WifiPage() {
         if (s.googleDone && s.instaDone) setStep("done");
         else if (s.googleDone) setStep("instagram");
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   // persist
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ googleDone, instaDone }));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, [googleDone, instaDone]);
 
   function abrirNoAppOuBrowser(appUrl: string, webUrl: string) {
@@ -121,9 +136,7 @@ function WifiPage() {
       <header className="px-6 pt-10 pb-6 flex flex-col items-center text-center">
         <img src={logo} alt="Mambaia" className="w-20 h-20 rounded-2xl mb-4" />
         <h1 className="text-3xl font-bold tracking-tight">Wi-Fi Mambaia</h1>
-        <p className="text-white/70 text-sm mt-2 max-w-xs">
-          Conecta. Cultiva. Transforma.
-        </p>
+        <p className="text-white/70 text-sm mt-2 max-w-xs">Conecta. Cultiva. Transforma.</p>
       </header>
 
       <main className="flex-1 px-5 pb-10 max-w-md mx-auto w-full">
@@ -134,8 +147,9 @@ function WifiPage() {
               Para liberar o Wi-Fi, pedimos duas contribuições rapidinhas com a marca:
             </p>
             <div className="rounded-xl bg-[color:var(--brand-lime)]/15 border border-[color:var(--brand-lime)]/40 p-3 mb-5 text-xs text-white/90 leading-relaxed">
-              <strong className="text-[color:var(--brand-lime)]">Importante:</strong> quando abrirmos o Google e o Instagram, você
-              precisa <strong>voltar para esta página</strong> para continuar e liberar a senha do Wi-Fi.
+              <strong className="text-[color:var(--brand-lime)]">Importante:</strong> quando
+              abrirmos o Google e o Instagram, você precisa <strong>voltar para esta página</strong>{" "}
+              para continuar e liberar a senha do Wi-Fi.
             </div>
             <ul className="space-y-3 mb-6 text-sm">
               <li className="flex items-start gap-3">
@@ -144,7 +158,9 @@ function WifiPage() {
               </li>
               <li className="flex items-start gap-3">
                 <Instagram className="w-5 h-5 text-[color:var(--brand-lime)] flex-shrink-0 mt-0.5" />
-                <span>Seguir a Mambaia no Instagram <strong>@mambaiabh</strong></span>
+                <span>
+                  Seguir a Mambaia no Instagram <strong>@mambaiabh</strong>
+                </span>
               </li>
             </ul>
             <Button
@@ -164,13 +180,19 @@ function WifiPage() {
             description="Vamos abrir o app do Google Maps. Deixe 5 estrelas e depois volte para esta página (botão voltar do celular) para continuar."
           >
             <Button
-              onClick={() => { abrirGoogle(); }}
+              onClick={() => {
+                abrirGoogle();
+              }}
               className="w-full h-12 bg-white text-[color:var(--brand-dark)] hover:bg-white/90 font-semibold"
             >
               <Star className="w-4 h-4 mr-2" /> Abrir Google Reviews
             </Button>
             <Button
-              onClick={() => { setGoogleDone(true); setStep("instagram"); setInstaConfirmable(false); }}
+              onClick={() => {
+                setGoogleDone(true);
+                setStep("instagram");
+                setInstaConfirmable(false);
+              }}
               disabled={!googleConfirmable}
               variant="outline"
               className="w-full h-12 mt-3 bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white disabled:opacity-40"
@@ -188,13 +210,18 @@ function WifiPage() {
             description="Vamos abrir o app do Instagram no perfil da Mambaia. Toque em Seguir e volte para esta página para liberar o Wi-Fi."
           >
             <Button
-              onClick={() => { abrirInsta(); }}
+              onClick={() => {
+                abrirInsta();
+              }}
               className="w-full h-12 bg-white text-[color:var(--brand-dark)] hover:bg-white/90 font-semibold"
             >
               <Instagram className="w-4 h-4 mr-2" /> Abrir @mambaiabh
             </Button>
             <Button
-              onClick={() => { setInstaDone(true); setStep("done"); }}
+              onClick={() => {
+                setInstaDone(true);
+                setStep("done");
+              }}
               disabled={!instaConfirmable}
               variant="outline"
               className="w-full h-12 mt-3 bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white disabled:opacity-40"
@@ -223,13 +250,23 @@ function WifiPage() {
                 <div>
                   <div className="text-xs uppercase tracking-wider opacity-60 mb-1">Senha</div>
                   <div className="flex items-center justify-between gap-3">
-                    <code className="text-2xl font-mono font-bold select-all break-all">{WIFI_PASSWORD}</code>
+                    <code className="text-2xl font-mono font-bold select-all break-all">
+                      {WIFI_PASSWORD}
+                    </code>
                     <Button
                       size="sm"
                       onClick={copiarSenha}
                       className="bg-[color:var(--brand-lime)] text-[color:var(--brand-dark)] hover:bg-[color:var(--brand-lime)]/80 font-semibold flex-shrink-0"
                     >
-                      {copied ? <><Check className="w-4 h-4 mr-1" /> Copiado</> : <><Copy className="w-4 h-4 mr-1" /> Copiar</>}
+                      {copied ? (
+                        <>
+                          <Check className="w-4 h-4 mr-1" /> Copiado
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 mr-1" /> Copiar
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -275,9 +312,7 @@ function WifiPage() {
         )}
       </main>
 
-      <footer className="text-center text-white/40 text-xs pb-6">
-        Mambaia · Belo Horizonte
-      </footer>
+      <footer className="text-center text-white/40 text-xs pb-6">Mambaia · Belo Horizonte</footer>
     </div>
   );
 }
@@ -297,7 +332,9 @@ function StepCard({
 }) {
   return (
     <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur">
-      <div className="text-xs text-[color:var(--brand-lime)] font-semibold mb-2">PASSO {stepNum} DE 2</div>
+      <div className="text-xs text-[color:var(--brand-lime)] font-semibold mb-2">
+        PASSO {stepNum} DE 2
+      </div>
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-[color:var(--brand-lime)]/20 text-[color:var(--brand-lime)] flex items-center justify-center">
           {icon}

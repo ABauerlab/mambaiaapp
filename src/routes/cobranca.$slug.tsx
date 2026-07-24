@@ -1,7 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Copy, Check, CheckCircle2, Loader2, MessageCircle, FileText, Calendar as CalendarIcon, Eye } from "lucide-react";
+import {
+  Copy,
+  Check,
+  CheckCircle2,
+  Loader2,
+  MessageCircle,
+  FileText,
+  Calendar as CalendarIcon,
+  Eye,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/money";
 import { Button } from "@/components/ui/button";
@@ -67,9 +76,16 @@ async function fetchReservaBySlug(slug: string): Promise<Reserva | null> {
   if (!row) return null;
   return {
     ...row,
-    valor_total: typeof row.valor_total === "string" ? parseFloat(row.valor_total) : row.valor_total,
-    valor_sinal: typeof row.valor_sinal === "string" ? parseFloat(row.valor_sinal) : row.valor_sinal,
-    valor_pago: row.valor_pago == null ? null : (typeof row.valor_pago === "string" ? parseFloat(row.valor_pago) : row.valor_pago),
+    valor_total:
+      typeof row.valor_total === "string" ? parseFloat(row.valor_total) : row.valor_total,
+    valor_sinal:
+      typeof row.valor_sinal === "string" ? parseFloat(row.valor_sinal) : row.valor_sinal,
+    valor_pago:
+      row.valor_pago == null
+        ? null
+        : typeof row.valor_pago === "string"
+          ? parseFloat(row.valor_pago)
+          : row.valor_pago,
   } as Reserva;
 }
 
@@ -78,9 +94,15 @@ export const Route = createFileRoute("/cobranca/$slug")({
   head: ({ params }) => ({
     meta: [
       { title: `Proposta Mambaia · ${params.slug}` },
-      { name: "description", content: `Sua proposta personalizada da Mambaia. Pagamento via PIX seguro.` },
+      {
+        name: "description",
+        content: `Sua proposta personalizada da Mambaia. Pagamento via PIX seguro.`,
+      },
       { property: "og:title", content: "Proposta Mambaia" },
-      { property: "og:description", content: "Sua proposta personalizada da Mambaia. Pagamento via PIX." },
+      {
+        property: "og:description",
+        content: "Sua proposta personalizada da Mambaia. Pagamento via PIX.",
+      },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -123,21 +145,24 @@ function CobrancaPage() {
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
 
-  const reservaPDF = reserva && reserva.paid_at ? {
-    cliente: reserva.cliente_nome,
-    whatsapp: reserva.cliente_whatsapp,
-    data: reserva.data,
-    horaInicio: reserva.hora_inicio.slice(0, 5),
-    duracaoMinutos: reserva.duracao_minutos,
-    valorTotal: reserva.valor_total,
-    valorPago: reserva.valor_pago ?? reserva.valor_sinal,
-    tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
-    paidAt: reserva.paid_at,
-    slug,
-    numeroProposta: reserva.numero_proposta ?? 0,
-    tipo: (reserva.tipo ?? "locacao") as "locacao" | "pacote_marcas",
-    empreendimento: reserva.empreendimento,
-  } : null;
+  const reservaPDF =
+    reserva && reserva.paid_at
+      ? {
+          cliente: reserva.cliente_nome,
+          whatsapp: reserva.cliente_whatsapp,
+          data: reserva.data,
+          horaInicio: reserva.hora_inicio.slice(0, 5),
+          duracaoMinutos: reserva.duracao_minutos,
+          valorTotal: reserva.valor_total,
+          valorPago: reserva.valor_pago ?? reserva.valor_sinal,
+          tipoPagamento: (reserva.tipo_pagamento ?? "parcial") as "integral" | "parcial",
+          paidAt: reserva.paid_at,
+          slug,
+          numeroProposta: reserva.numero_proposta ?? 0,
+          tipo: (reserva.tipo ?? "locacao") as "locacao" | "pacote_marcas",
+          empreendimento: reserva.empreendimento,
+        }
+      : null;
 
   useEffect(() => {
     if (autoPreviewRef.current && reserva?.paid_at) {
@@ -205,10 +230,17 @@ function CobrancaPage() {
             <div className="text-sm">
               <div className="opacity-70 text-xs uppercase tracking-widest">Sua reserva</div>
               <div className="font-semibold mt-0.5 capitalize">
-                {new Date(reserva.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+                {new Date(reserva.data + "T12:00:00").toLocaleDateString("pt-BR", {
+                  weekday: "long",
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })}
               </div>
               <div className="opacity-80">
-                Início <strong>{reserva.hora_inicio.slice(0, 5)}</strong> · {Math.floor(reserva.duracao_minutos / 60)}h{reserva.duracao_minutos % 60 ? `${reserva.duracao_minutos % 60}` : ""}
+                Início <strong>{reserva.hora_inicio.slice(0, 5)}</strong> ·{" "}
+                {Math.floor(reserva.duracao_minutos / 60)}h
+                {reserva.duracao_minutos % 60 ? `${reserva.duracao_minutos % 60}` : ""}
               </div>
             </div>
           </section>
@@ -216,13 +248,22 @@ function CobrancaPage() {
 
         {/* Hero */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand-green)] to-[var(--brand-lime)] text-[var(--brand-dark)] p-7 md:p-10 shadow-2xl">
-          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/20 blur-3xl" aria-hidden />
+          <div
+            className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/20 blur-3xl"
+            aria-hidden
+          />
           <div className="relative">
-            <div className="text-xs uppercase tracking-widest font-semibold opacity-70">Proposta para</div>
+            <div className="text-xs uppercase tracking-widest font-semibold opacity-70">
+              Proposta para
+            </div>
             <div className="text-lg font-medium mt-1">{data.cliente_nome}</div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">{data.titulo}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-3 leading-tight">
+              {data.titulo}
+            </h1>
             {data.descricao && (
-              <p className="mt-4 text-sm md:text-base whitespace-pre-wrap opacity-90 max-w-prose">{data.descricao}</p>
+              <p className="mt-4 text-sm md:text-base whitespace-pre-wrap opacity-90 max-w-prose">
+                {data.descricao}
+              </p>
             )}
           </div>
         </section>
@@ -242,7 +283,9 @@ function CobrancaPage() {
           </ul>
           <div className="px-5 py-4 flex items-center justify-between bg-white/5">
             <span className="text-sm uppercase tracking-wider opacity-70">Total</span>
-            <span className="text-2xl font-bold text-[var(--brand-lime)] tabular-nums">{formatBRL(data.total)}</span>
+            <span className="text-2xl font-bold text-[var(--brand-lime)] tabular-nums">
+              {formatBRL(data.total)}
+            </span>
           </div>
         </section>
 
@@ -250,7 +293,9 @@ function CobrancaPage() {
         <section className="rounded-2xl bg-[var(--brand-cream)] text-[var(--brand-dark)] p-6 md:p-8 shadow-xl">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
-              <div className="text-xs uppercase tracking-widest font-semibold opacity-60">Pagamento via PIX</div>
+              <div className="text-xs uppercase tracking-widest font-semibold opacity-60">
+                Pagamento via PIX
+              </div>
               <div className="text-lg font-semibold mt-1">{data.pix_nome}</div>
             </div>
             <div className="text-right">
@@ -260,9 +305,13 @@ function CobrancaPage() {
           </div>
 
           <div className="mt-5 rounded-xl border border-[var(--brand-dark)]/15 bg-white p-4">
-            <div className="text-[11px] uppercase tracking-widest opacity-60 mb-1">Chave PIX (CNPJ)</div>
+            <div className="text-[11px] uppercase tracking-widest opacity-60 mb-1">
+              Chave PIX (CNPJ)
+            </div>
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <code className="text-base md:text-lg font-mono font-semibold break-all">{data.pix_chave}</code>
+              <code className="text-base md:text-lg font-mono font-semibold break-all">
+                {data.pix_chave}
+              </code>
               <Button
                 onClick={() => copy(data.pix_chave, "chave")}
                 className="bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90"
@@ -306,10 +355,13 @@ function CobrancaPage() {
         {!pago ? (
           <section className="rounded-2xl border-2 border-[var(--brand-lime)] bg-white/5 p-6 space-y-4">
             <div>
-              <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">Passo final - obrigatório</div>
+              <div className="text-xs uppercase tracking-widest opacity-70 mb-1 font-semibold">
+                Passo final - obrigatório
+              </div>
               <h2 className="text-xl font-bold">Já pagou o sinal? Confirme aqui</h2>
               <p className="text-sm opacity-80 mt-1">
-                Ao confirmar, sua reserva fica garantida e o comprovante em PDF é gerado automaticamente.
+                Ao confirmar, sua reserva fica garantida e o comprovante em PDF é gerado
+                automaticamente.
               </p>
             </div>
 
@@ -325,7 +377,13 @@ function CobrancaPage() {
               disabled={confirmar.isPending || !reserva}
               className="w-full h-12 bg-[var(--brand-lime)] text-[var(--brand-dark)] hover:bg-[var(--brand-lime)]/90 font-semibold text-base"
             >
-              {confirmar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><CheckCircle2 className="w-5 h-5" /> Confirmar pagamento e baixar PDF</>}
+              {confirmar.isPending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <CheckCircle2 className="w-5 h-5" /> Confirmar pagamento e baixar PDF
+                </>
+              )}
             </Button>
             <p className="text-[11px] text-center opacity-60">
               O restante é acertado no dia diretamente com a equipe.
@@ -338,8 +396,10 @@ function CobrancaPage() {
               <h2 className="text-xl font-bold">Pagamento confirmado!</h2>
             </div>
             <p className="text-sm">
-              Sua reserva do dia <strong>{new Date(reserva.data + "T12:00:00").toLocaleDateString("pt-BR")}</strong> às <strong>{reserva.hora_inicio.slice(0, 5)}</strong> está garantida.
-              Baixe seu comprovante em PDF para guardar.
+              Sua reserva do dia{" "}
+              <strong>{new Date(reserva.data + "T12:00:00").toLocaleDateString("pt-BR")}</strong> às{" "}
+              <strong>{reserva.hora_inicio.slice(0, 5)}</strong> está garantida. Baixe seu
+              comprovante em PDF para guardar.
             </p>
             <Button
               onClick={() => setPdfOpen(true)}
@@ -366,7 +426,14 @@ function CobrancaPage() {
 
         <footer className="text-center text-xs opacity-50 pt-4">
           Dúvidas? Fale com a gente:{" "}
-          <a className="underline" href={waMambaia(`Oi! Estou vendo a proposta "${data.titulo}" e queria tirar uma dúvida.`)} target="_blank" rel="noreferrer">
+          <a
+            className="underline"
+            href={waMambaia(
+              `Oi! Estou vendo a proposta "${data.titulo}" e queria tirar uma dúvida.`,
+            )}
+            target="_blank"
+            rel="noreferrer"
+          >
             {formatPhoneBR("3132232356")}
           </a>
         </footer>

@@ -17,7 +17,7 @@ function GuardedShell() {
     if (!session) navigate({ to: "/login", replace: true });
     else if (profile?.must_change_password) navigate({ to: "/primeiro-acesso", replace: true });
   }, [loading, session, profile, navigate]);
-  if (loading || !session || (profile?.must_change_password)) {
+  if (loading || !session || profile?.must_change_password) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
         <Loader2 className="w-5 h-5 animate-spin" />

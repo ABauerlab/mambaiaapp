@@ -29,13 +29,15 @@ import estudio5 from "@/assets/studio/estudio-5.asset.json";
 const SITE = "https://mambaiabh.com.br";
 const WA_NUM = "553132232356";
 const WA_MSG = encodeURIComponent(
-  "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio."
+  "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio.",
 );
 const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
 const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Belo Horizonte - MG";
 const MAPS_LINK =
   "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent("Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Belo Horizonte - MG");
+  encodeURIComponent(
+    "Mambaia Estúdio, R. Rio de Janeiro, 462, Sala 2217, Centro, Belo Horizonte - MG",
+  );
 const MAPS_EMBED =
   "https://www.google.com/maps?q=" +
   encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Belo Horizonte - MG") +
@@ -64,7 +66,10 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "800" },
-      { property: "og:image:alt", content: "Interior do estúdio Mambaia com vista para o Centro de Belo Horizonte" },
+      {
+        property: "og:image:alt",
+        content: "Interior do estúdio Mambaia com vista para o Centro de Belo Horizonte",
+      },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:site_name", content: "Mambaia" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -96,8 +101,18 @@ export const Route = createFileRoute("/")({
           },
           geo: { "@type": "GeoCoordinates", latitude: -19.9184, longitude: -43.9411 },
           openingHoursSpecification: [
-            { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "09:00", closes: "19:00" },
-            { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "10:00", closes: "17:00" },
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              opens: "09:00",
+              closes: "19:00",
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: "Saturday",
+              opens: "10:00",
+              closes: "17:00",
+            },
           ],
           sameAs: [INSTA, WA_LINK],
         }),
@@ -127,9 +142,7 @@ function Header() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-[#0D2E24]/85 backdrop-blur-md border-b border-white/10"
-          : "bg-transparent",
+        scrolled ? "bg-[#0D2E24]/85 backdrop-blur-md border-b border-white/10" : "bg-transparent",
       )}
     >
       <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between gap-4">
@@ -139,11 +152,7 @@ function Header() {
         </a>
         <nav className="hidden md:flex items-center gap-8 text-sm text-white/85">
           {menu.map((m) => (
-            <a
-              key={m.href}
-              href={m.href}
-              className="hover:text-[#E5C72A] transition-colors"
-            >
+            <a key={m.href} href={m.href} className="hover:text-[#E5C72A] transition-colors">
               {m.label}
             </a>
           ))}
@@ -222,8 +231,8 @@ function Hero() {
           <span className="font-semibold text-[#E5C72A]">encontra espaço.</span>
         </h1>
         <p className="mt-6 text-base md:text-xl text-white/85 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in">
-          Estúdio fotográfico, coworking e espaço para eventos no coração
-          de Belo Horizonte. Reserve online, do jeito que combina com você.
+          Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Reserve
+          online, do jeito que combina com você.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center animate-fade-in">
           <a
@@ -241,13 +250,11 @@ function Hero() {
           </a>
         </div>
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
-          {["Estúdio profissional", "Coworking", "Eventos", "Pacote marcas"].map(
-            (t) => (
-              <span key={t} className="inline-flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
-              </span>
-            ),
-          )}
+          {["Estúdio profissional", "Coworking", "Eventos", "Pacote marcas"].map((t) => (
+            <span key={t} className="inline-flex items-center gap-1.5">
+              <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
+            </span>
+          ))}
         </div>
       </div>
     </section>
@@ -309,8 +316,8 @@ function Servicos() {
             Um espaço, várias possibilidades.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Reserve o Mambaia para o que a sua criatividade pedir hoje -
-            fotografia, trabalho, evento ou produção de marca.
+            Reserve o Mambaia para o que a sua criatividade pedir hoje - fotografia, trabalho,
+            evento ou produção de marca.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -326,13 +333,9 @@ function Servicos() {
                     <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
                       <Icon className="w-5 h-5" />
                     </span>
-                    <h3 className="text-xl font-medium text-[#0D2E24]">
-                      {s.title}
-                    </h3>
+                    <h3 className="text-xl font-medium text-[#0D2E24]">{s.title}</h3>
                   </div>
-                  <p className="text-[#1A1A1A]/70 leading-relaxed text-sm md:text-base">
-                    {s.desc}
-                  </p>
+                  <p className="text-[#1A1A1A]/70 leading-relaxed text-sm md:text-base">{s.desc}</p>
                   <a
                     href={s.href}
                     className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0D2E24] hover:text-[#5F6B2D] transition"
@@ -420,10 +423,9 @@ function Sobre() {
             Muito mais do que um estúdio.
           </h2>
           <p className="mt-5 text-[#1A1A1A]/75 leading-relaxed">
-            O Mambaia nasceu no coração de Belo Horizonte com um propósito
-            simples: dar espaço para quem cria. Aqui, a luz da Praça Sete
-            encontra ambientes pensados para fotografia, trabalho, encontros
-            e ideias que precisam de um lugar para acontecer.
+            O Mambaia nasceu no coração de Belo Horizonte com um propósito simples: dar espaço para
+            quem cria. Aqui, a luz da Praça Sete encontra ambientes pensados para fotografia,
+            trabalho, encontros e ideias que precisam de um lugar para acontecer.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {valores.map((v) => (
@@ -499,9 +501,7 @@ function Steps() {
                   <Icon className="w-6 h-6 text-white/80 ml-auto" />
                 </div>
                 <h3 className="text-xl font-medium">{s.title}</h3>
-                <p className="mt-2 text-white/70 text-sm leading-relaxed">
-                  {s.desc}
-                </p>
+                <p className="mt-2 text-white/70 text-sm leading-relaxed">{s.desc}</p>
               </div>
             );
           })}
@@ -647,10 +647,26 @@ function Footer() {
         <div>
           <h4 className="text-white font-semibold text-sm mb-3">Reservas</h4>
           <ul className="space-y-2 text-sm">
-            <li><a className="hover:text-[#E5C72A]" href="/agendar">Agendar estúdio</a></li>
-            <li><a className="hover:text-[#E5C72A]" href="/pacote-marcas">Pacote marcas</a></li>
-            <li><a className="hover:text-[#E5C72A]" href="#galeria">Galeria</a></li>
-            <li><a className="hover:text-[#E5C72A]" href="#contato">Contato</a></li>
+            <li>
+              <a className="hover:text-[#E5C72A]" href="/agendar">
+                Agendar estúdio
+              </a>
+            </li>
+            <li>
+              <a className="hover:text-[#E5C72A]" href="/pacote-marcas">
+                Pacote marcas
+              </a>
+            </li>
+            <li>
+              <a className="hover:text-[#E5C72A]" href="#galeria">
+                Galeria
+              </a>
+            </li>
+            <li>
+              <a className="hover:text-[#E5C72A]" href="#contato">
+                Contato
+              </a>
+            </li>
           </ul>
         </div>
         <div>
@@ -713,7 +729,9 @@ function Footer() {
                 BauerLab
               </a>
             </span>
-            <Link to="/login" className="hover:text-white/80">Acesso interno</Link>
+            <Link to="/login" className="hover:text-white/80">
+              Acesso interno
+            </Link>
           </div>
         </div>
       </div>
@@ -733,9 +751,8 @@ function Medidas() {
             Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Formato em L com ciclorama branco, luz natural pela janela e altura generosa
-            para iluminação profissional. Ótimo para look book, produto, entrevistas e
-            gravações.
+            Formato em L com ciclorama branco, luz natural pela janela e altura generosa para
+            iluminação profissional. Ótimo para look book, produto, entrevistas e gravações.
           </p>
           <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
             {[
@@ -747,20 +764,22 @@ function Medidas() {
                 key={m.label}
                 className="rounded-xl bg-white border border-black/5 p-4 text-center shadow-sm"
               >
-                <dt className="text-[10px] uppercase tracking-widest text-[#5F6B2D]">
-                  {m.label}
-                </dt>
-                <dd className="mt-1 text-lg font-semibold tabular-nums text-[#0D2E24]">
-                  {m.v}
-                </dd>
+                <dt className="text-[10px] uppercase tracking-widest text-[#5F6B2D]">{m.label}</dt>
+                <dd className="mt-1 text-lg font-semibold tabular-nums text-[#0D2E24]">{m.v}</dd>
               </div>
             ))}
           </dl>
           <p className="mt-4 text-xs text-[#1A1A1A]/60">
             Dúvidas sobre encaixe de cenário ou equipamento?{" "}
-            <a href={WA_LINK} target="_blank" rel="noreferrer" className="underline underline-offset-2 font-semibold text-[#0D2E24]">
+            <a
+              href={WA_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2 font-semibold text-[#0D2E24]"
+            >
               Fale com a gente no WhatsApp
-            </a>.
+            </a>
+            .
           </p>
         </div>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border border-black/5">
@@ -782,18 +801,31 @@ function Medidas() {
 
 function MobileBar() {
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+    <nav
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="grid grid-cols-3">
-        <a href="#top" className="flex flex-col items-center gap-0.5 py-3 text-[11px] text-[#0D2E24]">
+        <a
+          href="#top"
+          className="flex flex-col items-center gap-0.5 py-3 text-[11px] text-[#0D2E24]"
+        >
           <HomeIcon className="w-5 h-5" />
           Início
         </a>
-        <a href="/agendar" className="flex flex-col items-center gap-0.5 py-3 text-[11px] font-semibold text-[#0D2E24] bg-[#E5C72A]">
+        <a
+          href="/agendar"
+          className="flex flex-col items-center gap-0.5 py-3 text-[11px] font-semibold text-[#0D2E24] bg-[#E5C72A]"
+        >
           <Calendar className="w-5 h-5" />
           Agendar
         </a>
-        <a href={WA_LINK} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-0.5 py-3 text-[11px] text-[#0D2E24]">
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noreferrer"
+          className="flex flex-col items-center gap-0.5 py-3 text-[11px] text-[#0D2E24]"
+        >
           <MessageCircle className="w-5 h-5" />
           WhatsApp
         </a>
@@ -836,9 +868,18 @@ function LeadForm() {
     // Honeypot: campo escondido; humano nunca preenche.
     if (honey.trim().length > 0) return;
     // Tempo mínimo pra evitar bots que enviam o form imediatamente.
-    if (Date.now() - mountedAt < 1200) { toast.error("Aguarde um instante e tente novamente."); return; }
-    if (nome.trim().length < 2) { toast.error("Informe seu nome"); return; }
-    if (!isValidPhoneBR(wa)) { toast.error("WhatsApp inválido - use DDD + número"); return; }
+    if (Date.now() - mountedAt < 1200) {
+      toast.error("Aguarde um instante e tente novamente.");
+      return;
+    }
+    if (nome.trim().length < 2) {
+      toast.error("Informe seu nome");
+      return;
+    }
+    if (!isValidPhoneBR(wa)) {
+      toast.error("WhatsApp inválido - use DDD + número");
+      return;
+    }
     // Bloqueio anti-repetição: mesmo par nome+whatsapp em janela curta.
     try {
       const key = "mambaia_lead_last";
@@ -852,7 +893,9 @@ function LeadForm() {
         }
       }
       localStorage.setItem(key, JSON.stringify({ sig, ts: Date.now() }));
-    } catch { /* ignore storage errors */ }
+    } catch {
+      /* ignore storage errors */
+    }
     setConfirmed({ nome: nome.trim(), wa });
   };
 
@@ -862,7 +905,10 @@ function LeadForm() {
       `Oi Mambaia! Meu nome é ${confirmed.nome} (WhatsApp ${confirmed.wa}). Vim pelo site e queria falar sobre uma reserva no estúdio.`,
     );
     window.open(`https://wa.me/${WA_NUM}?text=${msg}`, "_blank", "noopener,noreferrer");
-    const q = new URLSearchParams({ nome: confirmed.nome, whatsapp: onlyDigits(confirmed.wa) }).toString();
+    const q = new URLSearchParams({
+      nome: confirmed.nome,
+      whatsapp: onlyDigits(confirmed.wa),
+    }).toString();
     window.location.href = `/agendar?${q}`;
   };
 
@@ -877,21 +923,29 @@ function LeadForm() {
             Deixe seu contato e a gente organiza tudo com você.
           </h2>
           <p className="mt-3 text-white/70 text-sm md:text-base">
-            Preencha nome e WhatsApp: já abrimos a nossa conversa e te levamos direto para a agenda com seus dados prontos.
+            Preencha nome e WhatsApp: já abrimos a nossa conversa e te levamos direto para a agenda
+            com seus dados prontos.
           </p>
         </div>
         {confirmed ? (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 space-y-4 backdrop-blur">
             <div className="flex items-center gap-2 text-[#E5C72A]">
               <Check className="w-5 h-5" />
-              <span className="text-sm font-semibold uppercase tracking-widest">Confirme seus dados</span>
+              <span className="text-sm font-semibold uppercase tracking-widest">
+                Confirme seus dados
+              </span>
             </div>
             <div className="rounded-lg bg-white/10 p-4 text-sm space-y-1">
-              <div><span className="text-white/60">Nome:</span> <strong>{confirmed.nome}</strong></div>
-              <div><span className="text-white/60">WhatsApp:</span> <strong>{confirmed.wa}</strong></div>
+              <div>
+                <span className="text-white/60">Nome:</span> <strong>{confirmed.nome}</strong>
+              </div>
+              <div>
+                <span className="text-white/60">WhatsApp:</span> <strong>{confirmed.wa}</strong>
+              </div>
             </div>
             <p className="text-xs text-white/70">
-              Ao continuar vamos abrir a conversa no WhatsApp e te levar para a agenda com esses dados prontos.
+              Ao continuar vamos abrir a conversa no WhatsApp e te levar para a agenda com esses
+              dados prontos.
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
               <button
@@ -911,53 +965,58 @@ function LeadForm() {
             </div>
           </div>
         ) : (
-        <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 space-y-3 backdrop-blur">
-          {/* honeypot: hidden from humans, tempting to bots */}
-          <input
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            value={honey}
-            onChange={(e) => setHoney(e.target.value)}
-            name="empresa"
-            aria-hidden="true"
-            className="hidden"
-          />
-          <div>
-            <label className="text-[11px] uppercase tracking-widest text-white/70">Nome</label>
-            <input
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Como podemos te chamar?"
-              className="mt-1 w-full rounded-lg bg-white text-[#0D2E24] px-4 py-3 outline-none focus:ring-2 focus:ring-[#E5C72A]"
-              autoComplete="name"
-              required
-              minLength={2}
-              maxLength={80}
-            />
-          </div>
-          <div>
-            <label className="text-[11px] uppercase tracking-widest text-white/70">WhatsApp</label>
-            <input
-              value={wa}
-              onChange={(e) => setWa(maskPhoneInput(e.target.value))}
-              placeholder="(31) 9 9999-9999"
-              inputMode="tel"
-              autoComplete="tel"
-              required
-              className="mt-1 w-full rounded-lg bg-white text-[#0D2E24] px-4 py-3 outline-none focus:ring-2 focus:ring-[#E5C72A]"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
+          <form
+            onSubmit={submit}
+            className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 space-y-3 backdrop-blur"
           >
-            Quero reservar <ArrowRight className="w-4 h-4" />
-          </button>
-          <p className="text-[11px] text-white/60 text-center">
-            Sem spam. Usamos seu contato apenas para organizar a reserva.
-          </p>
-        </form>
+            {/* honeypot: hidden from humans, tempting to bots */}
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honey}
+              onChange={(e) => setHoney(e.target.value)}
+              name="empresa"
+              aria-hidden="true"
+              className="hidden"
+            />
+            <div>
+              <label className="text-[11px] uppercase tracking-widest text-white/70">Nome</label>
+              <input
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Como podemos te chamar?"
+                className="mt-1 w-full rounded-lg bg-white text-[#0D2E24] px-4 py-3 outline-none focus:ring-2 focus:ring-[#E5C72A]"
+                autoComplete="name"
+                required
+                minLength={2}
+                maxLength={80}
+              />
+            </div>
+            <div>
+              <label className="text-[11px] uppercase tracking-widest text-white/70">
+                WhatsApp
+              </label>
+              <input
+                value={wa}
+                onChange={(e) => setWa(maskPhoneInput(e.target.value))}
+                placeholder="(31) 9 9999-9999"
+                inputMode="tel"
+                autoComplete="tel"
+                required
+                className="mt-1 w-full rounded-lg bg-white text-[#0D2E24] px-4 py-3 outline-none focus:ring-2 focus:ring-[#E5C72A]"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
+            >
+              Quero reservar <ArrowRight className="w-4 h-4" />
+            </button>
+            <p className="text-[11px] text-white/60 text-center">
+              Sem spam. Usamos seu contato apenas para organizar a reserva.
+            </p>
+          </form>
         )}
       </div>
     </section>
