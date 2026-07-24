@@ -65,7 +65,9 @@ export function GastosFixos() {
   const [dia, setDia] = useState("5");
   const [catId, setCatId] = useState("");
   const [socioId, setSocioId] = useState<string>(MAMBAIA);
-  const [frequencia, setFrequencia] = useState<"mensal" | "semanal" | "quinzenal" | "anual">("mensal");
+  const [frequencia, setFrequencia] = useState<"mensal" | "semanal" | "quinzenal" | "anual">(
+    "mensal",
+  );
   const [diaSemana, setDiaSemana] = useState("1");
   const [mes, setMes] = useState("1");
   const [duracaoParcelas, setDuracaoParcelas] = useState(""); // Ex: "3" parcelas
@@ -75,7 +77,8 @@ export function GastosFixos() {
   const create = useMutation({
     mutationFn: async () => {
       const numTotal = parseInt(duracaoParcelas, 10);
-      const empresaMetadata = Number.isInteger(numTotal) && numTotal > 0 ? buildEmpresaString(numTotal, 0) : null;
+      const empresaMetadata =
+        Number.isInteger(numTotal) && numTotal > 0 ? buildEmpresaString(numTotal, 0) : null;
 
       const parsed = schema.parse({
         nome,
@@ -114,7 +117,8 @@ export function GastosFixos() {
       setMes("1");
       setDuracaoParcelas("");
     },
-    onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível salvar. Tente novamente.")),
+    onError: (e: unknown) =>
+      toast.error(friendlyErrorMessage(e, "Não foi possível salvar. Tente novamente.")),
   });
 
   const toggle = useMutation({
@@ -172,9 +176,13 @@ export function GastosFixos() {
       qc.invalidateQueries({ queryKey: ["fixos"] });
       const { total, lancadas } = parseDuracao(f.empresa);
       if (total && lancadas + 1 >= total) {
-        toast.success(`Última parcela (${total}/${total}) lançada! Gasto fixo concluído e pausado.`);
+        toast.success(
+          `Última parcela (${total}/${total}) lançada! Gasto fixo concluído e pausado.`,
+        );
       } else {
-        toast.success(total ? `Parcela ${lancadas + 1} de ${total} lançada!` : "Transação lançada!");
+        toast.success(
+          total ? `Parcela ${lancadas + 1} de ${total} lançada!` : "Transação lançada!",
+        );
       }
     },
     onError: (e: unknown) => toast.error(friendlyErrorMessage(e, "Não foi possível lançar.")),
@@ -196,7 +204,12 @@ export function GastosFixos() {
         <Card className="p-5 mb-4 space-y-3">
           <div>
             <Label>Nome</Label>
-            <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: Aluguel, Parcela Equipamento" maxLength={100} />
+            <Input
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Ex: Aluguel, Parcela Equipamento"
+              maxLength={100}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -229,7 +242,13 @@ export function GastosFixos() {
             {(frequencia === "mensal" || frequencia === "quinzenal") && (
               <div>
                 <Label>Dia do mês</Label>
-                <Input type="number" min={1} max={31} value={dia} onChange={(e) => setDia(e.target.value)} />
+                <Input
+                  type="number"
+                  min={1}
+                  max={31}
+                  value={dia}
+                  onChange={(e) => setDia(e.target.value)}
+                />
               </div>
             )}
             {frequencia === "semanal" && (
@@ -252,7 +271,13 @@ export function GastosFixos() {
               <>
                 <div>
                   <Label>Dia</Label>
-                  <Input type="number" min={1} max={31} value={dia} onChange={(e) => setDia(e.target.value)} />
+                  <Input
+                    type="number"
+                    min={1}
+                    max={31}
+                    value={dia}
+                    onChange={(e) => setDia(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Mês</Label>
@@ -337,10 +362,10 @@ export function GastosFixos() {
             f.frequencia === "semanal"
               ? `Toda ${DIAS_SEMANA[f.dia_semana ?? 1]}`
               : f.frequencia === "anual"
-              ? `Anual · ${f.dia_mes}/${f.mes ?? 1}`
-              : f.frequencia === "quinzenal"
-              ? `Quinzenal · dia ${f.dia_mes}`
-              : `Dia ${f.dia_mes}`;
+                ? `Anual · ${f.dia_mes}/${f.mes ?? 1}`
+                : f.frequencia === "quinzenal"
+                  ? `Quinzenal · dia ${f.dia_mes}`
+                  : `Dia ${f.dia_mes}`;
 
           const concluida = total != null && lancadas >= total;
 
@@ -353,7 +378,10 @@ export function GastosFixos() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-medium text-sm">{f.nome}</span>
                   {concluida && (
-                    <Badge variant="outline" className="border-emerald-500/40 text-emerald-600 bg-emerald-500/10 text-[10px]">
+                    <Badge
+                      variant="outline"
+                      className="border-emerald-500/40 text-emerald-600 bg-emerald-500/10 text-[10px]"
+                    >
                       Concluído ({total}/{total})
                     </Badge>
                   )}
@@ -373,7 +401,9 @@ export function GastosFixos() {
                 </div>
               </div>
 
-              <div className="font-semibold tabular-nums text-sm shrink-0">{formatBRL(f.valor)}</div>
+              <div className="font-semibold tabular-nums text-sm shrink-0">
+                {formatBRL(f.valor)}
+              </div>
 
               <Button
                 size="sm"
@@ -405,7 +435,9 @@ export function GastosFixos() {
         })}
 
         {(fixos?.length ?? 0) === 0 && (
-          <div className="text-center py-12 text-sm text-muted-foreground">Nenhum gasto fixo cadastrado.</div>
+          <div className="text-center py-12 text-sm text-muted-foreground">
+            Nenhum gasto fixo cadastrado.
+          </div>
         )}
       </Card>
     </div>

@@ -7,7 +7,11 @@ import { PageHeader } from "./PageHeader";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { DateRangeFilter, defaultMonthRange, type DateRangeValue } from "@/components/DateRangeFilter";
+import {
+  DateRangeFilter,
+  defaultMonthRange,
+  type DateRangeValue,
+} from "@/components/DateRangeFilter";
 
 type Linha = {
   id: string;
@@ -32,17 +36,32 @@ export function Auditoria() {
     const out: Linha[] = [];
     for (const a of acertos ?? []) {
       out.push({
-        id: "a-" + a.id, data: a.created_at, tipo: "acerto", valor: a.valor,
+        id: "a-" + a.id,
+        data: a.created_at,
+        tipo: "acerto",
+        valor: a.valor,
         texto: (
-          <span><strong>{nomeDe(a.de_socio_id)}</strong> <ArrowRight className="inline w-3 h-3 mx-1" /> <strong>{nomeDe(a.para_socio_id)}</strong>{a.observacoes ? ` - ${a.observacoes}` : ""}</span>
+          <span>
+            <strong>{nomeDe(a.de_socio_id)}</strong> <ArrowRight className="inline w-3 h-3 mx-1" />{" "}
+            <strong>{nomeDe(a.para_socio_id)}</strong>
+            {a.observacoes ? ` - ${a.observacoes}` : ""}
+          </span>
         ),
       });
     }
     for (const t of transacoes ?? []) {
       if (!t.acertada) continue;
       out.push({
-        id: "z-" + t.id, data: t.created_at, tipo: "zeramento", valor: t.valor,
-        texto: <span><CheckCircle2 className="inline w-3 h-3 mr-1 text-[color:var(--success)]" />Transacao {t.descricao} movida ao balanco geral</span>,
+        id: "z-" + t.id,
+        data: t.created_at,
+        tipo: "zeramento",
+        valor: t.valor,
+        texto: (
+          <span>
+            <CheckCircle2 className="inline w-3 h-3 mr-1 text-[color:var(--success)]" />
+            Transacao {t.descricao} movida ao balanco geral
+          </span>
+        ),
       });
     }
     return out
@@ -63,7 +82,10 @@ export function Auditoria() {
       <Card className="divide-y divide-border">
         {linhas.map((l) => (
           <div key={l.id} className="flex items-start gap-3 p-3 md:p-4">
-            <Badge variant={l.tipo === "acerto" ? "default" : "secondary"} className="text-[10px] mt-0.5">
+            <Badge
+              variant={l.tipo === "acerto" ? "default" : "secondary"}
+              className="text-[10px] mt-0.5"
+            >
               {l.tipo === "acerto" ? "Acerto" : "Fechamento"}
             </Badge>
             <div className="flex-1 min-w-0">
@@ -78,7 +100,9 @@ export function Auditoria() {
           </div>
         ))}
         {linhas.length === 0 && (
-          <div className="text-center py-12 text-sm text-muted-foreground">Sem registros ainda.</div>
+          <div className="text-center py-12 text-sm text-muted-foreground">
+            Sem registros ainda.
+          </div>
         )}
       </Card>
     </div>

@@ -29,7 +29,10 @@ function fmtHora(r: ReservaRow) {
 }
 
 function fmtDataBR(r: ReservaRow) {
-  return new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+  return new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+  });
 }
 
 export const Route = createFileRoute("/api/public/hooks/reserva-lembretes")({
@@ -57,14 +60,17 @@ export const Route = createFileRoute("/api/public/hooks/reserva-lembretes")({
 
         for (const raw of (data ?? []) as ReservaRow[]) {
           // ignora bloqueios internos
-          if (raw.cliente_whatsapp === "00000000000" || raw.cliente_nome.startsWith("BLOQUEIO")) continue;
+          if (raw.cliente_whatsapp === "00000000000" || raw.cliente_nome.startsWith("BLOQUEIO"))
+            continue;
 
           const start = reservaStart(raw);
           const diffMin = (start.getTime() - now.getTime()) / 60_000;
 
           // Janela 24h: entre 23h30 e 24h30 antes
           if (!raw.lembrete_24h_enviado_at && diffMin >= 23 * 60 + 30 && diffMin <= 24 * 60 + 30) {
-            const who = raw.empreendimento ? `${raw.cliente_nome} (${raw.empreendimento})` : raw.cliente_nome;
+            const who = raw.empreendimento
+              ? `${raw.cliente_nome} (${raw.empreendimento})`
+              : raw.cliente_nome;
             await sendPushToAll({
               title: "Lembrete: reserva em 24h",
               body: `${who} — amanhã ${fmtDataBR(raw)} às ${fmtHora(raw)}`,
@@ -80,7 +86,9 @@ export const Route = createFileRoute("/api/public/hooks/reserva-lembretes")({
 
           // Janela 1h: entre 45min e 75min antes
           if (!raw.lembrete_1h_enviado_at && diffMin >= 45 && diffMin <= 75) {
-            const who = raw.empreendimento ? `${raw.cliente_nome} (${raw.empreendimento})` : raw.cliente_nome;
+            const who = raw.empreendimento
+              ? `${raw.cliente_nome} (${raw.empreendimento})`
+              : raw.cliente_nome;
             await sendPushToAll({
               title: "Lembrete: reserva em 1h",
               body: `${who} — hoje às ${fmtHora(raw)}`,
@@ -95,7 +103,12 @@ export const Route = createFileRoute("/api/public/hooks/reserva-lembretes")({
           }
         }
 
-        return Response.json({ ok: true, sent_24h: sent24, sent_1h: sent1, checked: data?.length ?? 0 });
+        return Response.json({
+          ok: true,
+          sent_24h: sent24,
+          sent_1h: sent1,
+          checked: data?.length ?? 0,
+        });
       },
     },
   },

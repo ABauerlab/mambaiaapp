@@ -19,7 +19,9 @@ export function PdfPreviewDialog({ open, onOpenChange, reserva }: Props) {
     if (open && reserva) {
       const gen = gerarReservaPDFBlob(reserva);
       setPdf(gen);
-      return () => { URL.revokeObjectURL(gen.url); };
+      return () => {
+        URL.revokeObjectURL(gen.url);
+      };
     } else {
       setPdf(null);
     }
@@ -30,14 +32,19 @@ export function PdfPreviewDialog({ open, onOpenChange, reserva }: Props) {
     try {
       const file = new File([pdf.blob], pdf.filename, { type: "application/pdf" });
       return typeof navigator.canShare === "function" && navigator.canShare({ files: [file] });
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   }, [pdf]);
 
   const baixar = () => {
     if (!pdf) return;
     const a = document.createElement("a");
-    a.href = pdf.url; a.download = pdf.filename;
-    document.body.appendChild(a); a.click(); a.remove();
+    a.href = pdf.url;
+    a.download = pdf.filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   const compartilhar = async () => {
@@ -51,12 +58,17 @@ export function PdfPreviewDialog({ open, onOpenChange, reserva }: Props) {
         text: "Sua proposta comercial da Mambaia.",
         files: [file],
       });
-    } catch { /* usuário cancelou */ }
-    finally { setSharing(false); }
+    } catch {
+      /* usuário cancelou */
+    } finally {
+      setSharing(false);
+    }
   };
 
   const whatsappHref = reserva
-    ? waMambaia(`Segue minha proposta comercial nº ${String(reserva.numeroProposta).padStart(4, "0")} da Mambaia.`)
+    ? waMambaia(
+        `Segue minha proposta comercial nº ${String(reserva.numeroProposta).padStart(4, "0")} da Mambaia.`,
+      )
     : "#";
 
   return (
@@ -83,15 +95,27 @@ export function PdfPreviewDialog({ open, onOpenChange, reserva }: Props) {
             <Download className="w-4 h-4" /> Baixar PDF
           </Button>
           {canShare ? (
-            <Button onClick={compartilhar} disabled={!pdf || sharing} variant="outline" className="w-full">
-              {sharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+            <Button
+              onClick={compartilhar}
+              disabled={!pdf || sharing}
+              variant="outline"
+              className="w-full"
+            >
+              {sharing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Share2 className="w-4 h-4" />
+              )}
               Compartilhar
             </Button>
           ) : (
             <span className="hidden sm:block" />
           )}
           <a href={whatsappHref} target="_blank" rel="noreferrer" className="w-full">
-            <Button variant="outline" className="w-full bg-[#25D366]/10 hover:bg-[#25D366]/20 border-[#25D366]/30">
+            <Button
+              variant="outline"
+              className="w-full bg-[#25D366]/10 hover:bg-[#25D366]/20 border-[#25D366]/30"
+            >
               <MessageCircle className="w-4 h-4 text-[#25D366]" /> WhatsApp
             </Button>
           </a>

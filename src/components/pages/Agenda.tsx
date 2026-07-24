@@ -25,7 +25,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { formatBRL } from "@/lib/money";
 import { friendlyErrorMessage } from "@/lib/utils";
 import { formatPhoneBR, maskPhoneInput, onlyDigits, isValidPhoneBR } from "@/lib/phone";
@@ -106,7 +112,8 @@ export function Agenda() {
   });
   useRealtimeInvalidate("reservas", ["reservas", "ocupados"]);
 
-  const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/agendar` : "/agendar";
+  const publicUrl =
+    typeof window !== "undefined" ? `${window.location.origin}/agendar` : "/agendar";
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
     await navigator.clipboard.writeText(publicUrl);
@@ -158,7 +165,11 @@ export function Agenda() {
         description="Gerencie as reservas e bloqueios do estúdio. Horários bloqueados não aparecem como disponíveis para o cliente."
         action={
           <div className="flex gap-2 flex-wrap">
-            <Button variant="default" className="bg-amber-600 hover:bg-amber-700 text-white" onClick={() => setBlockOpen(true)}>
+            <Button
+              variant="default"
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+              onClick={() => setBlockOpen(true)}
+            >
               <Lock className="w-4 h-4 mr-1.5" /> Bloquear horário
             </Button>
             <Button variant="outline" onClick={copyLink}>
@@ -189,11 +200,21 @@ export function Agenda() {
           </div>
         </div>
         <div className="mt-4 rounded-lg bg-brand-dark text-brand-cream px-4 py-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="text-[10px] uppercase tracking-widest opacity-70">Período selecionado</span>
+          <span className="text-[10px] uppercase tracking-widest opacity-70">
+            Período selecionado
+          </span>
           <span className="text-sm md:text-base font-semibold capitalize">
-            {new Date(from + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}{" "}
+            {new Date(from + "T12:00:00").toLocaleDateString("pt-BR", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}{" "}
             até{" "}
-            {new Date(to + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
+            {new Date(to + "T12:00:00").toLocaleDateString("pt-BR", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}
           </span>
           <span className="ml-auto text-xs opacity-80">
             {grupos.length} dia{grupos.length === 1 ? "" : "s"} com agendamentos
@@ -215,7 +236,11 @@ export function Agenda() {
                 {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit" })}
               </span>
               <span className="text-sm md:text-base font-medium capitalize">
-                {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", month: "long", year: "numeric" })}
+                {new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", {
+                  weekday: "long",
+                  month: "long",
+                  year: "numeric",
+                })}
               </span>
               <span className="ml-auto text-xs opacity-75">
                 {lista.length} agendamento{lista.length === 1 ? "" : "s"}
@@ -262,7 +287,11 @@ export function Agenda() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Hora de início</Label>
-                <Input type="time" value={blockHora} onChange={(e) => setBlockHora(e.target.value)} />
+                <Input
+                  type="time"
+                  value={blockHora}
+                  onChange={(e) => setBlockHora(e.target.value)}
+                />
               </div>
               <div>
                 <Label>Duração</Label>
@@ -327,7 +356,11 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
   const [edTotal, setEdTotal] = useState(String(r.valor_total.toFixed(2)));
   const [edSinal, setEdSinal] = useState(String(r.valor_sinal.toFixed(2)));
 
-  const dataFmt = new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+  const dataFmt = new Date(r.data + "T12:00:00").toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+  });
   const waMsg =
     `Oi ${r.cliente_nome.split(" ")[0]}! Aqui é da Mambaia 💚\n` +
     `Confirmando sua reserva para ${dataFmt} às ${r.hora_inicio.slice(0, 5)} ` +
@@ -364,7 +397,10 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
       const { error } = await sb.from("reservas").update(patch).eq("id", r.id);
       if (error) throw error;
       if (r.cobranca_id) {
-        await sb.from("cobrancas").update({ status: "pago", paid_at: new Date().toISOString() }).eq("id", r.cobranca_id);
+        await sb
+          .from("cobrancas")
+          .update({ status: "pago", paid_at: new Date().toISOString() })
+          .eq("id", r.cobranca_id);
       }
     },
     onSuccess: () => {
@@ -421,8 +457,13 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             <div className="flex items-center gap-2 flex-wrap">
               <Lock className="w-4 h-4 text-amber-600 shrink-0" />
               <span className="font-semibold tabular-nums">{r.hora_inicio.slice(0, 5)}</span>
-              <span className="text-muted-foreground text-sm">· {formatDuracao(r.duracao_minutos)}</span>
-              <Badge variant="outline" className="border-amber-500/50 text-amber-700 dark:text-amber-400 bg-amber-500/10">
+              <span className="text-muted-foreground text-sm">
+                · {formatDuracao(r.duracao_minutos)}
+              </span>
+              <Badge
+                variant="outline"
+                className="border-amber-500/50 text-amber-700 dark:text-amber-400 bg-amber-500/10"
+              >
                 Horário Bloqueado
               </Badge>
             </div>
@@ -465,7 +506,13 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
                 </div>
                 <div>
                   <Label>Duração (min)</Label>
-                  <Input type="number" step={30} min={30} value={edDur} onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))} />
+                  <Input
+                    type="number"
+                    step={30}
+                    min={30}
+                    value={edDur}
+                    onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))}
+                  />
                 </div>
               </div>
               <div>
@@ -474,9 +521,15 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="ghost" onClick={() => setEditOpen(false)}>Cancelar</Button>
+              <Button variant="ghost" onClick={() => setEditOpen(false)}>
+                Cancelar
+              </Button>
               <Button onClick={() => salvarEdicao.mutate()} disabled={salvarEdicao.isPending}>
-                {salvarEdicao.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
+                {salvarEdicao.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Check className="w-4 h-4 mr-1" />
+                )}
                 Salvar
               </Button>
             </DialogFooter>
@@ -492,26 +545,40 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold tabular-nums">{r.hora_inicio.slice(0, 5)}</span>
-            <span className="text-muted-foreground text-sm">· {formatDuracao(r.duracao_minutos)}</span>
+            <span className="text-muted-foreground text-sm">
+              · {formatDuracao(r.duracao_minutos)}
+            </span>
             {r.tipo === "pacote_marcas" && (
-              <Badge className="bg-brand-lime text-brand-dark border-transparent">Pacote Marcas</Badge>
+              <Badge className="bg-brand-lime text-brand-dark border-transparent">
+                Pacote Marcas
+              </Badge>
             )}
-            {r.status === "paga" && <Badge className="bg-success text-success-foreground">Paga integral</Badge>}
-            {r.status === "confirmada" && <Badge className="bg-primary text-primary-foreground">Sinal pago</Badge>}
+            {r.status === "paga" && (
+              <Badge className="bg-success text-success-foreground">Paga integral</Badge>
+            )}
+            {r.status === "confirmada" && (
+              <Badge className="bg-primary text-primary-foreground">Sinal pago</Badge>
+            )}
             {r.status === "pendente" && <Badge variant="outline">Aguardando sinal</Badge>}
             {r.status === "cancelada" && <Badge variant="secondary">Cancelada</Badge>}
           </div>
           <div className="text-sm mt-1">
             <span className="font-medium">{r.cliente_nome}</span>
             <span className="text-muted-foreground"> · {formatPhoneBR(r.cliente_whatsapp)}</span>
-            {r.empreendimento && <span className="text-muted-foreground"> · {r.empreendimento}</span>}
+            {r.empreendimento && (
+              <span className="text-muted-foreground"> · {r.empreendimento}</span>
+            )}
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
-            Proposta nº {String(r.numero_proposta).padStart(4, "0")} · Total {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
+            Proposta nº {String(r.numero_proposta).padStart(4, "0")} · Total{" "}
+            {formatBRL(r.valor_total)} · sinal {formatBRL(r.valor_sinal)}
             {r.valor_pago != null && (
               <>
                 {" "}
-                · <span className="text-foreground font-medium">recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})</span>
+                ·{" "}
+                <span className="text-foreground font-medium">
+                  recebido {formatBRL(r.valor_pago)} ({r.tipo_pagamento})
+                </span>
               </>
             )}
           </div>
@@ -570,7 +637,8 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <div className="text-sm text-muted-foreground">
-              Reserva de <strong>{r.cliente_nome}</strong> - {dataFmt} às {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
+              Reserva de <strong>{r.cliente_nome}</strong> - {dataFmt} às{" "}
+              {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -582,7 +650,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
                 className={`rounded-lg border p-3 text-left transition ${tipoPag === "parcial" ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
               >
                 <div className="text-sm font-semibold">Parcial (sinal)</div>
-                <div className="text-xs text-muted-foreground">Sugerido: {formatBRL(r.valor_sinal)}</div>
+                <div className="text-xs text-muted-foreground">
+                  Sugerido: {formatBRL(r.valor_sinal)}
+                </div>
               </button>
               <button
                 type="button"
@@ -593,12 +663,18 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
                 className={`rounded-lg border p-3 text-left transition ${tipoPag === "integral" ? "border-primary bg-primary/10" : "border-border hover:bg-accent"}`}
               >
                 <div className="text-sm font-semibold">Integral</div>
-                <div className="text-xs text-muted-foreground">Valor cheio: {formatBRL(r.valor_total)}</div>
+                <div className="text-xs text-muted-foreground">
+                  Valor cheio: {formatBRL(r.valor_total)}
+                </div>
               </button>
             </div>
             <div>
               <Label>Valor recebido (R$)</Label>
-              <Input value={valorPag} onChange={(e) => setValorPag(e.target.value)} inputMode="decimal" />
+              <Input
+                value={valorPag}
+                onChange={(e) => setValorPag(e.target.value)}
+                inputMode="decimal"
+              />
             </div>
           </div>
           <DialogFooter>
@@ -606,7 +682,11 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
               Cancelar
             </Button>
             <Button onClick={() => marcarPago.mutate()} disabled={marcarPago.isPending}>
-              {marcarPago.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+              {marcarPago.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4" />
+              )}
               Confirmar
             </Button>
           </DialogFooter>
@@ -629,11 +709,21 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             </div>
             <div>
               <Label>Duração (min)</Label>
-              <Input type="number" min={30} step={30} value={edDur} onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))} />
+              <Input
+                type="number"
+                min={30}
+                step={30}
+                value={edDur}
+                onChange={(e) => setEdDur(parseInt(e.target.value || "0", 10))}
+              />
             </div>
             <div>
               <Label>Empreendimento</Label>
-              <Input value={edEmp} onChange={(e) => setEdEmp(e.target.value)} placeholder="opcional" />
+              <Input
+                value={edEmp}
+                onChange={(e) => setEdEmp(e.target.value)}
+                placeholder="opcional"
+              />
             </div>
             <div className="col-span-2">
               <Label>Cliente</Label>
@@ -641,15 +731,28 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
             </div>
             <div className="col-span-2">
               <Label>WhatsApp</Label>
-              <Input value={edWa} onChange={(e) => setEdWa(maskPhoneInput(e.target.value))} placeholder="(31) 9 9999-9999" inputMode="tel" />
+              <Input
+                value={edWa}
+                onChange={(e) => setEdWa(maskPhoneInput(e.target.value))}
+                placeholder="(31) 9 9999-9999"
+                inputMode="tel"
+              />
             </div>
             <div>
               <Label>Valor total (R$)</Label>
-              <Input value={edTotal} onChange={(e) => setEdTotal(e.target.value)} inputMode="decimal" />
+              <Input
+                value={edTotal}
+                onChange={(e) => setEdTotal(e.target.value)}
+                inputMode="decimal"
+              />
             </div>
             <div>
               <Label>Sinal (R$)</Label>
-              <Input value={edSinal} onChange={(e) => setEdSinal(e.target.value)} inputMode="decimal" />
+              <Input
+                value={edSinal}
+                onChange={(e) => setEdSinal(e.target.value)}
+                inputMode="decimal"
+              />
             </div>
           </div>
           <DialogFooter>
@@ -657,7 +760,11 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
               Cancelar
             </Button>
             <Button onClick={() => salvarEdicao.mutate()} disabled={salvarEdicao.isPending}>
-              {salvarEdicao.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+              {salvarEdicao.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Check className="w-4 h-4" />
+              )}
               Salvar alterações
             </Button>
           </DialogFooter>

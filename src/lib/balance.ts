@@ -82,7 +82,8 @@ export function sugerirAcertos(balances: Map<string, number>): Sugestao[] {
   const devedores = arr.filter((x) => x.v < 0).sort((a, b) => a.v - b.v);
 
   const sugs: Sugestao[] = [];
-  let i = 0, j = 0;
+  let i = 0,
+    j = 0;
   while (i < devedores.length && j < credores.length) {
     const d = devedores[i];
     const c = credores[j];
@@ -99,11 +100,24 @@ export function sugerirAcertos(balances: Map<string, number>): Sugestao[] {
 }
 
 export function transacoesAbertasParaBalance(
-  transacoes: { id: string; tipo: "despesa" | "receita"; valor: number; socio_id: string | null; acertada: boolean; participantes_ids?: string[] }[],
+  transacoes: {
+    id: string;
+    tipo: "despesa" | "receita";
+    valor: number;
+    socio_id: string | null;
+    acertada: boolean;
+    participantes_ids?: string[];
+  }[],
 ): TransacaoAberta[] {
   return transacoes
     .filter((t) => !t.acertada)
-    .map((t) => ({ id: t.id, tipo: t.tipo, valor_cents: toCents(t.valor), socio_id: t.socio_id, participantes_ids: t.participantes_ids }));
+    .map((t) => ({
+      id: t.id,
+      tipo: t.tipo,
+      valor_cents: toCents(t.valor),
+      socio_id: t.socio_id,
+      participantes_ids: t.participantes_ids,
+    }));
 }
 
 export { MAMBAIA_CAIXA_ID };

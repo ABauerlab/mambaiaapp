@@ -60,13 +60,18 @@ export function NovaTransacao() {
   const preview = useMemo(() => {
     if (!socios || valor <= 0) return null;
     try {
-      return splitByCota(toCents(valor), socios.map((s) => ({ id: s.id, nome: s.nome })), participantes);
+      return splitByCota(
+        toCents(valor),
+        socios.map((s) => ({ id: s.id, nome: s.nome })),
+        participantes,
+      );
     } catch {
       return null;
     }
   }, [valor, socios, participantes]);
 
-  const pagadorNome = pagadorId === MAMBAIA ? "a Mambaia" : socios?.find((s) => s.id === pagadorId)?.nome;
+  const pagadorNome =
+    pagadorId === MAMBAIA ? "a Mambaia" : socios?.find((s) => s.id === pagadorId)?.nome;
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -96,7 +101,10 @@ export function NovaTransacao() {
   function toggleParticipante(id: string) {
     setParticipantes((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   }
-  const todosMarcados = cotistasIds.length > 0 && cotistasIds.every((id) => participantes.includes(id)) && participantes.length === cotistasIds.length;
+  const todosMarcados =
+    cotistasIds.length > 0 &&
+    cotistasIds.every((id) => participantes.includes(id)) &&
+    participantes.length === cotistasIds.length;
   const modoCota = todosMarcados;
 
   return (
@@ -119,7 +127,9 @@ export function NovaTransacao() {
             }}
             className={cn(
               "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition min-h-11",
-              tipo === "despesa" ? "bg-[color:var(--brand-dark)] text-[color:var(--brand-lime)] shadow-sm" : "text-muted-foreground",
+              tipo === "despesa"
+                ? "bg-[color:var(--brand-dark)] text-[color:var(--brand-lime)] shadow-sm"
+                : "text-muted-foreground",
             )}
           >
             <ArrowDownRight className="w-4 h-4" /> Gasto
@@ -132,7 +142,9 @@ export function NovaTransacao() {
             }}
             className={cn(
               "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition min-h-11",
-              tipo === "receita" ? "bg-[color:var(--brand-lime)] text-[color:var(--brand-dark)] shadow-sm" : "text-muted-foreground",
+              tipo === "receita"
+                ? "bg-[color:var(--brand-lime)] text-[color:var(--brand-dark)] shadow-sm"
+                : "text-muted-foreground",
             )}
           >
             <ArrowUpRight className="w-4 h-4" /> Ganho
@@ -143,7 +155,9 @@ export function NovaTransacao() {
           <div>
             <Label htmlFor="valor">Valor</Label>
             <div className="relative mt-1.5">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                R$
+              </span>
               <Input
                 id="valor"
                 inputMode="decimal"
@@ -195,13 +209,19 @@ export function NovaTransacao() {
                   onClick={() => setCategoriaId(c.id)}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-xs font-medium border transition min-h-9",
-                    categoriaId === c.id ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:border-primary/40",
+                    categoriaId === c.id
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background border-border hover:border-primary/40",
                   )}
                 >
                   {c.nome}
                 </button>
               ))}
-              {cats.length === 0 && <span className="text-xs text-muted-foreground">Nenhuma categoria de {tipo} cadastrada</span>}
+              {cats.length === 0 && (
+                <span className="text-xs text-muted-foreground">
+                  Nenhuma categoria de {tipo} cadastrada
+                </span>
+              )}
             </div>
           </div>
 
@@ -213,7 +233,9 @@ export function NovaTransacao() {
                 onClick={() => setPagadorId(MAMBAIA)}
                 className={cn(
                   "flex flex-col items-center gap-1 py-3 rounded-lg border transition min-h-16",
-                  pagadorId === MAMBAIA ? "border-primary bg-secondary" : "border-border hover:border-primary/40",
+                  pagadorId === MAMBAIA
+                    ? "border-primary bg-secondary"
+                    : "border-border hover:border-primary/40",
                 )}
               >
                 <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[color:var(--brand-dark)] text-[color:var(--brand-lime)]">
@@ -228,14 +250,20 @@ export function NovaTransacao() {
                   onClick={() => setPagadorId(s.id)}
                   className={cn(
                     "flex flex-col items-center gap-1 py-3 rounded-lg border transition min-h-16",
-                    pagadorId === s.id ? "border-primary bg-secondary" : "border-border hover:border-primary/40",
+                    pagadorId === s.id
+                      ? "border-primary bg-secondary"
+                      : "border-border hover:border-primary/40",
                   )}
                 >
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold"
                     style={{ background: s.cor, color: "#0A2A20" }}
                   >
-                    {s.nome.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                    {s.nome
+                      .split(" ")
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join("")}
                   </div>
                   <span className="text-xs font-medium">{s.nome.split(" ")[0]}</span>
                 </button>
@@ -255,31 +283,37 @@ export function NovaTransacao() {
               </button>
             </div>
             <div className="mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {(socios ?? []).filter((s) => pesoDoSocio(s.nome) > 0).map((s) => {
-                const checked = participantes.includes(s.id);
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => toggleParticipante(s.id)}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-11",
-                      checked ? "border-primary bg-secondary" : "border-border hover:border-primary/40",
-                    )}
-                  >
-                    <span
-                      className="w-4 h-4 rounded border flex items-center justify-center text-[10px]"
-                      style={{ background: checked ? s.cor : "transparent", color: "#0A2A20" }}
+              {(socios ?? [])
+                .filter((s) => pesoDoSocio(s.nome) > 0)
+                .map((s) => {
+                  const checked = participantes.includes(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => toggleParticipante(s.id)}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-11",
+                        checked
+                          ? "border-primary bg-secondary"
+                          : "border-border hover:border-primary/40",
+                      )}
                     >
-                      {checked ? "✓" : ""}
-                    </span>
-                    {s.nome.split(" ")[0]}
-                  </button>
-                );
-              })}
+                      <span
+                        className="w-4 h-4 rounded border flex items-center justify-center text-[10px]"
+                        style={{ background: checked ? s.cor : "transparent", color: "#0A2A20" }}
+                      >
+                        {checked ? "✓" : ""}
+                      </span>
+                      {s.nome.split(" ")[0]}
+                    </button>
+                  );
+                })}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1.5">
-              {modoCota ? "Divisão em partes iguais entre os 3 sócios (Bauer, Laura, Ed)." : `Divisão igual entre ${participantes.length} pessoa(s).`}
+              {modoCota
+                ? "Divisão em partes iguais entre os 3 sócios (Bauer, Laura, Ed)."
+                : `Divisão igual entre ${participantes.length} pessoa(s).`}
             </p>
           </div>
 
@@ -298,10 +332,13 @@ export function NovaTransacao() {
 
         {preview && pagadorNome && socios && (
           <Card className="p-4 bg-secondary/40 border-primary/20">
-            <div className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Divisão do valor</div>
+            <div className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
+              Divisão do valor
+            </div>
             <div className="text-sm mb-2">
               {tipo === "despesa" ? "Gasto pago por " : "Recebido por "}
-              <strong>{pagadorNome}</strong>: <strong className="tabular-nums">{formatBRL(valor)}</strong>
+              <strong>{pagadorNome}</strong>:{" "}
+              <strong className="tabular-nums">{formatBRL(valor)}</strong>
             </div>
             <ul className="space-y-1 text-sm">
               {socios.map((s) => {

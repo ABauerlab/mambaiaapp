@@ -56,8 +56,10 @@ export function splitByCota(
   const usarSubset =
     Array.isArray(participantesIds) &&
     participantesIds.length > 0 &&
-    !(participantesIds.length === todosCotistasIds.length &&
-      todosCotistasIds.every((id) => participantesIds.includes(id)));
+    !(
+      participantesIds.length === todosCotistasIds.length &&
+      todosCotistasIds.every((id) => participantesIds.includes(id))
+    );
 
   if (usarSubset) {
     const ativos = socios.filter((s) => participantesIds!.includes(s.id));
@@ -66,7 +68,10 @@ export function splitByCota(
     let sobra = totalCents - base * ativos.length;
     for (const s of ativos) {
       let parte = base;
-      if (sobra > 0) { parte += 1; sobra -= 1; }
+      if (sobra > 0) {
+        parte += 1;
+        sobra -= 1;
+      }
       result.set(s.id, parte);
     }
     return result;
@@ -114,10 +119,17 @@ if (import.meta.env?.DEV) {
     const sum = (r.get("b") ?? 0) + (r.get("e") ?? 0) + (r.get("l") ?? 0);
     console.assert(sum === cents, "splitByCota " + cents + " soma " + sum);
   };
-  test(10000); test(10001); test(99); test(1); test(123456); test(7);
+  test(10000);
+  test(10001);
+  test(99);
+  test(1);
+  test(123456);
+  test(7);
   // subset igual
   const fake2: SocioBasic[] = [
-    { id: "b", nome: "Bauer" }, { id: "e", nome: "Eduardo" }, { id: "l", nome: "Laura Ottoni" },
+    { id: "b", nome: "Bauer" },
+    { id: "e", nome: "Eduardo" },
+    { id: "l", nome: "Laura Ottoni" },
   ];
   const r2 = splitByCota(100, fake2, ["e", "j"]);
   console.assert((r2.get("e") ?? 0) === 100, "subset igual (apenas e presente)");

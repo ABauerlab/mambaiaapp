@@ -1,7 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, CalendarDays, Clock, MessageCircle, CheckCircle2, ArrowRight } from "lucide-react";
+import {
+  Loader2,
+  CalendarDays,
+  Clock,
+  MessageCircle,
+  CheckCircle2,
+  ArrowRight,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,14 +27,21 @@ import logo from "@/assets/logo-mambaia.svg";
 const sb = supabase as any;
 
 const WHATSAPP_GERAL = waMambaia(
-  "Oi Mambaia! Estava vendo a agenda do estúdio no site e queria tirar uma dúvida antes de reservar."
+  "Oi Mambaia! Estava vendo a agenda do estúdio no site e queria tirar uma dúvida antes de reservar.",
 );
-const OPEN_HOUR = 9;   // 09:00
+const OPEN_HOUR = 9; // 09:00
 const CLOSE_HOUR = 22; // 22:00 (última hora final)
 
 // Tabela oficial (30..240 min)
 const PRECOS: Record<number, number> = {
-  30: 50, 60: 100, 90: 150, 120: 180, 150: 230, 180: 250, 210: 280, 240: 300,
+  30: 50,
+  60: 100,
+  90: 150,
+  120: 180,
+  150: 230,
+  180: 250,
+  210: 280,
+  240: 300,
 };
 const DURACOES = [30, 60, 90, 120, 150, 180, 210, 240];
 
@@ -59,24 +73,45 @@ export const Route = createFileRoute("/agendar")({
   head: () => ({
     meta: [
       { title: "Agendar estúdio Mambaia - Praça Sete, BH" },
-      { name: "description", content: "Reserve o estúdio Mambaia na Praça Sete, Belo Horizonte. Escolha o dia, o horário e garanta com 50% de sinal via PIX. A partir de R$ 100/h." },
-      { name: "keywords", content: "aluguel estúdio BH, estúdio Praça Sete, estúdio criativo Belo Horizonte, Mambaia, aluguel por hora, coworking criativo" },
+      {
+        name: "description",
+        content:
+          "Reserve o estúdio Mambaia na Praça Sete, Belo Horizonte. Escolha o dia, o horário e garanta com 50% de sinal via PIX. A partir de R$ 100/h.",
+      },
+      {
+        name: "keywords",
+        content:
+          "aluguel estúdio BH, estúdio Praça Sete, estúdio criativo Belo Horizonte, Mambaia, aluguel por hora, coworking criativo",
+      },
       { property: "og:title", content: "Agendar estúdio Mambaia - Praça Sete, BH" },
-      { property: "og:description", content: "Reserve seu horário no estúdio Mambaia. Praça Sete · Belo Horizonte. A partir de R$ 100/h com sinal via PIX." },
+      {
+        property: "og:description",
+        content:
+          "Reserve seu horário no estúdio Mambaia. Praça Sete · Belo Horizonte. A partir de R$ 100/h com sinal via PIX.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:url", content: "https://mambaiabh.com.br/agendar" },
-      { property: "og:image", content: "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg" },
+      {
+        property: "og:image",
+        content:
+          "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg",
+      },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "800" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Agendar estúdio Mambaia - Praça Sete, BH" },
-      { name: "twitter:description", content: "Reserve seu horário no estúdio Mambaia. Sinal 50% via PIX." },
-      { name: "twitter:image", content: "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg" },
+      {
+        name: "twitter:description",
+        content: "Reserve seu horário no estúdio Mambaia. Sinal 50% via PIX.",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg",
+      },
     ],
-    links: [
-      { rel: "canonical", href: "https://mambaiabh.com.br/agendar" },
-    ],
+    links: [{ rel: "canonical", href: "https://mambaiabh.com.br/agendar" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -87,7 +122,13 @@ export const Route = createFileRoute("/agendar")({
           provider: {
             "@type": "LocalBusiness",
             name: "Mambaia Estúdio",
-            address: { "@type": "PostalAddress", streetAddress: "R. Rio de Janeiro, 462 - Sala 2217", addressLocality: "Belo Horizonte", addressRegion: "MG", addressCountry: "BR" },
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "R. Rio de Janeiro, 462 - Sala 2217",
+              addressLocality: "Belo Horizonte",
+              addressRegion: "MG",
+              addressCountry: "BR",
+            },
             telephone: "+55 31 3223-2356",
           },
           areaServed: { "@type": "City", name: "Belo Horizonte" },
@@ -108,7 +149,9 @@ export const Route = createFileRoute("/agendar")({
 function AgendarPage() {
   const navigate = useNavigate();
   const hoje = useMemo(() => {
-    const d = new Date(); d.setHours(0, 0, 0, 0); return d;
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
   }, []);
   const maxDate = useMemo(() => {
     const d = new Date(hoje);
@@ -173,8 +216,14 @@ function AgendarPage() {
   };
 
   // se muda duração / data, reset hora
-  const handleDataChange = (d: Date) => { setDataSel(d); setHoraInicio(null); };
-  const handleDuracaoChange = (d: number) => { setDuracao(d); setHoraInicio(null); };
+  const handleDataChange = (d: Date) => {
+    setDataSel(d);
+    setHoraInicio(null);
+  };
+  const handleDuracaoChange = (d: number) => {
+    setDuracao(d);
+    setHoraInicio(null);
+  };
 
   const preco = PRECOS[duracao] ?? 0;
   const sinal = Math.round(preco * 0.5 * 100) / 100;
@@ -194,7 +243,12 @@ function AgendarPage() {
       });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
-      return row as { reserva_id: string; cobranca_slug: string; valor_total: number; valor_sinal: number };
+      return row as {
+        reserva_id: string;
+        cobranca_slug: string;
+        valor_total: number;
+        valor_sinal: number;
+      };
     },
     onSuccess: (row) => {
       toast.success("Reserva criada! Pague o sinal para confirmar.");
@@ -213,26 +267,45 @@ function AgendarPage() {
             <div className="text-[11px] opacity-60">Estúdio · Praça Sete · BH</div>
           </div>
         </div>
-        <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15">
+        <a
+          href={WHATSAPP_GERAL}
+          target="_blank"
+          rel="noreferrer"
+          className="text-xs md:text-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15"
+        >
           <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
         </a>
       </header>
 
       <main className="max-w-3xl mx-auto px-5 md:px-10 py-6 md:py-10 space-y-6">
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand-green)] to-[var(--brand-lime)] text-[var(--brand-dark)] p-7 md:p-10 shadow-2xl">
-          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/20 blur-3xl" aria-hidden />
+          <div
+            className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/20 blur-3xl"
+            aria-hidden
+          />
           <div className="relative">
-            <div className="text-xs uppercase tracking-widest font-semibold opacity-70">Agende seu horário</div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">Reserve o estúdio Mambaia</h1>
+            <div className="text-xs uppercase tracking-widest font-semibold opacity-70">
+              Agende seu horário
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-2 leading-tight">
+              Reserve o estúdio Mambaia
+            </h1>
             <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
-              Escolha o dia, o horário e a duração. Confirme com <strong>50% de sinal via PIX</strong> - o restante é acertado no dia.
+              Escolha o dia, o horário e a duração. Confirme com{" "}
+              <strong>50% de sinal via PIX</strong> - o restante é acertado no dia.
             </p>
           </div>
         </section>
 
         {/* Tabela de preços */}
-        <section aria-labelledby="tabela-precos" className="rounded-2xl bg-white/[0.04] border border-white/10 p-5">
-          <h2 id="tabela-precos" className="text-xs uppercase tracking-widest opacity-60 mb-3 font-medium">
+        <section
+          aria-labelledby="tabela-precos"
+          className="rounded-2xl bg-white/[0.04] border border-white/10 p-5"
+        >
+          <h2
+            id="tabela-precos"
+            className="text-xs uppercase tracking-widest opacity-60 mb-3 font-medium"
+          >
             Tabela de preços
           </h2>
           <dl className="divide-y divide-white/10 select-none">
@@ -249,11 +322,17 @@ function AgendarPage() {
             ))}
           </dl>
           <p className="mt-3 text-xs opacity-70 leading-relaxed">
-            Fração adicional de 30 min: <strong>R$ 50</strong>. Preços sujeitos a mudança (estamos em reforma).
-            {" "}Precisa de mais de 4h?{" "}
-            <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+            Fração adicional de 30 min: <strong>R$ 50</strong>. Preços sujeitos a mudança (estamos
+            em reforma). Precisa de mais de 4h?{" "}
+            <a
+              href={WHATSAPP_GERAL}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2"
+            >
               Fale no WhatsApp
-            </a>.
+            </a>
+            .
           </p>
         </section>
 
@@ -265,13 +344,18 @@ function AgendarPage() {
           </div>
           <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
             <PopoverTrigger asChild>
-              <button
-                className="w-full flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-3 text-left transition"
-              >
+              <button className="w-full flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-3 text-left transition">
                 <div>
-                  <div className="text-[11px] uppercase tracking-widest opacity-60">Data selecionada</div>
+                  <div className="text-[11px] uppercase tracking-widest opacity-60">
+                    Data selecionada
+                  </div>
                   <div className="text-base font-semibold mt-0.5 capitalize">
-                    {dataSel.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+                    {dataSel.toLocaleDateString("pt-BR", {
+                      weekday: "long",
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
                   </div>
                 </div>
                 <CalendarDays className="w-5 h-5 opacity-70" />
@@ -313,11 +397,16 @@ function AgendarPage() {
                     "rounded-xl px-2 py-2.5 text-sm font-semibold border transition",
                     active
                       ? "bg-[var(--brand-lime)] text-[var(--brand-dark)] border-transparent"
-                      : "bg-white/5 border-white/10 hover:bg-white/10"
+                      : "bg-white/5 border-white/10 hover:bg-white/10",
                   )}
                 >
                   <div>{formatDuracao(d)}</div>
-                  <div className={cn("text-[10px] font-normal mt-0.5", active ? "opacity-80" : "opacity-60")}>
+                  <div
+                    className={cn(
+                      "text-[10px] font-normal mt-0.5",
+                      active ? "opacity-80" : "opacity-60",
+                    )}
+                  >
                     {formatBRL(PRECOS[d] ?? 0)}
                   </div>
                 </button>
@@ -347,7 +436,8 @@ function AgendarPage() {
                     "rounded-lg px-2 py-2 text-sm font-medium border tabular-nums transition",
                     active && "bg-[var(--brand-lime)] text-[var(--brand-dark)] border-transparent",
                     !active && !disabled && "bg-white/5 border-white/10 hover:bg-white/10",
-                    disabled && "bg-white/5 border-white/5 opacity-30 line-through cursor-not-allowed"
+                    disabled &&
+                      "bg-white/5 border-white/5 opacity-30 line-through cursor-not-allowed",
                   )}
                   title={busy ? "Já reservado" : past ? "Horário passou" : ""}
                 >
@@ -357,7 +447,9 @@ function AgendarPage() {
             })}
           </div>
           {slots.length === 0 && (
-            <p className="text-sm opacity-70">Não há horários disponíveis para essa duração neste dia.</p>
+            <p className="text-sm opacity-70">
+              Não há horários disponíveis para essa duração neste dia.
+            </p>
           )}
         </section>
 
@@ -366,7 +458,11 @@ function AgendarPage() {
           <div className="grid md:grid-cols-2 gap-3">
             <div>
               <Label>Seu nome *</Label>
-              <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome completo" />
+              <Input
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Nome completo"
+              />
             </div>
             <div>
               <Label>WhatsApp *</Label>
@@ -384,9 +480,16 @@ function AgendarPage() {
             <div className="text-[11px] uppercase tracking-widest opacity-60">Resumo</div>
             <div className="mt-2 flex items-baseline justify-between">
               <div className="text-sm">
-                {dataSel.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}
+                {dataSel.toLocaleDateString("pt-BR", {
+                  weekday: "long",
+                  day: "2-digit",
+                  month: "long",
+                })}
                 {horaInicio && (
-                  <> · <strong>{horaInicio}</strong> · {formatDuracao(duracao)}</>
+                  <>
+                    {" "}
+                    · <strong>{horaInicio}</strong> · {formatDuracao(duracao)}
+                  </>
                 )}
               </div>
               <div className="text-right">
@@ -401,13 +504,32 @@ function AgendarPage() {
           </div>
 
           <div className="rounded-xl border border-[var(--brand-dark)]/15 bg-white p-4 text-xs leading-relaxed">
-            <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2 font-semibold">Termo de reserva</div>
+            <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2 font-semibold">
+              Termo de reserva
+            </div>
             <ul className="space-y-2 opacity-90 list-disc pl-4">
-              <li>O cancelamento deverá ser comunicado com, no mínimo, <strong>48 (quarenta e oito) horas de antecedência</strong> em relação ao horário da reserva. Nesses casos, o cliente poderá remarcar a locação uma única vez, em até 90 (noventa) dias, sem custo adicional, mediante disponibilidade da agenda.</li>
-              <li>Cancelamentos comunicados com menos de 48 (quarenta e oito) horas de antecedência, bem como o não comparecimento na data e horário agendados, implicarão a perda do direito à remarcação e ao reembolso, permanecendo os valores pagos com a Mambaia.</li>
-              <li>Comprometo-me a deixar o estúdio nas mesmas condições em que encontrei, limpo e organizado.</li>
-              <li>Estúdio em L: <strong>3,00 m × 2,50 m × 2,96 m</strong> (largura × profundidade × altura).</li>
-              <li>Não é permitido consumir bebidas ou alimentos no estúdio, nem fumar no espaço.</li>
+              <li>
+                O cancelamento deverá ser comunicado com, no mínimo,{" "}
+                <strong>48 (quarenta e oito) horas de antecedência</strong> em relação ao horário da
+                reserva. Nesses casos, o cliente poderá remarcar a locação uma única vez, em até 90
+                (noventa) dias, sem custo adicional, mediante disponibilidade da agenda.
+              </li>
+              <li>
+                Cancelamentos comunicados com menos de 48 (quarenta e oito) horas de antecedência,
+                bem como o não comparecimento na data e horário agendados, implicarão a perda do
+                direito à remarcação e ao reembolso, permanecendo os valores pagos com a Mambaia.
+              </li>
+              <li>
+                Comprometo-me a deixar o estúdio nas mesmas condições em que encontrei, limpo e
+                organizado.
+              </li>
+              <li>
+                Estúdio em L: <strong>3,00 m × 2,50 m × 2,96 m</strong> (largura × profundidade ×
+                altura).
+              </li>
+              <li>
+                Não é permitido consumir bebidas ou alimentos no estúdio, nem fumar no espaço.
+              </li>
             </ul>
             <label className="mt-3 flex items-start gap-2 cursor-pointer select-none">
               <input
@@ -416,7 +538,9 @@ function AgendarPage() {
                 onChange={(e) => setAceito(e.target.checked)}
                 className="mt-0.5 w-4 h-4 accent-[var(--brand-dark)] shrink-0"
               />
-              <span className="text-xs font-medium">Li e entendi as condições acima e aceito os termos da reserva.</span>
+              <span className="text-xs font-medium">
+                Li e entendi as condições acima e aceito os termos da reserva.
+              </span>
             </label>
           </div>
 
@@ -425,9 +549,13 @@ function AgendarPage() {
             disabled={criar.isPending || !horaInicio || !aceito}
             className="w-full h-12 text-base bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90"
           >
-            {criar.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <>
-              Reservar e pagar sinal <ArrowRight className="w-4 h-4" />
-            </>}
+            {criar.isPending ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                Reservar e pagar sinal <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </Button>
           <div className="flex items-center gap-1.5 text-xs opacity-70 justify-center">
             <CheckCircle2 className="w-3.5 h-3.5" /> Pagamento via PIX na próxima tela.
@@ -436,9 +564,14 @@ function AgendarPage() {
 
         <footer className="text-center text-xs opacity-60 pt-2 pb-4">
           É marca ou brechó?{" "}
-          <a href="/pacote-marcas" className="underline font-medium">Conheça o Pacote Marcas</a>
-          {" "}· Precisa de horário fora da tabela?{" "}
-          <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline">Fale no WhatsApp</a>.
+          <a href="/pacote-marcas" className="underline font-medium">
+            Conheça o Pacote Marcas
+          </a>{" "}
+          · Precisa de horário fora da tabela?{" "}
+          <a href={WHATSAPP_GERAL} target="_blank" rel="noreferrer" className="underline">
+            Fale no WhatsApp
+          </a>
+          .
         </footer>
       </main>
     </div>
