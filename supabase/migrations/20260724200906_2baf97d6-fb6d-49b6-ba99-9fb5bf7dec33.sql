@@ -1,0 +1,2 @@
+ALTER TABLE public.reservas DROP CONSTRAINT IF EXISTS reservas_duracao_minutos_check;
+ALTER TABLE public.reservas ADD CONSTRAINT reservas_duracao_minutos_check CHECK (duracao_minutos > 0 AND duracao_minutos <= 1440);
