@@ -923,14 +923,14 @@ function LeadForm() {
       <div className="max-w-5xl mx-auto px-5 md:px-8 py-12 md:py-16 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <span className="text-xs font-semibold tracking-widest text-[#E5C72A] uppercase">
-            Comece agora
+            Leva 30 segundos
           </span>
           <h2 className="mt-2 text-2xl md:text-4xl font-light tracking-tight">
-            Deixe seu contato e a gente organiza tudo com você.
+            Deixe seu contato e a gente organiza a sua reserva.
           </h2>
           <p className="mt-3 text-white/70 text-sm md:text-base">
-            Preencha nome e WhatsApp: já abrimos a nossa conversa e te levamos direto para a agenda
-            com seus dados prontos.
+            Preencha nome e WhatsApp: abrimos a conversa com a nossa equipe e te levamos direto para
+            a agenda, já com seus dados preenchidos.
           </p>
         </div>
         {confirmed ? (
@@ -950,8 +950,8 @@ function LeadForm() {
               </div>
             </div>
             <p className="text-xs text-white/70">
-              Ao continuar vamos abrir a conversa no WhatsApp e te levar para a agenda com esses
-              dados prontos.
+              Ao continuar, abrimos a conversa no WhatsApp e te levamos para a agenda com esses
+              dados preenchidos.
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
               <button
@@ -959,14 +959,14 @@ function LeadForm() {
                 onClick={seguir}
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
               >
-                Continuar <ArrowRight className="w-4 h-4" />
+                Continuar para a agenda <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 type="button"
                 onClick={() => setConfirmed(null)}
                 className="rounded-lg border border-white/20 text-white px-5 py-3 text-sm hover:bg-white/10 transition"
               >
-                Corrigir
+              Corrigir dados
               </button>
             </div>
           </div>
@@ -1017,10 +1017,10 @@ function LeadForm() {
               type="submit"
               className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
             >
-              Quero reservar <ArrowRight className="w-4 h-4" />
+              Quero reservar meu horário <ArrowRight className="w-4 h-4" />
             </button>
             <p className="text-[11px] text-white/60 text-center">
-              Sem spam. Usamos seu contato apenas para organizar a reserva.
+              Sem spam e sem compromisso. Usamos seu contato apenas para organizar a reserva.
             </p>
           </form>
         )}
