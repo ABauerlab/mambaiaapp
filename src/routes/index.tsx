@@ -278,34 +278,34 @@ const servicos: Servico[] = [
   {
     icon: Camera,
     title: "Estúdio fotográfico",
-    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. Aluguel por hora a partir de R$ 100, com sinal via PIX.",
+    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. A partir de R$ 100 a hora, com apenas 50% de sinal via PIX para garantir a data.",
     img: estudio5.url,
     href: "/agendar",
-    cta: "Agendar sessão",
+    cta: "Ver horários livres",
   },
   {
     icon: Users,
     title: "Coworking criativo",
-    desc: "Ambiente inspirador para trabalhar, editar ou reunir a equipe. Café, Wi-Fi e vista da cidade no coração do Centro.",
+    desc: "Ambiente tranquilo para trabalhar, editar ou reunir a equipe por algumas horas. Café, Wi-Fi rápido e vista da cidade, no coração do Centro.",
     img: estudio3.url,
     href: "/agendar",
-    cta: "Reservar horário",
+    cta: "Reservar uma mesa",
   },
   {
     icon: Sparkles,
     title: "Eventos e encontros",
-    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca no Centro de BH.",
+    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca. Conte o que você quer fazer e a gente monta o formato com você.",
     img: estudio2.url,
     href: "/agendar",
-    cta: "Agendar evento",
+    cta: "Planejar meu evento",
   },
   {
     icon: Building2,
     title: "Pacote marcas / brechó",
-    desc: "Produção fotográfica completa: R$ 350 por marca, com 1h de estúdio para cada. Ideal para catálogos e brechós.",
+    desc: "Produção fotográfica completa por R$ 350 por marca, com 1h de estúdio para cada uma. Feito para catálogo, brechó e coleção nova.",
     img: estudio1.url,
     href: "/pacote-marcas",
-    cta: "Solicitar pacote",
+    cta: "Quero o pacote",
   },
 ];
 
@@ -315,14 +315,14 @@ function Servicos() {
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="max-w-2xl mb-14">
           <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
-            O que oferecemos
+            O que você pode reservar
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
             Um espaço, várias possibilidades.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Reserve o Mambaia para o que a sua criatividade pedir hoje - fotografia, trabalho,
-            evento ou produção de marca.
+            Escolha o formato que combina com o seu projeto: ensaio fotográfico, dia de trabalho,
+            evento ou produção de marca. Você paga só pelas horas que usar.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
