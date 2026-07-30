@@ -250,16 +250,13 @@ function Hero() {
           </a>
         </div>
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
-          {[
-            "Ciclorama branco",
-            "Reserva online",
-            "Sinal via PIX",
-            "Praça Sete, Centro de BH",
-          ].map((t) => (
-            <span key={t} className="inline-flex items-center gap-1.5">
-              <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
-            </span>
-          ))}
+          {["Ciclorama branco", "Reserva online", "Sinal via PIX", "Praça Sete, Centro de BH"].map(
+            (t) => (
+              <span key={t} className="inline-flex items-center gap-1.5">
+                <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
+              </span>
+            ),
+          )}
         </div>
       </div>
     </section>
@@ -966,7 +963,7 @@ function LeadForm() {
                 onClick={() => setConfirmed(null)}
                 className="rounded-lg border border-white/20 text-white px-5 py-3 text-sm hover:bg-white/10 transition"
               >
-              Corrigir dados
+                Corrigir dados
               </button>
             </div>
           </div>
