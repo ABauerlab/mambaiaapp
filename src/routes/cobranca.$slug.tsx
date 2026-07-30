@@ -135,10 +135,13 @@ function CobrancaPage() {
         _valor: valor,
       });
       if (error) throw error;
+      return { valorPago: valor, valorTotal: reserva?.valor_total ?? (data ? data.total : valor) };
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       autoPreviewRef.current = true;
-      toast.success("Pagamento confirmado!");
+      toast.success(
+        `Pagamento recebido: ${formatBRL(res.valorPago)} (Total da reserva: ${formatBRL(res.valorTotal)}). Status: Confirmado. Obrigado por agendar na Mambaia!`,
+      );
       qc.invalidateQueries({ queryKey: ["cobranca", slug] });
       qc.invalidateQueries({ queryKey: ["reserva-slug", slug] });
     },
