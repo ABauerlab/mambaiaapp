@@ -1,736 +1,744 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5";
-  };
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       acertos: {
         Row: {
-          created_at: string;
-          data: string;
-          de_socio_id: string | null;
-          id: string;
-          observacoes: string | null;
-          para_socio_id: string | null;
-          valor: number;
-        };
+          created_at: string
+          data: string
+          de_socio_id: string | null
+          id: string
+          observacoes: string | null
+          para_socio_id: string | null
+          valor: number
+        }
         Insert: {
-          created_at?: string;
-          data?: string;
-          de_socio_id?: string | null;
-          id?: string;
-          observacoes?: string | null;
-          para_socio_id?: string | null;
-          valor: number;
-        };
+          created_at?: string
+          data?: string
+          de_socio_id?: string | null
+          id?: string
+          observacoes?: string | null
+          para_socio_id?: string | null
+          valor: number
+        }
         Update: {
-          created_at?: string;
-          data?: string;
-          de_socio_id?: string | null;
-          id?: string;
-          observacoes?: string | null;
-          para_socio_id?: string | null;
-          valor?: number;
-        };
+          created_at?: string
+          data?: string
+          de_socio_id?: string | null
+          id?: string
+          observacoes?: string | null
+          para_socio_id?: string | null
+          valor?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "acertos_de_socio_id_fkey";
-            columns: ["de_socio_id"];
-            isOneToOne: false;
-            referencedRelation: "socios";
-            referencedColumns: ["id"];
+            foreignKeyName: "acertos_de_socio_id_fkey"
+            columns: ["de_socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "acertos_para_socio_id_fkey";
-            columns: ["para_socio_id"];
-            isOneToOne: false;
-            referencedRelation: "socios";
-            referencedColumns: ["id"];
+            foreignKeyName: "acertos_para_socio_id_fkey"
+            columns: ["para_socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       categorias: {
         Row: {
-          cor: string;
-          created_at: string;
-          icone: string;
-          id: string;
-          nome: string;
-          tipo: Database["public"]["Enums"]["tipo_transacao"];
-        };
+          cor: string
+          created_at: string
+          icone: string
+          id: string
+          nome: string
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+        }
         Insert: {
-          cor?: string;
-          created_at?: string;
-          icone?: string;
-          id?: string;
-          nome: string;
-          tipo: Database["public"]["Enums"]["tipo_transacao"];
-        };
+          cor?: string
+          created_at?: string
+          icone?: string
+          id?: string
+          nome: string
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+        }
         Update: {
-          cor?: string;
-          created_at?: string;
-          icone?: string;
-          id?: string;
-          nome?: string;
-          tipo?: Database["public"]["Enums"]["tipo_transacao"];
-        };
-        Relationships: [];
-      };
+          cor?: string
+          created_at?: string
+          icone?: string
+          id?: string
+          nome?: string
+          tipo?: Database["public"]["Enums"]["tipo_transacao"]
+        }
+        Relationships: []
+      }
       cobrancas: {
         Row: {
-          cliente_email: string | null;
-          cliente_nome: string;
-          created_at: string;
-          created_by: string | null;
-          descricao: string | null;
-          id: string;
-          itens: Json;
-          observacoes: string | null;
-          paid_at: string | null;
-          pix_chave: string;
-          pix_nome: string;
-          slug: string;
-          status: string;
-          titulo: string;
-          total: number;
-          updated_at: string;
-        };
+          cliente_email: string | null
+          cliente_nome: string
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          itens: Json
+          observacoes: string | null
+          paid_at: string | null
+          pix_chave: string
+          pix_nome: string
+          slug: string
+          status: string
+          titulo: string
+          total: number
+          updated_at: string
+        }
         Insert: {
-          cliente_email?: string | null;
-          cliente_nome: string;
-          created_at?: string;
-          created_by?: string | null;
-          descricao?: string | null;
-          id?: string;
-          itens?: Json;
-          observacoes?: string | null;
-          paid_at?: string | null;
-          pix_chave: string;
-          pix_nome: string;
-          slug: string;
-          status?: string;
-          titulo: string;
-          total?: number;
-          updated_at?: string;
-        };
+          cliente_email?: string | null
+          cliente_nome: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          itens?: Json
+          observacoes?: string | null
+          paid_at?: string | null
+          pix_chave: string
+          pix_nome: string
+          slug: string
+          status?: string
+          titulo: string
+          total?: number
+          updated_at?: string
+        }
         Update: {
-          cliente_email?: string | null;
-          cliente_nome?: string;
-          created_at?: string;
-          created_by?: string | null;
-          descricao?: string | null;
-          id?: string;
-          itens?: Json;
-          observacoes?: string | null;
-          paid_at?: string | null;
-          pix_chave?: string;
-          pix_nome?: string;
-          slug?: string;
-          status?: string;
-          titulo?: string;
-          total?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          cliente_email?: string | null
+          cliente_nome?: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          itens?: Json
+          observacoes?: string | null
+          paid_at?: string | null
+          pix_chave?: string
+          pix_nome?: string
+          slug?: string
+          status?: string
+          titulo?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gastos_fixos: {
         Row: {
-          ativo: boolean;
-          categoria_id: string | null;
-          created_at: string;
-          dia_mes: number;
-          dia_semana: number | null;
-          empresa: string | null;
-          frequencia: string;
-          id: string;
-          mes: number | null;
-          nome: string;
-          parcelas_pagas: number;
-          parcelas_total: number | null;
-          socio_padrao_id: string | null;
-          valor: number;
-        };
+          ativo: boolean
+          categoria_id: string | null
+          created_at: string
+          dia_mes: number
+          dia_semana: number | null
+          empresa: string | null
+          frequencia: string
+          id: string
+          mes: number | null
+          nome: string
+          parcelas_pagas: number
+          parcelas_total: number | null
+          socio_padrao_id: string | null
+          valor: number
+        }
         Insert: {
-          ativo?: boolean;
-          categoria_id?: string | null;
-          created_at?: string;
-          dia_mes: number;
-          dia_semana?: number | null;
-          empresa?: string | null;
-          frequencia?: string;
-          id?: string;
-          mes?: number | null;
-          nome: string;
-          parcelas_pagas?: number;
-          parcelas_total?: number | null;
-          socio_padrao_id?: string | null;
-          valor: number;
-        };
+          ativo?: boolean
+          categoria_id?: string | null
+          created_at?: string
+          dia_mes: number
+          dia_semana?: number | null
+          empresa?: string | null
+          frequencia?: string
+          id?: string
+          mes?: number | null
+          nome: string
+          parcelas_pagas?: number
+          parcelas_total?: number | null
+          socio_padrao_id?: string | null
+          valor: number
+        }
         Update: {
-          ativo?: boolean;
-          categoria_id?: string | null;
-          created_at?: string;
-          dia_mes?: number;
-          dia_semana?: number | null;
-          empresa?: string | null;
-          frequencia?: string;
-          id?: string;
-          mes?: number | null;
-          nome?: string;
-          parcelas_pagas?: number;
-          parcelas_total?: number | null;
-          socio_padrao_id?: string | null;
-          valor?: number;
-        };
+          ativo?: boolean
+          categoria_id?: string | null
+          created_at?: string
+          dia_mes?: number
+          dia_semana?: number | null
+          empresa?: string | null
+          frequencia?: string
+          id?: string
+          mes?: number | null
+          nome?: string
+          parcelas_pagas?: number
+          parcelas_total?: number | null
+          socio_padrao_id?: string | null
+          valor?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "gastos_fixos_categoria_id_fkey";
-            columns: ["categoria_id"];
-            isOneToOne: false;
-            referencedRelation: "categorias";
-            referencedColumns: ["id"];
+            foreignKeyName: "gastos_fixos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "gastos_fixos_socio_padrao_id_fkey";
-            columns: ["socio_padrao_id"];
-            isOneToOne: false;
-            referencedRelation: "socios";
-            referencedColumns: ["id"];
+            foreignKeyName: "gastos_fixos_socio_padrao_id_fkey"
+            columns: ["socio_padrao_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       profiles: {
         Row: {
-          avatar_url: string | null;
-          created_at: string;
-          display_name: string;
-          id: string;
-          must_change_password: boolean;
-          socio_id: string | null;
-          updated_at: string;
-          user_id: string;
-        };
+          avatar_url: string | null
+          created_at: string
+          display_name: string
+          id: string
+          must_change_password: boolean
+          socio_id: string | null
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          avatar_url?: string | null;
-          created_at?: string;
-          display_name?: string;
-          id?: string;
-          must_change_password?: boolean;
-          socio_id?: string | null;
-          updated_at?: string;
-          user_id: string;
-        };
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          must_change_password?: boolean
+          socio_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          avatar_url?: string | null;
-          created_at?: string;
-          display_name?: string;
-          id?: string;
-          must_change_password?: boolean;
-          socio_id?: string | null;
-          updated_at?: string;
-          user_id?: string;
-        };
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          must_change_password?: boolean
+          socio_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "profiles_socio_id_fkey";
-            columns: ["socio_id"];
-            isOneToOne: false;
-            referencedRelation: "socios";
-            referencedColumns: ["id"];
+            foreignKeyName: "profiles_socio_id_fkey"
+            columns: ["socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       push_subscriptions: {
         Row: {
-          auth: string;
-          created_at: string;
-          endpoint: string;
-          id: string;
-          last_seen_at: string;
-          p256dh: string;
-          socio_id: string | null;
-          user_agent: string | null;
-        };
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          last_seen_at: string
+          p256dh: string
+          socio_id: string | null
+          user_agent: string | null
+        }
         Insert: {
-          auth: string;
-          created_at?: string;
-          endpoint: string;
-          id?: string;
-          last_seen_at?: string;
-          p256dh: string;
-          socio_id?: string | null;
-          user_agent?: string | null;
-        };
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_seen_at?: string
+          p256dh: string
+          socio_id?: string | null
+          user_agent?: string | null
+        }
         Update: {
-          auth?: string;
-          created_at?: string;
-          endpoint?: string;
-          id?: string;
-          last_seen_at?: string;
-          p256dh?: string;
-          socio_id?: string | null;
-          user_agent?: string | null;
-        };
-        Relationships: [];
-      };
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_seen_at?: string
+          p256dh?: string
+          socio_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       quadro_itens: {
         Row: {
-          created_at: string;
-          descricao: string | null;
-          empresa: string | null;
-          id: string;
-          ordem: number;
-          prazo: string | null;
-          prioridade: string;
-          responsavel_id: string | null;
-          responsavel_ids: string[];
-          status: string;
-          tags: string[];
-          tipo: string;
-          titulo: string;
-          updated_at: string;
-        };
+          created_at: string
+          descricao: string | null
+          empresa: string | null
+          id: string
+          ordem: number
+          prazo: string | null
+          prioridade: string
+          responsavel_id: string | null
+          responsavel_ids: string[]
+          status: string
+          tags: string[]
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          descricao?: string | null;
-          empresa?: string | null;
-          id?: string;
-          ordem?: number;
-          prazo?: string | null;
-          prioridade?: string;
-          responsavel_id?: string | null;
-          responsavel_ids?: string[];
-          status?: string;
-          tags?: string[];
-          tipo: string;
-          titulo: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          descricao?: string | null
+          empresa?: string | null
+          id?: string
+          ordem?: number
+          prazo?: string | null
+          prioridade?: string
+          responsavel_id?: string | null
+          responsavel_ids?: string[]
+          status?: string
+          tags?: string[]
+          tipo: string
+          titulo: string
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          descricao?: string | null;
-          empresa?: string | null;
-          id?: string;
-          ordem?: number;
-          prazo?: string | null;
-          prioridade?: string;
-          responsavel_id?: string | null;
-          responsavel_ids?: string[];
-          status?: string;
-          tags?: string[];
-          tipo?: string;
-          titulo?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          descricao?: string | null
+          empresa?: string | null
+          id?: string
+          ordem?: number
+          prazo?: string | null
+          prioridade?: string
+          responsavel_id?: string | null
+          responsavel_ids?: string[]
+          status?: string
+          tags?: string[]
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reservas: {
         Row: {
-          cliente_nome: string;
-          cliente_whatsapp: string;
-          cobranca_id: string | null;
-          created_at: string;
-          data: string;
-          duracao_minutos: number;
-          empreendimento: string | null;
-          hora_inicio: string;
-          id: string;
-          lembrete_1h_enviado_at: string | null;
-          lembrete_24h_enviado_at: string | null;
-          numero_proposta: number;
-          observacoes: string | null;
-          paid_at: string | null;
-          status: string;
-          tipo: string;
-          tipo_pagamento: string | null;
-          updated_at: string;
-          valor_pago: number | null;
-          valor_sinal: number;
-          valor_total: number;
-        };
+          cliente_nome: string
+          cliente_whatsapp: string
+          cobranca_id: string | null
+          created_at: string
+          data: string
+          duracao_minutos: number
+          empreendimento: string | null
+          hora_inicio: string
+          id: string
+          lembrete_1h_enviado_at: string | null
+          lembrete_24h_enviado_at: string | null
+          numero_proposta: number
+          observacoes: string | null
+          paid_at: string | null
+          status: string
+          tipo: string
+          tipo_pagamento: string | null
+          updated_at: string
+          valor_pago: number | null
+          valor_sinal: number
+          valor_total: number
+        }
         Insert: {
-          cliente_nome: string;
-          cliente_whatsapp: string;
-          cobranca_id?: string | null;
-          created_at?: string;
-          data: string;
-          duracao_minutos: number;
-          empreendimento?: string | null;
-          hora_inicio: string;
-          id?: string;
-          lembrete_1h_enviado_at?: string | null;
-          lembrete_24h_enviado_at?: string | null;
-          numero_proposta?: number;
-          observacoes?: string | null;
-          paid_at?: string | null;
-          status?: string;
-          tipo?: string;
-          tipo_pagamento?: string | null;
-          updated_at?: string;
-          valor_pago?: number | null;
-          valor_sinal: number;
-          valor_total: number;
-        };
+          cliente_nome: string
+          cliente_whatsapp: string
+          cobranca_id?: string | null
+          created_at?: string
+          data: string
+          duracao_minutos: number
+          empreendimento?: string | null
+          hora_inicio: string
+          id?: string
+          lembrete_1h_enviado_at?: string | null
+          lembrete_24h_enviado_at?: string | null
+          numero_proposta?: number
+          observacoes?: string | null
+          paid_at?: string | null
+          status?: string
+          tipo?: string
+          tipo_pagamento?: string | null
+          updated_at?: string
+          valor_pago?: number | null
+          valor_sinal: number
+          valor_total: number
+        }
         Update: {
-          cliente_nome?: string;
-          cliente_whatsapp?: string;
-          cobranca_id?: string | null;
-          created_at?: string;
-          data?: string;
-          duracao_minutos?: number;
-          empreendimento?: string | null;
-          hora_inicio?: string;
-          id?: string;
-          lembrete_1h_enviado_at?: string | null;
-          lembrete_24h_enviado_at?: string | null;
-          numero_proposta?: number;
-          observacoes?: string | null;
-          paid_at?: string | null;
-          status?: string;
-          tipo?: string;
-          tipo_pagamento?: string | null;
-          updated_at?: string;
-          valor_pago?: number | null;
-          valor_sinal?: number;
-          valor_total?: number;
-        };
+          cliente_nome?: string
+          cliente_whatsapp?: string
+          cobranca_id?: string | null
+          created_at?: string
+          data?: string
+          duracao_minutos?: number
+          empreendimento?: string | null
+          hora_inicio?: string
+          id?: string
+          lembrete_1h_enviado_at?: string | null
+          lembrete_24h_enviado_at?: string | null
+          numero_proposta?: number
+          observacoes?: string | null
+          paid_at?: string | null
+          status?: string
+          tipo?: string
+          tipo_pagamento?: string | null
+          updated_at?: string
+          valor_pago?: number | null
+          valor_sinal?: number
+          valor_total?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "reservas_cobranca_id_fkey";
-            columns: ["cobranca_id"];
-            isOneToOne: false;
-            referencedRelation: "cobrancas";
-            referencedColumns: ["id"];
+            foreignKeyName: "reservas_cobranca_id_fkey"
+            columns: ["cobranca_id"]
+            isOneToOne: false
+            referencedRelation: "cobrancas"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       socios: {
         Row: {
-          cor: string;
-          created_at: string;
-          id: string;
-          nome: string;
-          ordem: number;
-        };
+          cor: string
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
         Insert: {
-          cor?: string;
-          created_at?: string;
-          id?: string;
-          nome: string;
-          ordem?: number;
-        };
+          cor?: string
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
         Update: {
-          cor?: string;
-          created_at?: string;
-          id?: string;
-          nome?: string;
-          ordem?: number;
-        };
-        Relationships: [];
-      };
+          cor?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
       transacoes: {
         Row: {
-          acertada: boolean;
-          acerto_id: string | null;
-          categoria_id: string | null;
-          created_at: string;
-          data: string;
-          descricao: string;
-          empresa: string | null;
-          id: string;
-          observacoes: string | null;
-          origem: string;
-          participantes_ids: string[];
-          socio_id: string | null;
-          tipo: Database["public"]["Enums"]["tipo_transacao"];
-          updated_at: string;
-          valor: number;
-        };
+          acertada: boolean
+          acerto_id: string | null
+          categoria_id: string | null
+          created_at: string
+          data: string
+          descricao: string
+          empresa: string | null
+          id: string
+          observacoes: string | null
+          origem: string
+          participantes_ids: string[]
+          socio_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+          updated_at: string
+          valor: number
+        }
         Insert: {
-          acertada?: boolean;
-          acerto_id?: string | null;
-          categoria_id?: string | null;
-          created_at?: string;
-          data?: string;
-          descricao: string;
-          empresa?: string | null;
-          id?: string;
-          observacoes?: string | null;
-          origem?: string;
-          participantes_ids?: string[];
-          socio_id?: string | null;
-          tipo: Database["public"]["Enums"]["tipo_transacao"];
-          updated_at?: string;
-          valor: number;
-        };
+          acertada?: boolean
+          acerto_id?: string | null
+          categoria_id?: string | null
+          created_at?: string
+          data?: string
+          descricao: string
+          empresa?: string | null
+          id?: string
+          observacoes?: string | null
+          origem?: string
+          participantes_ids?: string[]
+          socio_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_transacao"]
+          updated_at?: string
+          valor: number
+        }
         Update: {
-          acertada?: boolean;
-          acerto_id?: string | null;
-          categoria_id?: string | null;
-          created_at?: string;
-          data?: string;
-          descricao?: string;
-          empresa?: string | null;
-          id?: string;
-          observacoes?: string | null;
-          origem?: string;
-          participantes_ids?: string[];
-          socio_id?: string | null;
-          tipo?: Database["public"]["Enums"]["tipo_transacao"];
-          updated_at?: string;
-          valor?: number;
-        };
+          acertada?: boolean
+          acerto_id?: string | null
+          categoria_id?: string | null
+          created_at?: string
+          data?: string
+          descricao?: string
+          empresa?: string | null
+          id?: string
+          observacoes?: string | null
+          origem?: string
+          participantes_ids?: string[]
+          socio_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_transacao"]
+          updated_at?: string
+          valor?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "transacoes_categoria_id_fkey";
-            columns: ["categoria_id"];
-            isOneToOne: false;
-            referencedRelation: "categorias";
-            referencedColumns: ["id"];
+            foreignKeyName: "transacoes_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "transacoes_socio_id_fkey";
-            columns: ["socio_id"];
-            isOneToOne: false;
-            referencedRelation: "socios";
-            referencedColumns: ["id"];
+            foreignKeyName: "transacoes_socio_id_fkey"
+            columns: ["socio_id"]
+            isOneToOne: false
+            referencedRelation: "socios"
+            referencedColumns: ["id"]
           },
-        ];
-      };
-    };
+        ]
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      _mb_slugify: { Args: { _txt: string }; Returns: string };
-      calc_preco_reserva: { Args: { _minutos: number }; Returns: number };
+      _mb_slugify: { Args: { _txt: string }; Returns: string }
+      calc_preco_reserva: { Args: { _minutos: number }; Returns: number }
       confirmar_pagamento_cobranca: {
-        Args: { _slug: string; _tipo: string; _valor: number };
+        Args: { _slug: string; _tipo: string; _valor: number }
         Returns: {
-          cobranca_id: string;
-          paid_at: string;
-          reserva_id: string;
-        }[];
-      };
+          cobranca_id: string
+          paid_at: string
+          reserva_id: string
+        }[]
+      }
       criar_reserva: {
         Args: {
-          _cliente_nome: string;
-          _cliente_whatsapp: string;
-          _data: string;
-          _duracao_minutos: number;
-          _hora_inicio: string;
-        };
+          _cliente_nome: string
+          _cliente_whatsapp: string
+          _data: string
+          _duracao_minutos: number
+          _hora_inicio: string
+        }
         Returns: {
-          cobranca_slug: string;
-          reserva_id: string;
-          valor_sinal: number;
-          valor_total: number;
-        }[];
-      };
+          cobranca_slug: string
+          reserva_id: string
+          valor_sinal: number
+          valor_total: number
+        }[]
+      }
       criar_reserva_pacote:
         | {
             Args: {
-              _cliente_nome: string;
-              _cliente_whatsapp: string;
-              _data: string;
-              _empreendimento: string;
-              _hora_inicio: string;
-            };
+              _cliente_nome: string
+              _cliente_whatsapp: string
+              _data: string
+              _empreendimento: string
+              _hora_inicio: string
+            }
             Returns: {
-              cobranca_slug: string;
-              reserva_id: string;
-              valor_sinal: number;
-              valor_total: number;
-            }[];
+              cobranca_slug: string
+              reserva_id: string
+              valor_sinal: number
+              valor_total: number
+            }[]
           }
         | {
             Args: {
-              _cliente_nome: string;
-              _cliente_whatsapp: string;
-              _data: string;
-              _empreendimento: string;
-              _hora_inicio: string;
-              _qtd_marcas?: number;
-            };
+              _cliente_nome: string
+              _cliente_whatsapp: string
+              _data: string
+              _empreendimento: string
+              _hora_inicio: string
+              _qtd_marcas?: number
+            }
             Returns: {
-              cobranca_slug: string;
-              reserva_id: string;
-              valor_sinal: number;
-              valor_total: number;
-            }[];
-          };
+              cobranca_slug: string
+              reserva_id: string
+              valor_sinal: number
+              valor_total: number
+            }[]
+          }
       get_cobranca_by_slug: {
-        Args: { _slug: string };
+        Args: { _slug: string }
         Returns: {
-          cliente_nome: string;
-          descricao: string;
-          id: string;
-          itens: Json;
-          observacoes: string;
-          paid_at: string;
-          pix_chave: string;
-          pix_nome: string;
-          slug: string;
-          status: string;
-          titulo: string;
-          total: number;
-        }[];
-      };
+          cliente_nome: string
+          descricao: string
+          id: string
+          itens: Json
+          observacoes: string
+          paid_at: string
+          pix_chave: string
+          pix_nome: string
+          slug: string
+          status: string
+          titulo: string
+          total: number
+        }[]
+      }
       get_horarios_ocupados: {
-        Args: { _data: string };
+        Args: { _data: string }
         Returns: {
-          duracao_minutos: number;
-          hora_inicio: string;
-        }[];
-      };
+          duracao_minutos: number
+          hora_inicio: string
+        }[]
+      }
       get_reserva_por_slug: {
-        Args: { _slug: string };
+        Args: { _slug: string }
         Returns: {
-          cliente_nome: string;
-          cliente_whatsapp: string;
-          data: string;
-          duracao_minutos: number;
-          empreendimento: string;
-          hora_inicio: string;
-          id: string;
-          numero_proposta: number;
-          paid_at: string;
-          status: string;
-          tipo: string;
-          tipo_pagamento: string;
-          valor_pago: number;
-          valor_sinal: number;
-          valor_total: number;
-        }[];
-      };
-    };
+          cliente_nome: string
+          cliente_whatsapp: string
+          data: string
+          duracao_minutos: number
+          empreendimento: string
+          hora_inicio: string
+          id: string
+          numero_proposta: number
+          paid_at: string
+          status: string
+          tipo: string
+          tipo_pagamento: string
+          valor_pago: number
+          valor_sinal: number
+          valor_total: number
+        }[]
+      }
+    }
     Enums: {
-      tipo_transacao: "despesa" | "receita";
-    };
+      tipo_transacao: "despesa" | "receita"
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R;
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never;
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never;
+    : never
 
 export const Constants = {
   public: {
@@ -738,4 +746,4 @@ export const Constants = {
       tipo_transacao: ["despesa", "receita"],
     },
   },
-} as const;
+} as const
