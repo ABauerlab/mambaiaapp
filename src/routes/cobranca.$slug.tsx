@@ -438,6 +438,10 @@ function CobrancaPage() {
           <section className="rounded-2xl bg-[var(--brand-lime)] text-[var(--brand-dark)] p-6 text-center">
             <CheckCircle2 className="w-8 h-8 mx-auto mb-2" />
             <div className="font-bold">Pagamento confirmado. Obrigada!</div>
+            <div className="mt-1 text-sm">
+              Valor pago: <strong>{formatBRL(data.total)}</strong> · Total:{" "}
+              <strong>{formatBRL(data.total)}</strong>
+            </div>
           </section>
         )}
 
