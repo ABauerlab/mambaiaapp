@@ -467,17 +467,17 @@ function Steps() {
     {
       icon: Sparkles,
       title: "Escolha o serviço",
-      desc: "Estúdio, coworking, evento ou pacote de marcas.",
+      desc: "Estúdio, coworking, evento ou pacote de marcas: você escolhe quantas horas precisa.",
     },
     {
       icon: Calendar,
       title: "Reserve online",
-      desc: "Selecione data, horário e pague o sinal via PIX.",
+      desc: "Escolha data e horário livres e garanta a reserva com 50% de sinal via PIX.",
     },
     {
       icon: Camera,
       title: "Venha criar",
-      desc: "Chegue no dia marcado e aproveite o espaço.",
+      desc: "Chegue 15 minutos antes, pague o restante no dia e aproveite o espaço.",
     },
   ];
   return (
@@ -488,7 +488,7 @@ function Steps() {
             Como funciona
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
-            Reserve em três passos.
+            Reserve em três passos, sem burocracia.
           </h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -516,7 +516,7 @@ function Steps() {
             href="/agendar"
             className="inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition"
           >
-            Ver horários disponíveis
+            Ver horários disponíveis agora
             <ArrowRight className="w-4 h-4" />
           </a>
         </div>
@@ -612,14 +612,15 @@ function CtaFinal() {
           <span className="font-semibold text-[#E5C72A]">começa aqui.</span>
         </h2>
         <p className="mt-5 text-white/80 max-w-xl mx-auto">
-          Reserve online em minutos ou fale direto com a nossa equipe.
+          Reserve online em 2 minutos ou fale direto com a nossa equipe no WhatsApp: respondemos em
+          horário comercial.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/agendar"
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition shadow-lg shadow-black/20"
           >
-            Agendar estúdio
+            Reservar meu horário
             <ArrowRight className="w-4 h-4" />
           </a>
           <a
@@ -628,7 +629,7 @@ function CtaFinal() {
             rel="noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 text-white px-7 py-3.5 font-medium hover:bg-white/10 transition"
           >
-            <MessageCircle className="w-4 h-4" /> WhatsApp
+            <MessageCircle className="w-4 h-4" /> Tirar dúvidas no WhatsApp
           </a>
         </div>
       </div>
