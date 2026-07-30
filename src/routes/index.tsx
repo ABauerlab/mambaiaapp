@@ -543,7 +543,7 @@ function Localizacao() {
             Onde estamos
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
-            Nos encontre.
+            Fácil de chegar.
           </h2>
           <ul className="mt-6 space-y-4 text-[#1A1A1A]/80">
             <li className="flex gap-3">
@@ -574,7 +574,7 @@ function Localizacao() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0D2E24] text-white px-6 py-3 font-medium hover:bg-[#0D2E24]/90 transition"
             >
-              <MapPin className="w-4 h-4" /> Como chegar
+              <MapPin className="w-4 h-4" /> Traçar rota até o estúdio
             </a>
             <a
               href={WA_LINK}
@@ -582,7 +582,7 @@ function Localizacao() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#0D2E24]/20 text-[#0D2E24] px-6 py-3 font-medium hover:bg-[#0D2E24]/5 transition"
             >
-              <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
+              <MessageCircle className="w-4 h-4" /> Falar com a equipe
             </a>
           </div>
         </div>
@@ -757,8 +757,8 @@ function Medidas() {
             Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Formato em L com ciclorama branco, luz natural pela janela e altura generosa para
-            iluminação profissional. Ótimo para look book, produto, entrevistas e gravações.
+            Formato em L com ciclorama branco, luz natural pela janela e altura de sobra para
+            iluminação profissional. Ideal para look book, produto, entrevistas e gravações.
           </p>
           <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
             {[
@@ -776,14 +776,14 @@ function Medidas() {
             ))}
           </dl>
           <p className="mt-4 text-xs text-[#1A1A1A]/60">
-            Dúvidas sobre encaixe de cenário ou equipamento?{" "}
+            Ficou em dúvida se o seu cenário ou equipamento cabe?{" "}
             <a
               href={WA_LINK}
               target="_blank"
               rel="noreferrer"
               className="underline underline-offset-2 font-semibold text-[#0D2E24]"
             >
-              Fale com a gente no WhatsApp
+              Manda uma mensagem para a gente
             </a>
             .
           </p>
