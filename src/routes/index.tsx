@@ -29,7 +29,7 @@ import estudio5 from "@/assets/studio/estudio-5.asset.json";
 const SITE = "https://mambaiabh.com.br";
 const WA_NUM = "553132232356";
 const WA_MSG = encodeURIComponent(
-  "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio.",
+  "Oi, Mambaia! Vim pelo site e quero reservar um horário no estúdio. Pode me passar as datas disponíveis?",
 );
 const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
 const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Belo Horizonte - MG";
@@ -44,9 +44,9 @@ const MAPS_EMBED =
   "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
 
-const TITLE = "Mambaia | Estúdio criativo na Praça Sete, Belo Horizonte";
+const TITLE = "Mambaia | Aluguel de estúdio fotográfico no Centro de BH";
 const DESC =
-  "Estúdio fotográfico com ciclorama, coworking e espaço para eventos no Centro de BH. Reserve online por hora, com sinal via PIX. R. Rio de Janeiro, 462 - Sala 2217.";
+  "Alugue o estúdio da Mambaia por hora, a partir de R$ 100: ciclorama branco, luz natural, coworking e espaço para eventos na Praça Sete. Reserve online em 2 minutos, com sinal via PIX.";
 const OG_IMAGE = `${SITE}${estudio4.url}`;
 
 export const Route = createFileRoute("/")({
@@ -231,30 +231,32 @@ function Hero() {
           <span className="font-semibold text-[#E5C72A]">encontra espaço.</span>
         </h1>
         <p className="mt-6 text-base md:text-xl text-white/85 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in">
-          Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Reserve
-          online, do jeito que combina com você.
+          Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Aluguel
+          por hora a partir de R$ 100, com reserva online em 2 minutos e sinal via PIX.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center animate-fade-in">
           <a
             href="/agendar"
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold text-base hover:brightness-95 transition shadow-lg shadow-black/20"
           >
-            Agendar estúdio
+            Reservar meu horário
             <ArrowRight className="w-4 h-4" />
           </a>
           <a
             href="#galeria"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 text-white px-7 py-3.5 font-medium hover:bg-white/10 transition"
           >
-            Conhecer o espaço
+            Ver o espaço por dentro
           </a>
         </div>
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
-          {["Estúdio profissional", "Coworking", "Eventos", "Pacote marcas"].map((t) => (
-            <span key={t} className="inline-flex items-center gap-1.5">
-              <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
-            </span>
-          ))}
+          {["Ciclorama branco", "Reserva online", "Sinal via PIX", "Praça Sete, Centro de BH"].map(
+            (t) => (
+              <span key={t} className="inline-flex items-center gap-1.5">
+                <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
+              </span>
+            ),
+          )}
         </div>
       </div>
     </section>
@@ -273,34 +275,34 @@ const servicos: Servico[] = [
   {
     icon: Camera,
     title: "Estúdio fotográfico",
-    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. Aluguel por hora a partir de R$ 100, com sinal via PIX.",
+    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. A partir de R$ 100 a hora, com apenas 50% de sinal via PIX para garantir a data.",
     img: estudio5.url,
     href: "/agendar",
-    cta: "Agendar sessão",
+    cta: "Ver horários livres",
   },
   {
     icon: Users,
     title: "Coworking criativo",
-    desc: "Ambiente inspirador para trabalhar, editar ou reunir a equipe. Café, Wi-Fi e vista da cidade no coração do Centro.",
+    desc: "Ambiente tranquilo para trabalhar, editar ou reunir a equipe por algumas horas. Café, Wi-Fi rápido e vista da cidade, no coração do Centro.",
     img: estudio3.url,
     href: "/agendar",
-    cta: "Reservar horário",
+    cta: "Reservar uma mesa",
   },
   {
     icon: Sparkles,
     title: "Eventos e encontros",
-    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca no Centro de BH.",
+    desc: "Espaço versátil para workshops, lançamentos, gravações e ativações de marca. Conte o que você quer fazer e a gente monta o formato com você.",
     img: estudio2.url,
     href: "/agendar",
-    cta: "Agendar evento",
+    cta: "Planejar meu evento",
   },
   {
     icon: Building2,
     title: "Pacote marcas / brechó",
-    desc: "Produção fotográfica completa: R$ 350 por marca, com 1h de estúdio para cada. Ideal para catálogos e brechós.",
+    desc: "Produção fotográfica completa por R$ 350 por marca, com 1h de estúdio para cada uma. Feito para catálogo, brechó e coleção nova.",
     img: estudio1.url,
     href: "/pacote-marcas",
-    cta: "Solicitar pacote",
+    cta: "Quero o pacote",
   },
 ];
 
@@ -310,14 +312,14 @@ function Servicos() {
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="max-w-2xl mb-14">
           <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
-            O que oferecemos
+            O que você pode reservar
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
             Um espaço, várias possibilidades.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Reserve o Mambaia para o que a sua criatividade pedir hoje - fotografia, trabalho,
-            evento ou produção de marca.
+            Escolha o formato que combina com o seu projeto: ensaio fotográfico, dia de trabalho,
+            evento ou produção de marca. Você paga só pelas horas que usar.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -462,17 +464,17 @@ function Steps() {
     {
       icon: Sparkles,
       title: "Escolha o serviço",
-      desc: "Estúdio, coworking, evento ou pacote de marcas.",
+      desc: "Estúdio, coworking, evento ou pacote de marcas: você escolhe quantas horas precisa.",
     },
     {
       icon: Calendar,
       title: "Reserve online",
-      desc: "Selecione data, horário e pague o sinal via PIX.",
+      desc: "Escolha data e horário livres e garanta a reserva com 50% de sinal via PIX.",
     },
     {
       icon: Camera,
       title: "Venha criar",
-      desc: "Chegue no dia marcado e aproveite o espaço.",
+      desc: "Chegue 15 minutos antes, pague o restante no dia e aproveite o espaço.",
     },
   ];
   return (
@@ -483,7 +485,7 @@ function Steps() {
             Como funciona
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
-            Reserve em três passos.
+            Reserve em três passos, sem burocracia.
           </h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -511,7 +513,7 @@ function Steps() {
             href="/agendar"
             className="inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition"
           >
-            Ver horários disponíveis
+            Ver horários disponíveis agora
             <ArrowRight className="w-4 h-4" />
           </a>
         </div>
@@ -538,7 +540,7 @@ function Localizacao() {
             Onde estamos
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
-            Nos encontre.
+            Fácil de chegar.
           </h2>
           <ul className="mt-6 space-y-4 text-[#1A1A1A]/80">
             <li className="flex gap-3">
@@ -569,7 +571,7 @@ function Localizacao() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0D2E24] text-white px-6 py-3 font-medium hover:bg-[#0D2E24]/90 transition"
             >
-              <MapPin className="w-4 h-4" /> Como chegar
+              <MapPin className="w-4 h-4" /> Traçar rota até o estúdio
             </a>
             <a
               href={WA_LINK}
@@ -577,7 +579,7 @@ function Localizacao() {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#0D2E24]/20 text-[#0D2E24] px-6 py-3 font-medium hover:bg-[#0D2E24]/5 transition"
             >
-              <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
+              <MessageCircle className="w-4 h-4" /> Falar com a equipe
             </a>
           </div>
         </div>
@@ -607,14 +609,15 @@ function CtaFinal() {
           <span className="font-semibold text-[#E5C72A]">começa aqui.</span>
         </h2>
         <p className="mt-5 text-white/80 max-w-xl mx-auto">
-          Reserve online em minutos ou fale direto com a nossa equipe.
+          Reserve online em 2 minutos ou fale direto com a nossa equipe no WhatsApp: respondemos em
+          horário comercial.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="/agendar"
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition shadow-lg shadow-black/20"
           >
-            Agendar estúdio
+            Reservar meu horário
             <ArrowRight className="w-4 h-4" />
           </a>
           <a
@@ -623,7 +626,7 @@ function CtaFinal() {
             rel="noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 text-white px-7 py-3.5 font-medium hover:bg-white/10 transition"
           >
-            <MessageCircle className="w-4 h-4" /> WhatsApp
+            <MessageCircle className="w-4 h-4" /> Tirar dúvidas no WhatsApp
           </a>
         </div>
       </div>
@@ -751,8 +754,8 @@ function Medidas() {
             Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Formato em L com ciclorama branco, luz natural pela janela e altura generosa para
-            iluminação profissional. Ótimo para look book, produto, entrevistas e gravações.
+            Formato em L com ciclorama branco, luz natural pela janela e altura de sobra para
+            iluminação profissional. Ideal para look book, produto, entrevistas e gravações.
           </p>
           <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
             {[
@@ -770,14 +773,14 @@ function Medidas() {
             ))}
           </dl>
           <p className="mt-4 text-xs text-[#1A1A1A]/60">
-            Dúvidas sobre encaixe de cenário ou equipamento?{" "}
+            Ficou em dúvida se o seu cenário ou equipamento cabe?{" "}
             <a
               href={WA_LINK}
               target="_blank"
               rel="noreferrer"
               className="underline underline-offset-2 font-semibold text-[#0D2E24]"
             >
-              Fale com a gente no WhatsApp
+              Manda uma mensagem para a gente
             </a>
             .
           </p>
@@ -917,14 +920,14 @@ function LeadForm() {
       <div className="max-w-5xl mx-auto px-5 md:px-8 py-12 md:py-16 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <span className="text-xs font-semibold tracking-widest text-[#E5C72A] uppercase">
-            Comece agora
+            Leva 30 segundos
           </span>
           <h2 className="mt-2 text-2xl md:text-4xl font-light tracking-tight">
-            Deixe seu contato e a gente organiza tudo com você.
+            Deixe seu contato e a gente organiza a sua reserva.
           </h2>
           <p className="mt-3 text-white/70 text-sm md:text-base">
-            Preencha nome e WhatsApp: já abrimos a nossa conversa e te levamos direto para a agenda
-            com seus dados prontos.
+            Preencha nome e WhatsApp: abrimos a conversa com a nossa equipe e te levamos direto para
+            a agenda, já com seus dados preenchidos.
           </p>
         </div>
         {confirmed ? (
@@ -944,8 +947,8 @@ function LeadForm() {
               </div>
             </div>
             <p className="text-xs text-white/70">
-              Ao continuar vamos abrir a conversa no WhatsApp e te levar para a agenda com esses
-              dados prontos.
+              Ao continuar, abrimos a conversa no WhatsApp e te levamos para a agenda com esses
+              dados preenchidos.
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
               <button
@@ -953,14 +956,14 @@ function LeadForm() {
                 onClick={seguir}
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
               >
-                Continuar <ArrowRight className="w-4 h-4" />
+                Continuar para a agenda <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 type="button"
                 onClick={() => setConfirmed(null)}
                 className="rounded-lg border border-white/20 text-white px-5 py-3 text-sm hover:bg-white/10 transition"
               >
-                Corrigir
+                Corrigir dados
               </button>
             </div>
           </div>
@@ -1011,10 +1014,10 @@ function LeadForm() {
               type="submit"
               className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-5 py-3 font-semibold hover:brightness-95 transition"
             >
-              Quero reservar <ArrowRight className="w-4 h-4" />
+              Quero reservar meu horário <ArrowRight className="w-4 h-4" />
             </button>
             <p className="text-[11px] text-white/60 text-center">
-              Sem spam. Usamos seu contato apenas para organizar a reserva.
+              Sem spam e sem compromisso. Usamos seu contato apenas para organizar a reserva.
             </p>
           </form>
         )}
