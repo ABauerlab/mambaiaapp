@@ -201,9 +201,11 @@ function CobrancaPage() {
   const pago = data.status === "pago";
 
   const whatsappHref = (() => {
+    const pagoValor = reserva?.valor_pago ?? reserva?.valor_sinal ?? data.total;
+    const totalValor = reserva?.valor_total ?? data.total;
     const msg =
-      `Olá! Acabei de fazer o pagamento da proposta "${data.titulo}" ` +
-      `no valor de ${formatBRL(data.total)}. ` +
+      `Olá! Recebi a confirmação do pagamento de ${formatBRL(pagoValor)} ` +
+      `referente à proposta "${data.titulo}" (Total: ${formatBRL(totalValor)}). ` +
       `Segue o comprovante em anexo.\n\nCliente: ${data.cliente_nome}\nLink: ${typeof window !== "undefined" ? window.location.href : ""}`;
     return waMambaia(msg);
   })();
@@ -404,6 +406,24 @@ function CobrancaPage() {
               <strong>{reserva.hora_inicio.slice(0, 5)}</strong> está garantida. Baixe seu
               comprovante em PDF para guardar.
             </p>
+            <div className="rounded-xl bg-[var(--brand-dark)]/10 p-3 text-sm space-y-1">
+              <div className="flex justify-between">
+                <span>Valor pago</span>
+                <strong>{formatBRL(reserva.valor_pago ?? reserva.valor_sinal)}</strong>
+              </div>
+              <div className="flex justify-between">
+                <span>Valor total da reserva</span>
+                <strong>{formatBRL(reserva.valor_total)}</strong>
+              </div>
+              {(reserva.valor_pago ?? reserva.valor_sinal) < reserva.valor_total && (
+                <div className="flex justify-between opacity-80">
+                  <span>Restante no dia</span>
+                  <strong>
+                    {formatBRL(reserva.valor_total - (reserva.valor_pago ?? reserva.valor_sinal))}
+                  </strong>
+                </div>
+              )}
+            </div>
             <Button
               onClick={() => setPdfOpen(true)}
               className="w-full h-12 bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90 font-semibold"
