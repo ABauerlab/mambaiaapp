@@ -29,7 +29,7 @@ import estudio5 from "@/assets/studio/estudio-5.asset.json";
 const SITE = "https://mambaiabh.com.br";
 const WA_NUM = "553132232356";
 const WA_MSG = encodeURIComponent(
-  "Oi Mambaia! Vim pelo site e queria reservar um horário no estúdio.",
+  "Oi, Mambaia! Vim pelo site e quero reservar um horário no estúdio. Pode me passar as datas disponíveis?",
 );
 const WA_LINK = `https://wa.me/${WA_NUM}?text=${WA_MSG}`;
 const ENDERECO = "R. Rio de Janeiro, 462 - Sl 2217 - Centro, Belo Horizonte - MG";
@@ -44,9 +44,9 @@ const MAPS_EMBED =
   "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
 
-const TITLE = "Mambaia | Estúdio criativo na Praça Sete, Belo Horizonte";
+const TITLE = "Mambaia | Aluguel de estúdio fotográfico no Centro de BH";
 const DESC =
-  "Estúdio fotográfico com ciclorama, coworking e espaço para eventos no Centro de BH. Reserve online por hora, com sinal via PIX. R. Rio de Janeiro, 462 - Sala 2217.";
+  "Alugue o estúdio da Mambaia por hora, a partir de R$ 100: ciclorama branco, luz natural, coworking e espaço para eventos na Praça Sete. Reserve online em 2 minutos, com sinal via PIX.";
 const OG_IMAGE = `${SITE}${estudio4.url}`;
 
 export const Route = createFileRoute("/")({
@@ -231,26 +231,31 @@ function Hero() {
           <span className="font-semibold text-[#E5C72A]">encontra espaço.</span>
         </h1>
         <p className="mt-6 text-base md:text-xl text-white/85 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in">
-          Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Reserve
-          online, do jeito que combina com você.
+          Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Aluguel
+          por hora a partir de R$ 100, com reserva online em 2 minutos e sinal via PIX.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center animate-fade-in">
           <a
             href="/agendar"
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold text-base hover:brightness-95 transition shadow-lg shadow-black/20"
           >
-            Agendar estúdio
+            Reservar meu horário
             <ArrowRight className="w-4 h-4" />
           </a>
           <a
             href="#galeria"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 text-white px-7 py-3.5 font-medium hover:bg-white/10 transition"
           >
-            Conhecer o espaço
+            Ver o espaço por dentro
           </a>
         </div>
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
-          {["Estúdio profissional", "Coworking", "Eventos", "Pacote marcas"].map((t) => (
+          {[
+            "Ciclorama branco",
+            "Reserva online",
+            "Sinal via PIX",
+            "Praça Sete, Centro de BH",
+          ].map((t) => (
             <span key={t} className="inline-flex items-center gap-1.5">
               <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
             </span>
