@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Loader2,
   CalendarDays,
@@ -52,7 +52,6 @@ function minToTime(min: number): string {
 }
 
 export const Route = createFileRoute("/pacote-marcas")({
-  ssr: false,
   head: () => ({
     meta: [
       { title: "Pacote Marcas Mambaia - fotos de catálogo em BH" },
@@ -123,18 +122,10 @@ export const Route = createFileRoute("/pacote-marcas")({
 
 function PacoteMarcasPage() {
   const navigate = useNavigate();
-  const hoje = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
-  const maxDate = useMemo(() => {
-    const d = new Date(hoje);
-    d.setFullYear(d.getFullYear() + 1);
-    return d;
-  }, [hoje]);
+  const [hoje, setHoje] = useState<Date | null>(null);
+  const [dataSel, setDataSel] = useState<Date | null>(null);
+  const [agora, setAgora] = useState<Date | null>(null);
 
-  const [dataSel, setDataSel] = useState<Date>(hoje);
   const [horaInicio, setHoraInicio] = useState<string | null>(null);
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -143,7 +134,22 @@ function PacoteMarcasPage() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [aceito, setAceito] = useState(false);
 
-  const dataStr = ymd(dataSel);
+  useEffect(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    setHoje(d);
+    setDataSel(d);
+    setAgora(new Date());
+  }, []);
+
+  const maxDate = useMemo(() => {
+    if (!hoje) return new Date();
+    const d = new Date(hoje);
+    d.setFullYear(d.getFullYear() + 1);
+    return d;
+  }, [hoje]);
+
+  const dataStr = dataSel ? ymd(dataSel) : "";
   const qtd = Math.max(1, Math.min(10, qtdMarcas || 1));
   const precoTotal = PRECO_UNIT * qtd;
   const sinalTotal = precoTotal / 2;
@@ -151,10 +157,12 @@ function PacoteMarcasPage() {
   const ocupados = useQuery({
     queryKey: ["ocupados", dataStr],
     queryFn: async () => {
+      if (!dataStr) return [];
       const { data, error } = await sb.rpc("get_horarios_ocupados", { _data: dataStr });
       if (error) throw error;
       return (data ?? []) as { hora_inicio: string; duracao_minutos: number }[];
     },
+    enabled: !!dataStr,
   });
 
   const slots = useMemo(() => {
@@ -163,8 +171,8 @@ function PacoteMarcasPage() {
     return out;
   }, []);
 
-  const agora = new Date();
   const isPast = (hhmm: string) => {
+    if (!dataSel || !hoje || !agora) return false;
     if (dataSel.getTime() !== hoje.getTime()) return false;
     const [h, m] = hhmm.split(":").map(Number);
     return h * 60 + m <= agora.getHours() * 60 + agora.getMinutes();
@@ -204,6 +212,12 @@ function PacoteMarcasPage() {
     },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+
+  if (!hoje || !dataSel) return (
+    <div className="min-h-screen bg-[var(--brand-dark)] flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-[var(--brand-lime)]" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">

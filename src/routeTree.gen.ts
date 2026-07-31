@@ -9,50 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WifiRouteImport } from './routes/wifi'
-import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
-import { Route as PacoteMarcasRouteImport } from './routes/pacote-marcas'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AgendarRouteImport } from './routes/agendar'
-import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
-import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
-import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
-import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
-import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
-import { Route as AppNovaRouteImport } from './routes/_app.nova'
-import { Route as AppFixosRouteImport } from './routes/_app.fixos'
-import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
-import { Route as AppCriarRouteImport } from './routes/_app.criar'
-import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
-import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
-import { Route as AppAlertasRouteImport } from './routes/_app.alertas'
-import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AgendarRouteImport } from './routes/agendar'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PacoteMarcasRouteImport } from './routes/pacote-marcas'
+import { Route as PrimeiroAcessoRouteImport } from './routes/primeiro-acesso'
+import { Route as WifiRouteImport } from './routes/wifi'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
-import { Route as ApiPublicHooksReservaLembretesRouteImport } from './routes/api/public/hooks/reserva-lembretes'
-import { Route as ApiPublicHooksNovaReservaRouteImport } from './routes/api/public/hooks/nova-reserva'
-import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
+import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
+import { Route as AppAlertasRouteImport } from './routes/_app.alertas'
+import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
+import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
+import { Route as AppCriarRouteImport } from './routes/_app.criar'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppFixosRouteImport } from './routes/_app.fixos'
+import { Route as AppNovaRouteImport } from './routes/_app.nova'
+import { Route as AppPerfilRouteImport } from './routes/_app.perfil'
+import { Route as AppQuadroRouteImport } from './routes/_app.quadro'
+import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
+import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
+import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
 import { Route as ApiPublicHooksAlertasRouteImport } from './routes/api/public/hooks/alertas'
+import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
+import { Route as ApiPublicHooksNovaReservaRouteImport } from './routes/api/public/hooks/nova-reserva'
+import { Route as ApiPublicHooksReservaLembretesRouteImport } from './routes/api/public/hooks/reserva-lembretes'
 
-const WifiRoute = WifiRouteImport.update({
-  id: '/wifi',
-  path: '/wifi',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrimeiroAcessoRoute = PrimeiroAcessoRouteImport.update({
-  id: '/primeiro-acesso',
-  path: '/primeiro-acesso',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PacoteMarcasRoute = PacoteMarcasRouteImport.update({
-  id: '/pacote-marcas',
-  path: '/pacote-marcas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgendarRoute = AgendarRouteImport.update({
@@ -60,73 +49,29 @@ const AgendarRoute = AgendarRouteImport.update({
   path: '/agendar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PacoteMarcasRoute = PacoteMarcasRouteImport.update({
+  id: '/pacote-marcas',
+  path: '/pacote-marcas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CobrancaSlugRoute = CobrancaSlugRouteImport.update({
-  id: '/cobranca/$slug',
-  path: '/cobranca/$slug',
+const PrimeiroAcessoRoute = PrimeiroAcessoRouteImport.update({
+  id: '/primeiro-acesso',
+  path: '/primeiro-acesso',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppTransacoesRoute = AppTransacoesRouteImport.update({
-  id: '/transacoes',
-  path: '/transacoes',
-  getParentRoute: () => AppRoute,
+const WifiRoute = WifiRouteImport.update({
+  id: '/wifi',
+  path: '/wifi',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
-  id: '/relatorios',
-  path: '/relatorios',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppQuadroRoute = AppQuadroRouteImport.update({
-  id: '/quadro',
-  path: '/quadro',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPerfilRoute = AppPerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppNovaRoute = AppNovaRouteImport.update({
-  id: '/nova',
-  path: '/nova',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFixosRoute = AppFixosRouteImport.update({
-  id: '/fixos',
-  path: '/fixos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCriarRoute = AppCriarRouteImport.update({
-  id: '/criar',
-  path: '/criar',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCategoriasRoute = AppCategoriasRouteImport.update({
-  id: '/categorias',
-  path: '/categorias',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
-  id: '/auditoria',
-  path: '/auditoria',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAlertasRoute = AppAlertasRouteImport.update({
-  id: '/alertas',
-  path: '/alertas',
+const AppAcertosRoute = AppAcertosRouteImport.update({
+  id: '/acertos',
+  path: '/acertos',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAgendaRoute = AppAgendaRouteImport.update({
@@ -134,15 +79,75 @@ const AppAgendaRoute = AppAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAcertosRoute = AppAcertosRouteImport.update({
-  id: '/acertos',
-  path: '/acertos',
+const AppAlertasRoute = AppAlertasRouteImport.update({
+  id: '/alertas',
+  path: '/alertas',
   getParentRoute: () => AppRoute,
 } as any)
-const ApiPublicHooksReservaLembretesRoute =
-  ApiPublicHooksReservaLembretesRouteImport.update({
-    id: '/api/public/hooks/reserva-lembretes',
-    path: '/api/public/hooks/reserva-lembretes',
+const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCategoriasRoute = AppCategoriasRouteImport.update({
+  id: '/categorias',
+  path: '/categorias',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCriarRoute = AppCriarRouteImport.update({
+  id: '/criar',
+  path: '/criar',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFixosRoute = AppFixosRouteImport.update({
+  id: '/fixos',
+  path: '/fixos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNovaRoute = AppNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppQuadroRoute = AppQuadroRouteImport.update({
+  id: '/quadro',
+  path: '/quadro',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTransacoesRoute = AppTransacoesRouteImport.update({
+  id: '/transacoes',
+  path: '/transacoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const CobrancaSlugRoute = CobrancaSlugRouteImport.update({
+  id: '/cobranca/$slug',
+  path: '/cobranca/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksAlertasRoute = ApiPublicHooksAlertasRouteImport.update({
+  id: '/api/public/hooks/alertas',
+  path: '/api/public/hooks/alertas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksDailyDigestRoute =
+  ApiPublicHooksDailyDigestRouteImport.update({
+    id: '/api/public/hooks/daily-digest',
+    path: '/api/public/hooks/daily-digest',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicHooksNovaReservaRoute =
@@ -151,17 +156,12 @@ const ApiPublicHooksNovaReservaRoute =
     path: '/api/public/hooks/nova-reserva',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksDailyDigestRoute =
-  ApiPublicHooksDailyDigestRouteImport.update({
-    id: '/api/public/hooks/daily-digest',
-    path: '/api/public/hooks/daily-digest',
+const ApiPublicHooksReservaLembretesRoute =
+  ApiPublicHooksReservaLembretesRouteImport.update({
+    id: '/api/public/hooks/reserva-lembretes',
+    path: '/api/public/hooks/reserva-lembretes',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksAlertasRoute = ApiPublicHooksAlertasRouteImport.update({
-  id: '/api/public/hooks/alertas',
-  path: '/api/public/hooks/alertas',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -342,39 +342,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/wifi': {
-      id: '/wifi'
-      path: '/wifi'
-      fullPath: '/wifi'
-      preLoaderRoute: typeof WifiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/primeiro-acesso': {
-      id: '/primeiro-acesso'
-      path: '/primeiro-acesso'
-      fullPath: '/primeiro-acesso'
-      preLoaderRoute: typeof PrimeiroAcessoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pacote-marcas': {
-      id: '/pacote-marcas'
-      path: '/pacote-marcas'
-      fullPath: '/pacote-marcas'
-      preLoaderRoute: typeof PacoteMarcasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agendar': {
-      id: '/agendar'
-      path: '/agendar'
-      fullPath: '/agendar'
-      preLoaderRoute: typeof AgendarRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -384,95 +356,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/agendar': {
+      id: '/agendar'
+      path: '/agendar'
+      fullPath: '/agendar'
+      preLoaderRoute: typeof AgendarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cobranca/$slug': {
-      id: '/cobranca/$slug'
-      path: '/cobranca/$slug'
-      fullPath: '/cobranca/$slug'
-      preLoaderRoute: typeof CobrancaSlugRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/transacoes': {
-      id: '/_app/transacoes'
-      path: '/transacoes'
-      fullPath: '/transacoes'
-      preLoaderRoute: typeof AppTransacoesRouteImport
-      parentRoute: typeof AppRoute
+    '/pacote-marcas': {
+      id: '/pacote-marcas'
+      path: '/pacote-marcas'
+      fullPath: '/pacote-marcas'
+      preLoaderRoute: typeof PacoteMarcasRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/relatorios': {
-      id: '/_app/relatorios'
-      path: '/relatorios'
-      fullPath: '/relatorios'
-      preLoaderRoute: typeof AppRelatoriosRouteImport
-      parentRoute: typeof AppRoute
+    '/primeiro-acesso': {
+      id: '/primeiro-acesso'
+      path: '/primeiro-acesso'
+      fullPath: '/primeiro-acesso'
+      preLoaderRoute: typeof PrimeiroAcessoRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/quadro': {
-      id: '/_app/quadro'
-      path: '/quadro'
-      fullPath: '/quadro'
-      preLoaderRoute: typeof AppQuadroRouteImport
-      parentRoute: typeof AppRoute
+    '/wifi': {
+      id: '/wifi'
+      path: '/wifi'
+      fullPath: '/wifi'
+      preLoaderRoute: typeof WifiRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/perfil': {
-      id: '/_app/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof AppPerfilRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/nova': {
-      id: '/_app/nova'
-      path: '/nova'
-      fullPath: '/nova'
-      preLoaderRoute: typeof AppNovaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/fixos': {
-      id: '/_app/fixos'
-      path: '/fixos'
-      fullPath: '/fixos'
-      preLoaderRoute: typeof AppFixosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/criar': {
-      id: '/_app/criar'
-      path: '/criar'
-      fullPath: '/criar'
-      preLoaderRoute: typeof AppCriarRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/categorias': {
-      id: '/_app/categorias'
-      path: '/categorias'
-      fullPath: '/categorias'
-      preLoaderRoute: typeof AppCategoriasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/auditoria': {
-      id: '/_app/auditoria'
-      path: '/auditoria'
-      fullPath: '/auditoria'
-      preLoaderRoute: typeof AppAuditoriaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/alertas': {
-      id: '/_app/alertas'
-      path: '/alertas'
-      fullPath: '/alertas'
-      preLoaderRoute: typeof AppAlertasRouteImport
+    '/_app/acertos': {
+      id: '/_app/acertos'
+      path: '/acertos'
+      fullPath: '/acertos'
+      preLoaderRoute: typeof AppAcertosRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/agenda': {
@@ -482,25 +405,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/acertos': {
-      id: '/_app/acertos'
-      path: '/acertos'
-      fullPath: '/acertos'
-      preLoaderRoute: typeof AppAcertosRouteImport
+    '/_app/alertas': {
+      id: '/_app/alertas'
+      path: '/alertas'
+      fullPath: '/alertas'
+      preLoaderRoute: typeof AppAlertasRouteImport
       parentRoute: typeof AppRoute
     }
-    '/api/public/hooks/reserva-lembretes': {
-      id: '/api/public/hooks/reserva-lembretes'
-      path: '/api/public/hooks/reserva-lembretes'
-      fullPath: '/api/public/hooks/reserva-lembretes'
-      preLoaderRoute: typeof ApiPublicHooksReservaLembretesRouteImport
+    '/_app/auditoria': {
+      id: '/_app/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AppAuditoriaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categorias': {
+      id: '/_app/categorias'
+      path: '/categorias'
+      fullPath: '/categorias'
+      preLoaderRoute: typeof AppCategoriasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/criar': {
+      id: '/_app/criar'
+      path: '/criar'
+      fullPath: '/criar'
+      preLoaderRoute: typeof AppCriarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/fixos': {
+      id: '/_app/fixos'
+      path: '/fixos'
+      fullPath: '/fixos'
+      preLoaderRoute: typeof AppFixosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/nova': {
+      id: '/_app/nova'
+      path: '/nova'
+      fullPath: '/nova'
+      preLoaderRoute: typeof AppNovaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/perfil': {
+      id: '/_app/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/quadro': {
+      id: '/_app/quadro'
+      path: '/quadro'
+      fullPath: '/quadro'
+      preLoaderRoute: typeof AppQuadroRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/relatorios': {
+      id: '/_app/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AppRelatoriosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/transacoes': {
+      id: '/_app/transacoes'
+      path: '/transacoes'
+      fullPath: '/transacoes'
+      preLoaderRoute: typeof AppTransacoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/cobranca/$slug': {
+      id: '/cobranca/$slug'
+      path: '/cobranca/$slug'
+      fullPath: '/cobranca/$slug'
+      preLoaderRoute: typeof CobrancaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/nova-reserva': {
-      id: '/api/public/hooks/nova-reserva'
-      path: '/api/public/hooks/nova-reserva'
-      fullPath: '/api/public/hooks/nova-reserva'
-      preLoaderRoute: typeof ApiPublicHooksNovaReservaRouteImport
+    '/api/public/hooks/alertas': {
+      id: '/api/public/hooks/alertas'
+      path: '/api/public/hooks/alertas'
+      fullPath: '/api/public/hooks/alertas'
+      preLoaderRoute: typeof ApiPublicHooksAlertasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/daily-digest': {
@@ -510,11 +503,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksDailyDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/alertas': {
-      id: '/api/public/hooks/alertas'
-      path: '/api/public/hooks/alertas'
-      fullPath: '/api/public/hooks/alertas'
-      preLoaderRoute: typeof ApiPublicHooksAlertasRouteImport
+    '/api/public/hooks/nova-reserva': {
+      id: '/api/public/hooks/nova-reserva'
+      path: '/api/public/hooks/nova-reserva'
+      fullPath: '/api/public/hooks/nova-reserva'
+      preLoaderRoute: typeof ApiPublicHooksNovaReservaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/reserva-lembretes': {
+      id: '/api/public/hooks/reserva-lembretes'
+      path: '/api/public/hooks/reserva-lembretes'
+      fullPath: '/api/public/hooks/reserva-lembretes'
+      preLoaderRoute: typeof ApiPublicHooksReservaLembretesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

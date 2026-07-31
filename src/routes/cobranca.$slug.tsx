@@ -90,7 +90,6 @@ async function fetchReservaBySlug(slug: string): Promise<Reserva | null> {
 }
 
 export const Route = createFileRoute("/cobranca/$slug")({
-  ssr: false,
   head: ({ params }) => ({
     meta: [
       { title: `Proposta Mambaia · ${params.slug}` },

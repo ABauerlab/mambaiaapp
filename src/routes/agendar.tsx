@@ -69,7 +69,6 @@ function formatDuracao(min: number): string {
 }
 
 export const Route = createFileRoute("/agendar")({
-  ssr: false,
   head: () => ({
     meta: [
       { title: "Agendar estúdio Mambaia - Praça Sete, BH" },
@@ -148,18 +147,11 @@ export const Route = createFileRoute("/agendar")({
 
 function AgendarPage() {
   const navigate = useNavigate();
-  const hoje = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
-  const maxDate = useMemo(() => {
-    const d = new Date(hoje);
-    d.setFullYear(d.getFullYear() + 1);
-    return d;
-  }, [hoje]);
+  // Inicialização segura para SSR: null inicialmente, preenche no useEffect
+  const [hoje, setHoje] = useState<Date | null>(null);
+  const [dataSel, setDataSel] = useState<Date | null>(null);
+  const [agora, setAgora] = useState<Date | null>(null);
 
-  const [dataSel, setDataSel] = useState<Date>(hoje);
   const [duracao, setDuracao] = useState<number>(60);
   const [horaInicio, setHoraInicio] = useState<string | null>(null);
   const [nome, setNome] = useState("");
@@ -167,28 +159,42 @@ function AgendarPage() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [aceito, setAceito] = useState(false);
 
-  // pré-preenche nome/whatsapp quando vier do formulário da landing (?nome=&whatsapp=)
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const p = new URLSearchParams(window.location.search);
-    const n = p.get("nome");
-    const w = p.get("whatsapp");
-    if (n) setNome((prev) => prev || n);
-    if (w) setWhatsapp((prev) => prev || maskPhoneInput(w));
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    setHoje(d);
+    setDataSel(d);
+    setAgora(new Date());
+
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search);
+      const n = p.get("nome");
+      const w = p.get("whatsapp");
+      if (n) setNome((prev) => prev || n);
+      if (w) setWhatsapp((prev) => prev || maskPhoneInput(w));
+    }
   }, []);
 
-  const dataStr = ymd(dataSel);
+  const maxDate = useMemo(() => {
+    if (!hoje) return new Date();
+    const d = new Date(hoje);
+    d.setFullYear(d.getFullYear() + 1);
+    return d;
+  }, [hoje]);
+
+  const dataStr = dataSel ? ymd(dataSel) : "";
 
   const ocupados = useQuery({
     queryKey: ["ocupados", dataStr],
     queryFn: async () => {
+      if (!dataStr) return [];
       const { data, error } = await sb.rpc("get_horarios_ocupados", { _data: dataStr });
       if (error) throw error;
       return (data ?? []) as { hora_inicio: string; duracao_minutos: number }[];
     },
+    enabled: !!dataStr,
   });
 
-  // slots de 30 min entre OPEN e CLOSE - duracao
   const slots = useMemo(() => {
     const out: string[] = [];
     for (let m = OPEN_HOUR * 60; m + duracao <= CLOSE_HOUR * 60; m += 30) {
@@ -197,10 +203,8 @@ function AgendarPage() {
     return out;
   }, [duracao]);
 
-  // um slot é indisponível se o intervalo [inicio, inicio+duracao) sobrepõe
-  // qualquer reserva existente. Também bloqueia horários no passado hoje.
-  const agora = new Date();
   const isPast = (hhmm: string) => {
+    if (!dataSel || !hoje || !agora) return false;
     if (dataSel.getTime() !== hoje.getTime()) return false;
     const [h, m] = hhmm.split(":").map(Number);
     return h * 60 + m <= agora.getHours() * 60 + agora.getMinutes();
@@ -215,7 +219,6 @@ function AgendarPage() {
     });
   };
 
-  // se muda duração / data, reset hora
   const handleDataChange = (d: Date) => {
     setDataSel(d);
     setHoraInicio(null);
@@ -256,6 +259,12 @@ function AgendarPage() {
     },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
   });
+
+  if (!hoje || !dataSel) return (
+    <div className="min-h-screen bg-[var(--brand-dark)] flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-[var(--brand-lime)]" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--brand-dark)] via-[var(--brand-dark)] to-[#0f2118] text-[var(--brand-cream)]">
