@@ -75,8 +75,7 @@ export function Alertas() {
   const [obs, setObs] = useState("");
   const [data, setData] = useState(() => new Date().toISOString().slice(0, 10));
   const [hora, setHora] = useState("09:00");
-  const [recorrencia, setRecorrencia] =
-    useState<(typeof RECORRENCIAS)[number]["value"]>("semanal");
+  const [recorrencia, setRecorrencia] = useState<(typeof RECORRENCIAS)[number]["value"]>("semanal");
   const [diaUtil, setDiaUtil] = useState(true);
 
   function reset() {
@@ -151,7 +150,7 @@ export function Alertas() {
     <div className="p-4 sm:p-6 max-w-3xl mx-auto space-y-4">
       <PageHeader
         title="Alertas"
-        subtitle="Lembretes que chegam como notificação no celular dos sócios."
+        description="Lembretes que chegam como notificação no celular dos sócios."
       />
 
       <PushNotificationsCard />

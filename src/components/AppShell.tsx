@@ -14,6 +14,7 @@ import {
   User,
   Sparkles,
   CalendarDays,
+  BellRing,
 } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo-mambaia.svg";
@@ -32,7 +33,8 @@ type NavItem = {
     | "/categorias"
     | "/quadro"
     | "/criar"
-    | "/agenda";
+    | "/agenda"
+    | "/alertas";
   label: string;
   icon: typeof LayoutDashboard;
   accent?: boolean;
@@ -47,6 +49,7 @@ const nav: NavItem[] = [
   { to: "/fixos", label: "Gastos Fixos", icon: Repeat },
   { to: "/criar", label: "Criar", icon: Sparkles },
   { to: "/agenda", label: "Agenda", icon: CalendarDays },
+  { to: "/alertas", label: "Alertas", icon: BellRing },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/categorias", label: "Categorias", icon: Tag },
 ];

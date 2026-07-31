@@ -1,5 +1,5 @@
 /* Mambaia App - Service Worker para push notifications */
-self.addEventListener("install", (event) => {
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
@@ -19,8 +19,13 @@ self.addEventListener("push", (event) => {
     body: data.body || "",
     icon: "/icon-192.png",
     badge: "/icon-192.png",
+    image: data.image,
     data: { url: data.url || "/" },
     tag: data.tag,
+    renotify: !!data.tag,
+    requireInteraction: true,
+    vibrate: [200, 100, 200],
+    actions: [{ action: "abrir", title: "Abrir no app" }],
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });

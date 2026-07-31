@@ -27,6 +27,7 @@ import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppCriarRouteImport } from './routes/_app.criar'
 import { Route as AppCategoriasRouteImport } from './routes/_app.categorias'
 import { Route as AppAuditoriaRouteImport } from './routes/_app.auditoria'
+import { Route as AppAlertasRouteImport } from './routes/_app.alertas'
 import { Route as AppAgendaRouteImport } from './routes/_app.agenda'
 import { Route as AppAcertosRouteImport } from './routes/_app.acertos'
 import { Route as ApiPublicHooksReservaLembretesRouteImport } from './routes/api/public/hooks/reserva-lembretes'
@@ -123,6 +124,11 @@ const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
   path: '/auditoria',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAlertasRoute = AppAlertasRouteImport.update({
+  id: '/alertas',
+  path: '/alertas',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAgendaRoute = AppAgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/agenda': typeof AppAgendaRoute
+  '/alertas': typeof AppAlertasRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/wifi': typeof WifiRoute
   '/acertos': typeof AppAcertosRoute
   '/agenda': typeof AppAgendaRoute
+  '/alertas': typeof AppAlertasRoute
   '/auditoria': typeof AppAuditoriaRoute
   '/categorias': typeof AppCategoriasRoute
   '/criar': typeof AppCriarRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/wifi': typeof WifiRoute
   '/_app/acertos': typeof AppAcertosRoute
   '/_app/agenda': typeof AppAgendaRoute
+  '/_app/alertas': typeof AppAlertasRoute
   '/_app/auditoria': typeof AppAuditoriaRoute
   '/_app/categorias': typeof AppCategoriasRoute
   '/_app/criar': typeof AppCriarRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/wifi'
     | '/acertos'
     | '/agenda'
+    | '/alertas'
     | '/auditoria'
     | '/categorias'
     | '/criar'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/wifi'
     | '/acertos'
     | '/agenda'
+    | '/alertas'
     | '/auditoria'
     | '/categorias'
     | '/criar'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/wifi'
     | '/_app/acertos'
     | '/_app/agenda'
+    | '/_app/alertas'
     | '/_app/auditoria'
     | '/_app/categorias'
     | '/_app/criar'
@@ -456,6 +468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuditoriaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/alertas': {
+      id: '/_app/alertas'
+      path: '/alertas'
+      fullPath: '/alertas'
+      preLoaderRoute: typeof AppAlertasRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/agenda': {
       id: '/_app/agenda'
       path: '/agenda'
@@ -504,6 +523,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppAcertosRoute: typeof AppAcertosRoute
   AppAgendaRoute: typeof AppAgendaRoute
+  AppAlertasRoute: typeof AppAlertasRoute
   AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCategoriasRoute: typeof AppCategoriasRoute
   AppCriarRoute: typeof AppCriarRoute
@@ -519,6 +539,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAcertosRoute: AppAcertosRoute,
   AppAgendaRoute: AppAgendaRoute,
+  AppAlertasRoute: AppAlertasRoute,
   AppAuditoriaRoute: AppAuditoriaRoute,
   AppCategoriasRoute: AppCategoriasRoute,
   AppCriarRoute: AppCriarRoute,
