@@ -59,6 +59,48 @@ export type Database = {
           },
         ]
       }
+      alertas: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          data: string
+          hora: string
+          id: string
+          nome: string
+          observacao: string | null
+          recorrencia: string
+          somente_dia_util: boolean
+          ultimo_disparo_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          data: string
+          hora?: string
+          id?: string
+          nome: string
+          observacao?: string | null
+          recorrencia?: string
+          somente_dia_util?: boolean
+          ultimo_disparo_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          data?: string
+          hora?: string
+          id?: string
+          nome?: string
+          observacao?: string | null
+          recorrencia?: string
+          somente_dia_util?: boolean
+          ultimo_disparo_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categorias: {
         Row: {
           cor: string
@@ -208,6 +250,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notificacoes_log: {
+        Row: {
+          chave: string
+          corpo: string | null
+          created_at: string
+          id: string
+          titulo: string | null
+        }
+        Insert: {
+          chave: string
+          corpo?: string | null
+          created_at?: string
+          id?: string
+          titulo?: string | null
+        }
+        Update: {
+          chave?: string
+          corpo?: string | null
+          created_at?: string
+          id?: string
+          titulo?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
