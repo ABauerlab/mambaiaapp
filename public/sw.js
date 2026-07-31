@@ -1,4 +1,5 @@
-/* Mambaia App - Service Worker para push notifications */
+/* Mambaia App - Service Worker com diagnóstico para iOS */
+
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
@@ -7,30 +8,61 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener("push", (event) => {
-  let data = {};
+/** Envia um log para o servidor para sabermos se o push chegou ao celular */
+async function logToBackend(msg) {
   try {
-    data = event.data ? event.data.json() : {};
+    await fetch("/api/public/hooks/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chave: "push-received",
+        titulo: "Push Event",
+        msg: `${new Date().toLocaleTimeString("pt-BR")} - ${msg}`,
+      }),
+    });
   } catch (e) {
-    data = { title: "Mambaia", body: event.data ? event.data.text() : "" };
+    // ignorar falha no log
   }
+}
 
-  const title = data.title || "Mambaia App";
-  const options = {
-    body: data.body || "",
-    icon: "/icon-192.png", // Logotipo Mambaia
-    badge: "/icon-192.png", // Ícone para barra de status (Android)
-    image: data.image || null,
-    data: { url: data.url || "/" },
-    tag: data.tag || "mambaia-alerta",
-    renotify: true, // Vibra/avisa mesmo se for a mesma tag
-    requireInteraction: true,
-    silent: false, // Força som padrão do sistema
-    vibrate: [200, 100, 200, 100, 200], // Padrão de vibração
-    actions: [{ action: "abrir", title: "Abrir no app" }],
-  };
+self.addEventListener("push", (event) => {
+  // O iOS exige que o SW mostre uma notificação real para cada push recebido.
+  // Usamos event.waitUntil para garantir que o SW não seja encerrado antes disso.
+  event.waitUntil(
+    (async () => {
+      let data = {};
+      try {
+        // Tenta ler o JSON do payload
+        data = event.data ? event.data.json() : {};
+        await logToBackend(`Payload lido: ${data.title || "Sem título"}`);
+      } catch (err) {
+        // Se falhar o parsing (ex: erro de descriptografia/VAPID/encoding)
+        const rawText = event.data ? event.data.text() : "Sem dados";
+        await logToBackend(`Erro no parsing: ${err.message}. Raw: ${rawText.slice(0, 20)}`);
+        
+        // Mostra notificação de fallback para não quebrar a regra do iOS
+        return self.registration.showNotification("Mambaia (Erro)", {
+          body: "Recebi um push, mas não consegui ler os dados. Tente reinstalar o PWA.",
+          icon: "/icon-192.png",
+          tag: "push-error"
+        });
+      }
 
-  event.waitUntil(self.registration.showNotification(title, options));
+      const title = data.title || "Mambaia";
+      const options = {
+        body: data.body || "",
+        icon: "/icon-192.png",
+        badge: "/icon-192.png",
+        data: { url: data.url || "/" },
+        tag: data.tag || "mambaia-alerta",
+        renotify: true,
+        requireInteraction: true,
+        vibrate: [200, 100, 200],
+      };
+
+      return self.registration.showNotification(title, options);
+    })()
+  );
 });
 
 self.addEventListener("notificationclick", (event) => {

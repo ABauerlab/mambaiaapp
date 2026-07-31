@@ -32,6 +32,7 @@ import { Route as AppTransacoesRouteImport } from './routes/_app.transacoes'
 import { Route as CobrancaSlugRouteImport } from './routes/cobranca.$slug'
 import { Route as ApiPublicHooksAlertasRouteImport } from './routes/api/public/hooks/alertas'
 import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
+import { Route as ApiPublicHooksLogRouteImport } from './routes/api/public/hooks/log'
 import { Route as ApiPublicHooksNovaReservaRouteImport } from './routes/api/public/hooks/nova-reserva'
 import { Route as ApiPublicHooksReservaLembretesRouteImport } from './routes/api/public/hooks/reserva-lembretes'
 
@@ -150,6 +151,11 @@ const ApiPublicHooksDailyDigestRoute =
     path: '/api/public/hooks/daily-digest',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksLogRoute = ApiPublicHooksLogRouteImport.update({
+  id: '/api/public/hooks/log',
+  path: '/api/public/hooks/log',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksNovaReservaRoute =
   ApiPublicHooksNovaReservaRouteImport.update({
     id: '/api/public/hooks/nova-reserva',
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/alertas': typeof ApiPublicHooksAlertasRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/log': typeof ApiPublicHooksLogRoute
   '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
   '/api/public/hooks/reserva-lembretes': typeof ApiPublicHooksReservaLembretesRoute
 }
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/alertas': typeof ApiPublicHooksAlertasRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/log': typeof ApiPublicHooksLogRoute
   '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
   '/api/public/hooks/reserva-lembretes': typeof ApiPublicHooksReservaLembretesRoute
 }
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/cobranca/$slug': typeof CobrancaSlugRoute
   '/api/public/hooks/alertas': typeof ApiPublicHooksAlertasRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
+  '/api/public/hooks/log': typeof ApiPublicHooksLogRoute
   '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
   '/api/public/hooks/reserva-lembretes': typeof ApiPublicHooksReservaLembretesRoute
 }
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/cobranca/$slug'
     | '/api/public/hooks/alertas'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/log'
     | '/api/public/hooks/nova-reserva'
     | '/api/public/hooks/reserva-lembretes'
   fileRoutesByTo: FileRoutesByTo
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/cobranca/$slug'
     | '/api/public/hooks/alertas'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/log'
     | '/api/public/hooks/nova-reserva'
     | '/api/public/hooks/reserva-lembretes'
   id:
@@ -321,6 +332,7 @@ export interface FileRouteTypes {
     | '/cobranca/$slug'
     | '/api/public/hooks/alertas'
     | '/api/public/hooks/daily-digest'
+    | '/api/public/hooks/log'
     | '/api/public/hooks/nova-reserva'
     | '/api/public/hooks/reserva-lembretes'
   fileRoutesById: FileRoutesById
@@ -336,6 +348,7 @@ export interface RootRouteChildren {
   CobrancaSlugRoute: typeof CobrancaSlugRoute
   ApiPublicHooksAlertasRoute: typeof ApiPublicHooksAlertasRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
+  ApiPublicHooksLogRoute: typeof ApiPublicHooksLogRoute
   ApiPublicHooksNovaReservaRoute: typeof ApiPublicHooksNovaReservaRoute
   ApiPublicHooksReservaLembretesRoute: typeof ApiPublicHooksReservaLembretesRoute
 }
@@ -503,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksDailyDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/log': {
+      id: '/api/public/hooks/log'
+      path: '/api/public/hooks/log'
+      fullPath: '/api/public/hooks/log'
+      preLoaderRoute: typeof ApiPublicHooksLogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/nova-reserva': {
       id: '/api/public/hooks/nova-reserva'
       path: '/api/public/hooks/nova-reserva'
@@ -565,6 +585,7 @@ const rootRouteChildren: RootRouteChildren = {
   CobrancaSlugRoute: CobrancaSlugRoute,
   ApiPublicHooksAlertasRoute: ApiPublicHooksAlertasRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
+  ApiPublicHooksLogRoute: ApiPublicHooksLogRoute,
   ApiPublicHooksNovaReservaRoute: ApiPublicHooksNovaReservaRoute,
   ApiPublicHooksReservaLembretesRoute: ApiPublicHooksReservaLembretesRoute,
 }
