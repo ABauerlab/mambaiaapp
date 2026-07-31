@@ -25,9 +25,11 @@ export async function sendPushToAll(
   configure();
   const { data: subs, error } = await supabaseAdmin.from("push_subscriptions").select("*");
   if (error) throw error;
+  
   let sent = 0;
   let removed = 0;
   const json = JSON.stringify(payload);
+
   await Promise.all(
     (subs ?? []).map(async (s: any) => {
       try {
@@ -37,6 +39,7 @@ export async function sendPushToAll(
         );
         sent++;
       } catch (err: any) {
+        // Status 404 ou 410 significa que a inscrição expirou ou é inválida (chave VAPID mudou)
         const code = err?.statusCode;
         if (code === 404 || code === 410) {
           await supabaseAdmin.from("push_subscriptions").delete().eq("endpoint", s.endpoint);
@@ -47,5 +50,6 @@ export async function sendPushToAll(
       }
     }),
   );
+
   return { sent, removed };
 }
