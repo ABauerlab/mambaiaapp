@@ -14,19 +14,22 @@ self.addEventListener("push", (event) => {
   } catch (e) {
     data = { title: "Mambaia", body: event.data ? event.data.text() : "" };
   }
+
   const title = data.title || "Mambaia App";
   const options = {
     body: data.body || "",
-    icon: "/icon-192.png",
-    badge: "/icon-192.png",
-    image: data.image,
+    icon: "/icon-192.png", // Logotipo Mambaia
+    badge: "/icon-192.png", // Ícone para barra de status (Android)
+    image: data.image || null,
     data: { url: data.url || "/" },
-    tag: data.tag,
-    renotify: !!data.tag,
+    tag: data.tag || "mambaia-alerta",
+    renotify: true, // Vibra/avisa mesmo se for a mesma tag
     requireInteraction: true,
-    vibrate: [200, 100, 200],
+    silent: false, // Força som padrão do sistema
+    vibrate: [200, 100, 200, 100, 200], // Padrão de vibração
     actions: [{ action: "abrir", title: "Abrir no app" }],
   };
+
   event.waitUntil(self.registration.showNotification(title, options));
 });
 

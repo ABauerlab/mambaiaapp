@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { BellRing, Plus, Trash2, Send, Loader2, CalendarClock } from "lucide-react";
+import { BellRing, Plus, Trash2, Send, Loader2, CalendarClock, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -75,6 +75,7 @@ export function Alertas() {
   const [obs, setObs] = useState("");
   const [data, setData] = useState(() => new Date().toISOString().slice(0, 10));
   const [hora, setHora] = useState("09:00");
+  const [diaTodo, setDiaTodo] = useState(false);
   const [recorrencia, setRecorrencia] = useState<(typeof RECORRENCIAS)[number]["value"]>("semanal");
   const [diaUtil, setDiaUtil] = useState(true);
 
@@ -83,6 +84,7 @@ export function Alertas() {
     setObs("");
     setData(new Date().toISOString().slice(0, 10));
     setHora("09:00");
+    setDiaTodo(false);
     setRecorrencia("semanal");
     setDiaUtil(true);
     setShowForm(false);
@@ -94,7 +96,7 @@ export function Alertas() {
         nome,
         observacao: obs.trim() ? obs.trim() : null,
         data,
-        hora,
+        hora: diaTodo ? "08:00" : hora,
         recorrencia,
         somente_dia_util: diaUtil,
       });
@@ -130,17 +132,18 @@ export function Alertas() {
     onError: (e: unknown) => toast.error(friendlyErrorMessage(e)),
   });
 
-  async function testar(a: Alerta) {
+  async function testarImediato(a: Alerta) {
     try {
-      await notify({
+      const res = await notify({
         data: {
           title: `Mambaia • ${a.nome}`,
-          body: a.observacao?.trim() || `Lembrete das ${a.hora.slice(0, 5)}`,
+          body: a.observacao?.trim() || `Lembrete de teste`,
           url: "/alertas",
           tag: `teste-${a.id}`,
         },
       });
-      toast.success("Notificação de teste enviada");
+      if (res.sent > 0) toast.success(`Notificação enviada!`);
+      else toast.warning("Enviada para 0 dispositivos. Verifique sua inscrição.");
     } catch (e) {
       toast.error(friendlyErrorMessage(e));
     }
@@ -181,13 +184,24 @@ export function Alertas() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="al-hora">Hora</Label>
-              <Input
-                id="al-hora"
-                type="time"
-                value={hora}
-                onChange={(e) => setHora(e.target.value)}
-              />
+              <div className="flex items-center justify-between">
+                <Label htmlFor="al-hora">Hora</Label>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-muted-foreground">Dia todo</span>
+                  <Switch checked={diaTodo} onCheckedChange={setDiaTodo} className="scale-75 origin-right" />
+                </div>
+              </div>
+              <div className="relative">
+                <Clock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input
+                  id="al-hora"
+                  type="time"
+                  value={diaTodo ? "08:00" : hora}
+                  onChange={(e) => setHora(e.target.value)}
+                  disabled={diaTodo}
+                  className="pl-8"
+                />
+              </div>
             </div>
           </div>
           <div className="space-y-1.5">
@@ -220,13 +234,13 @@ export function Alertas() {
             <Switch checked={diaUtil} onCheckedChange={setDiaUtil} />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="al-obs">Observações da notificação</Label>
+            <Label htmlFor="al-obs">Corpo da notificação (opcional)</Label>
             <Textarea
               id="al-obs"
               value={obs}
               onChange={(e) => setObs(e.target.value)}
               rows={3}
-              placeholder="Texto que aparece no corpo da notificação"
+              placeholder="Ex: Não esquecer de levar o lixo."
             />
           </div>
           <div className="flex gap-2">
@@ -285,13 +299,15 @@ export function Alertas() {
                     <span className="text-xs text-muted-foreground">
                       {a.ativo ? "Ativo" : "Pausado"}
                     </span>
-                    <Button size="sm" variant="outline" onClick={() => void testar(a)}>
-                      <Send className="mr-1 h-3.5 w-3.5" /> Testar
+                    <Button size="sm" variant="outline" onClick={() => void testarImediato(a)}>
+                      <Send className="mr-1 h-3.5 w-3.5" /> Testar agora
                     </Button>
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => remove.mutate(a.id)}
+                      onClick={() => {
+                        if (confirm(`Excluir o alerta "${a.nome}"?`)) remove.mutate(a.id);
+                      }}
                       aria-label={`Excluir alerta ${a.nome}`}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
