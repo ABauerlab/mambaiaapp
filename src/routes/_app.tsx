@@ -4,8 +4,13 @@ import { useAuth } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { pwaLinks, pwaMeta } from "@/lib/pwa-head";
 
 export const Route = createFileRoute("/_app")({
+  head: () => ({
+    meta: [{ name: "robots", content: "noindex, nofollow" }, ...pwaMeta],
+    links: pwaLinks,
+  }),
   component: GuardedShell,
 });
 
