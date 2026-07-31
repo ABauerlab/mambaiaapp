@@ -9,9 +9,17 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import logo from "@/assets/logo-mambaia.svg";
+import { pwaLinks, pwaMeta } from "@/lib/pwa-head";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Entrar - Mambaia" }] }),
+  head: () => ({
+    meta: [
+      { title: "Entrar - Mambaia" },
+      { name: "robots", content: "noindex, nofollow" },
+      ...pwaMeta,
+    ],
+    links: pwaLinks,
+  }),
   component: LoginPage,
 });
 
