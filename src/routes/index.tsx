@@ -125,6 +125,7 @@ export const Route = createFileRoute("/")({
 type NavLink = { label: string; href: string };
 const menu: NavLink[] = [
   { label: "Estúdio", href: "#servicos" },
+  { label: "Preços", href: "#precos" },
   { label: "Galeria", href: "#galeria" },
   { label: "Sobre", href: "#sobre" },
   { label: "Contato", href: "#contato" },
@@ -843,6 +844,7 @@ function Landing() {
       <Header />
       <main style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <Hero />
+        <Precos />
         <LeadForm />
         <Servicos />
         <Medidas />
