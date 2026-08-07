@@ -311,7 +311,9 @@ function PacoteMarcasPage() {
         <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
           <div className="flex items-center gap-2 mb-3">
             <CalendarDays className="w-4 h-4 opacity-70" />
-            <div className="text-xs uppercase tracking-widest opacity-60">Escolha a data</div>
+            <h2 className="text-xs uppercase tracking-widest opacity-60 font-medium">
+              Escolha a data
+            </h2>
           </div>
           <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
             <PopoverTrigger asChild>
@@ -354,9 +356,9 @@ function PacoteMarcasPage() {
 
         <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-xs uppercase tracking-widest opacity-60">
+            <h2 className="text-xs uppercase tracking-widest opacity-60 font-medium">
               Horário de início (duração fixa de 1h)
-            </div>
+            </h2>
             {ocupados.isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin opacity-60" />}
           </div>
           <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
