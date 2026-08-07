@@ -46,7 +46,7 @@ const INSTA = "https://instagram.com/mambaiabh";
 
 const TITLE = "Mambaia | Aluguel de estúdio fotográfico no Centro de BH";
 const DESC =
-  "Alugue o estúdio da Mambaia por hora, a partir de R$ 100: ciclorama branco, luz natural, coworking e espaço para eventos na Praça Sete. Reserve online em 2 minutos, com sinal via PIX.";
+  "Alugue o estúdio Mambaia por hora na Praça Sete, BH: fotografia, coworking e eventos. A partir de R$ 100, reserva online com sinal via PIX.";
 const OG_IMAGE = `${SITE}${estudio4.url}`;
 
 export const Route = createFileRoute("/")({
@@ -227,9 +227,9 @@ function Hero() {
           Centro de Belo Horizonte · Praça Sete
         </span>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.05] animate-fade-in">
-          A criatividade
+          Estúdio fotográfico e espaço criativo
           <br />
-          <span className="font-semibold text-[#E5C72A]">encontra espaço.</span>
+          <span className="font-semibold text-[#E5C72A]">no Centro de Belo Horizonte</span>
         </h1>
         <p className="mt-6 text-base md:text-xl text-white/85 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in">
           Estúdio fotográfico, coworking e espaço para eventos no coração de Belo Horizonte. Aluguel
