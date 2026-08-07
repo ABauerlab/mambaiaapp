@@ -125,6 +125,7 @@ export const Route = createFileRoute("/")({
 type NavLink = { label: string; href: string };
 const menu: NavLink[] = [
   { label: "Estúdio", href: "#servicos" },
+  { label: "Preços", href: "#precos" },
   { label: "Galeria", href: "#galeria" },
   { label: "Sobre", href: "#sobre" },
   { label: "Contato", href: "#contato" },
@@ -305,6 +306,119 @@ const servicos: Servico[] = [
     cta: "Quero o pacote",
   },
 ];
+
+const TABELA_HORAS: { h: string; v: string }[] = [
+  { h: "30 min", v: "R$ 50" },
+  { h: "1 hora", v: "R$ 100" },
+  { h: "1h30", v: "R$ 150" },
+  { h: "2 horas", v: "R$ 180" },
+  { h: "2h30", v: "R$ 230" },
+  { h: "3 horas", v: "R$ 250" },
+  { h: "3h30", v: "R$ 280" },
+  { h: "4 horas", v: "R$ 300" },
+];
+
+function Precos() {
+  return (
+    <section id="precos" className="py-20 md:py-28 bg-[#F5F5F5]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="max-w-2xl mb-10 md:mb-14">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            Preços sem enrolação
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+            Quanto custa alugar o estúdio.
+          </h2>
+          <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
+            Valor fechado por tempo de uso, sem taxa escondida. Você confirma a data pagando{" "}
+            <strong>50% de sinal via PIX</strong> e acerta o restante no dia.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 items-start">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-black/5 p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
+                <Clock className="w-5 h-5" />
+              </span>
+              <h3 className="text-xl font-medium text-[#0D2E24]">Locação por hora</h3>
+            </div>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
+              {TABELA_HORAS.map((row) => (
+                <div
+                  key={row.h}
+                  className="flex items-baseline justify-between gap-4 py-3 border-b border-black/5"
+                >
+                  <dt className="text-sm md:text-base text-[#1A1A1A]/75">{row.h}</dt>
+                  <dd className="text-base md:text-lg font-semibold tabular-nums text-[#0D2E24]">
+                    {row.v}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
+              Inclui ciclorama branco, iluminação profissional, mesa still, Wi-Fi e café. Precisa de
+              mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
+            </p>
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <Link
+                to="/agendar"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-6 py-3 text-sm font-semibold hover:bg-[#123f31] transition"
+              >
+                Ver horários livres <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href={WA_LINK}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0D2E24]/20 px-6 py-3 text-sm font-semibold text-[#0D2E24] hover:bg-white transition"
+              >
+                <MessageCircle className="w-4 h-4" /> Tirar dúvida no WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <div className="bg-[#0D2E24] text-white rounded-2xl p-6 md:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#E5C72A] text-[#0D2E24]">
+                <Building2 className="w-5 h-5" />
+              </span>
+              <h3 className="text-xl font-medium">Pacote marcas e brechó</h3>
+            </div>
+            <div className="mt-4 flex items-baseline gap-2">
+              <span className="text-4xl font-semibold tabular-nums">R$ 350</span>
+              <span className="text-white/70 text-sm">por marca</span>
+            </div>
+            <ul className="mt-5 space-y-3 text-sm text-white/85">
+              {[
+                "1 hora de estúdio para cada marca",
+                "Produção pensada para catálogo e coleção nova",
+                "Ideal para brechó, slow fashion e lojinha autoral",
+                "Também confirma com 50% de sinal via PIX",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <Check className="w-4 h-4 mt-0.5 text-[#E5C72A] shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              to="/pacote-marcas"
+              className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition"
+            >
+              Quero o pacote <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        <p className="mt-6 text-xs text-[#1A1A1A]/55">
+          Valores válidos para o estúdio na Praça Sete, Belo Horizonte. Podem mudar sem aviso
+          enquanto seguimos com a reforma do espaço.
+        </p>
+      </div>
+    </section>
+  );
+}
 
 function Servicos() {
   return (
@@ -843,6 +957,7 @@ function Landing() {
       <Header />
       <main style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <Hero />
+        <Precos />
         <LeadForm />
         <Servicos />
         <Medidas />
