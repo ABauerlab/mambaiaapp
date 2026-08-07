@@ -11,9 +11,9 @@ import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
 
-const TITLE = "Mambaia | Estúdio criativo em Belo Horizonte";
+const TITLE = "Mambaia Estúdio | Aluguel por hora em BH desde R$ 100";
 const DESC =
-  "Estúdio fotográfico, coworking e espaço para eventos no Centro de BH. Reserve por hora com sinal via PIX. R. Rio de Janeiro, 462 - Sala 2217.";
+  "Alugue o estúdio Mambaia na Praça Sete, Belo Horizonte: fotografia, coworking e eventos. A partir de R$ 100 a hora, com 50% de sinal via PIX.";
 const OG_IMAGE =
   "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg";
 
