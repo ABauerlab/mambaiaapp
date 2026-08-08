@@ -310,7 +310,7 @@ function CobrancaPage() {
 
           <div className="mt-5 rounded-xl border border-[var(--brand-dark)]/15 bg-white p-4">
             <div className="text-[11px] uppercase tracking-widest opacity-60 mb-1">
-              Chave PIX (CNPJ)
+              Chave PIX (e-mail)
             </div>
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <code className="text-base md:text-lg font-mono font-semibold break-all">
