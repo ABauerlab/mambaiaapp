@@ -233,6 +233,12 @@ function AgendarPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [aceito, setAceito] = useState(false);
+  const [comProducao, setComProducao] = useState(false);
+  const [pacoteId, setPacoteId] = useState<Pacote["id"] | null>(null);
+  const [empreendimento, setEmpreendimento] = useState("");
+
+  const pacote = comProducao ? (PACOTES.find((p) => p.id === pacoteId) ?? null) : null;
+  const duracaoEfetiva = pacote ? pacote.duracao : duracao;
 
   useEffect(() => {
     const d = new Date();
@@ -272,11 +278,11 @@ function AgendarPage() {
 
   const slots = useMemo(() => {
     const out: string[] = [];
-    for (let m = OPEN_HOUR * 60; m + duracao <= CLOSE_HOUR * 60; m += 30) {
+    for (let m = OPEN_HOUR * 60; m + duracaoEfetiva <= CLOSE_HOUR * 60; m += 30) {
       out.push(minToTime(m));
     }
     return out;
-  }, [duracao]);
+  }, [duracaoEfetiva]);
 
   const isPast = (hhmm: string) => {
     if (!dataSel || !hoje || !agora) return false;
@@ -286,7 +292,7 @@ function AgendarPage() {
   };
   const conflito = (hhmm: string) => {
     const ini = timeToMin(hhmm);
-    const fim = ini + duracao;
+    const fim = ini + duracaoEfetiva;
     return (ocupados.data ?? []).some((r) => {
       const rIni = timeToMin(r.hora_inicio.slice(0, 5));
       const rFim = rIni + r.duracao_minutos;
@@ -303,7 +309,7 @@ function AgendarPage() {
     setHoraInicio(null);
   };
 
-  const preco = PRECOS[duracao] ?? 0;
+  const preco = pacote ? pacote.preco : (PRECOS[duracao] ?? 0);
   const sinal = Math.round(preco * 0.5 * 100) / 100;
 
   const criar = useMutation({
@@ -312,6 +318,25 @@ function AgendarPage() {
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
       if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
       if (!aceito) throw new Error("Leia e aceite o termo de reserva para continuar");
+      if (comProducao && !pacote) throw new Error("Escolha um pacote de produção");
+      if (pacote) {
+        const { data, error } = await sb.rpc("criar_reserva_producao", {
+          _data: dataStr,
+          _hora_inicio: horaInicio + ":00",
+          _pacote: pacote.id,
+          _cliente_nome: nome.trim(),
+          _cliente_whatsapp: onlyDigits(whatsapp),
+          _empreendimento: empreendimento.trim() || null,
+        });
+        if (error) throw error;
+        const row = Array.isArray(data) ? data[0] : data;
+        return row as {
+          reserva_id: string;
+          cobranca_slug: string;
+          valor_total: number;
+          valor_sinal: number;
+        };
+      }
       const { data, error } = await sb.rpc("criar_reserva", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
