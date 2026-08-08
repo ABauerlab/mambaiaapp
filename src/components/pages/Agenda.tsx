@@ -609,7 +609,8 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
           </Button>
           {r.status !== "paga" && (
             <Button size="sm" variant="ghost" onClick={() => setPayOpen(true)}>
-              <CheckCircle2 className="w-3 h-3" /> Marcar pago
+              <CheckCircle2 className="w-3 h-3" />{" "}
+              {cobrandoRestante ? "Marcar restante pago" : "Marcar sinal pago"}
             </Button>
           )}
           {r.paid_at && (
@@ -641,13 +642,24 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
       <Dialog open={payOpen} onOpenChange={setPayOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Registrar pagamento</DialogTitle>
+            <DialogTitle>
+              {cobrandoRestante ? "Registrar pagamento do restante" : "Registrar pagamento"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <div className="text-sm text-muted-foreground">
               Reserva de <strong>{r.cliente_nome}</strong> - {dataFmt} às{" "}
               {r.hora_inicio.slice(0, 5)}. Total {formatBRL(r.valor_total)}.
             </div>
+            {cobrandoRestante ? (
+              <div className="rounded-lg border border-primary bg-primary/10 p-3 text-sm">
+                <div className="font-semibold">Restante a receber</div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  Sinal já recebido: {formatBRL(r.valor_pago ?? 0)} · Falta{" "}
+                  {formatBRL(restante)}
+                </div>
+              </div>
+            ) : (
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -676,8 +688,9 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
                 </div>
               </button>
             </div>
+            )}
             <div>
-              <Label>Valor recebido (R$)</Label>
+              <Label>{cobrandoRestante ? "Valor recebido agora (R$)" : "Valor recebido (R$)"}</Label>
               <Input
                 value={valorPag}
                 onChange={(e) => setValorPag(e.target.value)}
