@@ -8,6 +8,7 @@ import {
   MessageCircle,
   CheckCircle2,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,80 @@ const PRECOS: Record<number, number> = {
   240: 300,
 };
 const DURACOES = [30, 60, 90, 120, 150, 180, 210, 240];
+
+type Pacote = {
+  id: "marcas" | "express" | "lookbook" | "campanha" | "creator";
+  nome: string;
+  preco: number;
+  precoLabel: string;
+  duracao: number;
+  bullets: string[];
+  externo?: string;
+};
+
+const PACOTES: Pacote[] = [
+  {
+    id: "marcas",
+    nome: "Marcas & Brechós",
+    preco: 350,
+    precoLabel: "R$ 350 / marca",
+    duracao: 60,
+    bullets: [
+      "1h de estúdio + captação de catálogo",
+      "Até 10 peças (3 a 5 ângulos) + making-of",
+      "Entrega: 3 a 5 dias úteis",
+    ],
+    externo: "/pacote-marcas",
+  },
+  {
+    id: "express",
+    nome: "Autônomo / Express",
+    preco: 880,
+    precoLabel: "R$ 880",
+    duracao: 120,
+    bullets: [
+      "2h de estúdio + captação profissional",
+      "15 fotos tratadas + 2 Reels editados (até 60s)",
+      "Entrega: 5 dias úteis",
+    ],
+  },
+  {
+    id: "lookbook",
+    nome: "Coleção / Lookbook",
+    preco: 1500,
+    precoLabel: "R$ 1.500",
+    duracao: 180,
+    bullets: [
+      "3h de estúdio + captação completa",
+      "Até 30 peças · 25 fotos + 4 Reels editados",
+      "Entrega: 5 dias úteis",
+    ],
+  },
+  {
+    id: "campanha",
+    nome: "Campanha Full",
+    preco: 2100,
+    precoLabel: "R$ 2.100",
+    duracao: 240,
+    bullets: [
+      "4h de estúdio + captação dedicada",
+      "Lote completo · 40 fotos + 6 Reels editados",
+      "Entrega: até 7 dias úteis",
+    ],
+  },
+  {
+    id: "creator",
+    nome: "Plano Creator (mensal)",
+    preco: 1580,
+    precoLabel: "R$ 1.580 /mês",
+    duracao: 120,
+    bullets: [
+      "2h de estúdio por mês em sessão única",
+      "20 fotos tratadas + 8 Reels editados por mês",
+      "Entrega: 5 dias úteis · contrato mínimo de 3 meses",
+    ],
+  },
+];
 
 function ymd(d: Date): string {
   const y = d.getFullYear();
