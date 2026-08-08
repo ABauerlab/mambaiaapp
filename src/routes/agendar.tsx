@@ -491,7 +491,90 @@ function AgendarPage() {
           </Popover>
         </section>
 
+        {/* Produção inclusa */}
+        <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
+          <label className="flex items-start gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={comProducao}
+              onChange={(e) => {
+                setComProducao(e.target.checked);
+                setPacoteId(null);
+                setHoraInicio(null);
+              }}
+              className="mt-1 w-4 h-4 accent-[var(--brand-lime)] shrink-0"
+            />
+            <span>
+              <span className="font-semibold text-sm flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[var(--brand-lime)]" /> Quero o estúdio com
+                produção inclusa
+              </span>
+              <span className="block text-xs opacity-70 mt-0.5">
+                Pacotes completos de audiovisual: captação, fotos tratadas e Reels editados.
+              </span>
+            </span>
+          </label>
+
+          {comProducao && (
+            <div className="mt-4 space-y-2">
+              {PACOTES.map((p) => {
+                const active = pacoteId === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      if (p.externo) {
+                        window.location.href = p.externo;
+                        return;
+                      }
+                      setPacoteId(p.id);
+                      setHoraInicio(null);
+                    }}
+                    className={cn(
+                      "w-full text-left rounded-xl border p-4 transition",
+                      active
+                        ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/10"
+                        : "border-white/10 bg-white/5 hover:bg-white/10",
+                    )}
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="font-semibold text-sm">{p.nome}</span>
+                      <span className="text-sm font-bold tabular-nums text-[var(--brand-lime)]">
+                        {p.precoLabel}
+                      </span>
+                    </div>
+                    <ul className="mt-1.5 space-y-0.5 text-xs opacity-80 list-disc pl-4">
+                      {p.bullets.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
+                    {p.externo && (
+                      <div className="text-[11px] mt-1.5 underline opacity-70">
+                        Reservar na página do Pacote Marcas
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+              <p className="text-xs opacity-70 pt-1">
+                Regra de troca: <strong>10 fotos = 1 Reels editado</strong>.
+              </p>
+              <div className="pt-2">
+                <Label className="text-xs opacity-70">Marca ou projeto (opcional)</Label>
+                <Input
+                  value={empreendimento}
+                  onChange={(e) => setEmpreendimento(e.target.value)}
+                  placeholder="Nome da marca, loja ou projeto"
+                  className="bg-white/5 border-white/10 text-[var(--brand-cream)] placeholder:text-[var(--brand-cream)]/40"
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* Duração */}
+        {!comProducao && (
         <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
           <div className="flex items-center gap-2 mb-3">
             <Clock className="w-4 h-4 opacity-70" />
@@ -525,6 +608,7 @@ function AgendarPage() {
             })}
           </div>
         </section>
+        )}
 
         {/* Horários */}
         <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
