@@ -344,8 +344,15 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
 
   const [payOpen, setPayOpen] = useState(false);
   const [pdfOpen, setPdfOpen] = useState(false);
-  const [tipoPag, setTipoPag] = useState<"integral" | "parcial">("parcial");
-  const [valorPag, setValorPag] = useState<string>(String(r.valor_sinal.toFixed(2)));
+  const jaPagou = r.paid_at != null && (r.valor_pago ?? 0) > 0;
+  const restante = Math.max(0, r.valor_total - (r.valor_pago ?? 0));
+  const cobrandoRestante = jaPagou && r.status !== "paga" && restante > 0;
+  const [tipoPag, setTipoPag] = useState<"integral" | "parcial">(
+    cobrandoRestante ? "integral" : "parcial",
+  );
+  const [valorPag, setValorPag] = useState<string>(
+    (cobrandoRestante ? restante : r.valor_sinal).toFixed(2),
+  );
   const [editOpen, setEditOpen] = useState(false);
   const [edData, setEdData] = useState(r.data);
   const [edHora, setEdHora] = useState(r.hora_inicio.slice(0, 5));
@@ -387,12 +394,13 @@ function ReservaCard({ r, onChange }: { r: Reserva; onChange: () => void }) {
     mutationFn: async () => {
       const v = parseFloat((valorPag || "").replace(",", "."));
       if (!Number.isFinite(v) || v <= 0) throw new Error("Informe o valor recebido");
-      const isIntegral = tipoPag === "integral";
+      const acumulado = cobrandoRestante ? (r.valor_pago ?? 0) + v : v;
+      const isIntegral = cobrandoRestante ? true : tipoPag === "integral";
       const patch: Record<string, unknown> = {
         status: isIntegral ? "paga" : "confirmada",
         paid_at: new Date().toISOString(),
-        valor_pago: v,
-        tipo_pagamento: tipoPag,
+        valor_pago: acumulado,
+        tipo_pagamento: isIntegral ? "integral" : "parcial",
       };
       const { error } = await sb.from("reservas").update(patch).eq("id", r.id);
       if (error) throw error;
