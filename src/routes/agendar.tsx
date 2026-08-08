@@ -685,9 +685,10 @@ function AgendarPage() {
                 {horaInicio && (
                   <>
                     {" "}
-                    · <strong>{horaInicio}</strong> · {formatDuracao(duracao)}
+                    · <strong>{horaInicio}</strong> · {formatDuracao(duracaoEfetiva)}
                   </>
                 )}
+                {pacote && <div className="text-xs opacity-70 mt-0.5">{pacote.nome}</div>}
               </div>
               <div className="text-right">
                 <div className="text-[11px] opacity-60">Total</div>
@@ -743,7 +744,7 @@ function AgendarPage() {
 
           <Button
             onClick={() => criar.mutate()}
-            disabled={criar.isPending || !horaInicio || !aceito}
+            disabled={criar.isPending || !horaInicio || !aceito || (comProducao && !pacote)}
             className="w-full h-12 text-base bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90"
           >
             {criar.isPending ? (
