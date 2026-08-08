@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 
-const PIX_PADRAO = "57500686000105";
+const PIX_PADRAO = "contato.mambaia@gmail.com";
 const PIX_NOME_PADRAO = "LAURA OTTONI NEGRÃO";
 
 type Item = { nome: string; valor: string };

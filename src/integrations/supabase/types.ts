@@ -619,6 +619,22 @@ export type Database = {
           valor_total: number
         }[]
       }
+      criar_reserva_producao: {
+        Args: {
+          _cliente_nome: string
+          _cliente_whatsapp: string
+          _data: string
+          _empreendimento?: string
+          _hora_inicio: string
+          _pacote: string
+        }
+        Returns: {
+          cobranca_slug: string
+          reserva_id: string
+          valor_sinal: number
+          valor_total: number
+        }[]
+      }
       get_cobranca_by_slug: {
         Args: { _slug: string }
         Returns: {

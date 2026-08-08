@@ -8,6 +8,7 @@ import {
   MessageCircle,
   CheckCircle2,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,80 @@ const PRECOS: Record<number, number> = {
   240: 300,
 };
 const DURACOES = [30, 60, 90, 120, 150, 180, 210, 240];
+
+type Pacote = {
+  id: "marcas" | "express" | "lookbook" | "campanha" | "creator";
+  nome: string;
+  preco: number;
+  precoLabel: string;
+  duracao: number;
+  bullets: string[];
+  externo?: string;
+};
+
+const PACOTES: Pacote[] = [
+  {
+    id: "marcas",
+    nome: "Marcas & Brechós",
+    preco: 350,
+    precoLabel: "R$ 350 / marca",
+    duracao: 60,
+    bullets: [
+      "1h de estúdio + captação de catálogo",
+      "Até 10 peças (3 a 5 ângulos) + making-of",
+      "Entrega: 3 a 5 dias úteis",
+    ],
+    externo: "/pacote-marcas",
+  },
+  {
+    id: "express",
+    nome: "Autônomo / Express",
+    preco: 880,
+    precoLabel: "R$ 880",
+    duracao: 120,
+    bullets: [
+      "2h de estúdio + captação profissional",
+      "15 fotos tratadas + 2 Reels editados (até 60s)",
+      "Entrega: 5 dias úteis",
+    ],
+  },
+  {
+    id: "lookbook",
+    nome: "Coleção / Lookbook",
+    preco: 1500,
+    precoLabel: "R$ 1.500",
+    duracao: 180,
+    bullets: [
+      "3h de estúdio + captação completa",
+      "Até 30 peças · 25 fotos + 4 Reels editados",
+      "Entrega: 5 dias úteis",
+    ],
+  },
+  {
+    id: "campanha",
+    nome: "Campanha Full",
+    preco: 2100,
+    precoLabel: "R$ 2.100",
+    duracao: 240,
+    bullets: [
+      "4h de estúdio + captação dedicada",
+      "Lote completo · 40 fotos + 6 Reels editados",
+      "Entrega: até 7 dias úteis",
+    ],
+  },
+  {
+    id: "creator",
+    nome: "Plano Creator (mensal)",
+    preco: 1580,
+    precoLabel: "R$ 1.580 /mês",
+    duracao: 120,
+    bullets: [
+      "2h de estúdio por mês em sessão única",
+      "20 fotos tratadas + 8 Reels editados por mês",
+      "Entrega: 5 dias úteis · contrato mínimo de 3 meses",
+    ],
+  },
+];
 
 function ymd(d: Date): string {
   const y = d.getFullYear();
@@ -158,6 +233,12 @@ function AgendarPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [aceito, setAceito] = useState(false);
+  const [comProducao, setComProducao] = useState(false);
+  const [pacoteId, setPacoteId] = useState<Pacote["id"] | null>(null);
+  const [empreendimento, setEmpreendimento] = useState("");
+
+  const pacote = comProducao ? (PACOTES.find((p) => p.id === pacoteId) ?? null) : null;
+  const duracaoEfetiva = pacote ? pacote.duracao : duracao;
 
   useEffect(() => {
     const d = new Date();
@@ -197,11 +278,11 @@ function AgendarPage() {
 
   const slots = useMemo(() => {
     const out: string[] = [];
-    for (let m = OPEN_HOUR * 60; m + duracao <= CLOSE_HOUR * 60; m += 30) {
+    for (let m = OPEN_HOUR * 60; m + duracaoEfetiva <= CLOSE_HOUR * 60; m += 30) {
       out.push(minToTime(m));
     }
     return out;
-  }, [duracao]);
+  }, [duracaoEfetiva]);
 
   const isPast = (hhmm: string) => {
     if (!dataSel || !hoje || !agora) return false;
@@ -211,7 +292,7 @@ function AgendarPage() {
   };
   const conflito = (hhmm: string) => {
     const ini = timeToMin(hhmm);
-    const fim = ini + duracao;
+    const fim = ini + duracaoEfetiva;
     return (ocupados.data ?? []).some((r) => {
       const rIni = timeToMin(r.hora_inicio.slice(0, 5));
       const rFim = rIni + r.duracao_minutos;
@@ -228,7 +309,7 @@ function AgendarPage() {
     setHoraInicio(null);
   };
 
-  const preco = PRECOS[duracao] ?? 0;
+  const preco = pacote ? pacote.preco : (PRECOS[duracao] ?? 0);
   const sinal = Math.round(preco * 0.5 * 100) / 100;
 
   const criar = useMutation({
@@ -237,6 +318,25 @@ function AgendarPage() {
       if (nome.trim().length < 2) throw new Error("Informe seu nome");
       if (!isValidPhoneBR(whatsapp)) throw new Error("Informe um WhatsApp válido, com DDD");
       if (!aceito) throw new Error("Leia e aceite o termo de reserva para continuar");
+      if (comProducao && !pacote) throw new Error("Escolha um pacote de produção");
+      if (pacote) {
+        const { data, error } = await sb.rpc("criar_reserva_producao", {
+          _data: dataStr,
+          _hora_inicio: horaInicio + ":00",
+          _pacote: pacote.id,
+          _cliente_nome: nome.trim(),
+          _cliente_whatsapp: onlyDigits(whatsapp),
+          _empreendimento: empreendimento.trim() || null,
+        });
+        if (error) throw error;
+        const row = Array.isArray(data) ? data[0] : data;
+        return row as {
+          reserva_id: string;
+          cobranca_slug: string;
+          valor_total: number;
+          valor_sinal: number;
+        };
+      }
       const { data, error } = await sb.rpc("criar_reserva", {
         _data: dataStr,
         _hora_inicio: horaInicio + ":00",
@@ -391,7 +491,90 @@ function AgendarPage() {
           </Popover>
         </section>
 
+        {/* Produção inclusa */}
+        <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
+          <label className="flex items-start gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={comProducao}
+              onChange={(e) => {
+                setComProducao(e.target.checked);
+                setPacoteId(null);
+                setHoraInicio(null);
+              }}
+              className="mt-1 w-4 h-4 accent-[var(--brand-lime)] shrink-0"
+            />
+            <span>
+              <span className="font-semibold text-sm flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[var(--brand-lime)]" /> Quero o estúdio com
+                produção inclusa
+              </span>
+              <span className="block text-xs opacity-70 mt-0.5">
+                Pacotes completos de audiovisual: captação, fotos tratadas e Reels editados.
+              </span>
+            </span>
+          </label>
+
+          {comProducao && (
+            <div className="mt-4 space-y-2">
+              {PACOTES.map((p) => {
+                const active = pacoteId === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      if (p.externo) {
+                        window.location.href = p.externo;
+                        return;
+                      }
+                      setPacoteId(p.id);
+                      setHoraInicio(null);
+                    }}
+                    className={cn(
+                      "w-full text-left rounded-xl border p-4 transition",
+                      active
+                        ? "border-[var(--brand-lime)] bg-[var(--brand-lime)]/10"
+                        : "border-white/10 bg-white/5 hover:bg-white/10",
+                    )}
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="font-semibold text-sm">{p.nome}</span>
+                      <span className="text-sm font-bold tabular-nums text-[var(--brand-lime)]">
+                        {p.precoLabel}
+                      </span>
+                    </div>
+                    <ul className="mt-1.5 space-y-0.5 text-xs opacity-80 list-disc pl-4">
+                      {p.bullets.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
+                    {p.externo && (
+                      <div className="text-[11px] mt-1.5 underline opacity-70">
+                        Reservar na página do Pacote Marcas
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+              <p className="text-xs opacity-70 pt-1">
+                Regra de troca: <strong>10 fotos = 1 Reels editado</strong>.
+              </p>
+              <div className="pt-2">
+                <Label className="text-xs opacity-70">Marca ou projeto (opcional)</Label>
+                <Input
+                  value={empreendimento}
+                  onChange={(e) => setEmpreendimento(e.target.value)}
+                  placeholder="Nome da marca, loja ou projeto"
+                  className="bg-white/5 border-white/10 text-[var(--brand-cream)] placeholder:text-[var(--brand-cream)]/40"
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* Duração */}
+        {!comProducao && (
         <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
           <div className="flex items-center gap-2 mb-3">
             <Clock className="w-4 h-4 opacity-70" />
@@ -425,6 +608,7 @@ function AgendarPage() {
             })}
           </div>
         </section>
+        )}
 
         {/* Horários */}
         <section className="rounded-2xl bg-white/5 border border-white/10 p-5">
@@ -501,9 +685,10 @@ function AgendarPage() {
                 {horaInicio && (
                   <>
                     {" "}
-                    · <strong>{horaInicio}</strong> · {formatDuracao(duracao)}
+                    · <strong>{horaInicio}</strong> · {formatDuracao(duracaoEfetiva)}
                   </>
                 )}
+                {pacote && <div className="text-xs opacity-70 mt-0.5">{pacote.nome}</div>}
               </div>
               <div className="text-right">
                 <div className="text-[11px] opacity-60">Total</div>
@@ -559,7 +744,7 @@ function AgendarPage() {
 
           <Button
             onClick={() => criar.mutate()}
-            disabled={criar.isPending || !horaInicio || !aceito}
+            disabled={criar.isPending || !horaInicio || !aceito || (comProducao && !pacote)}
             className="w-full h-12 text-base bg-[var(--brand-dark)] text-[var(--brand-cream)] hover:bg-[var(--brand-dark)]/90"
           >
             {criar.isPending ? (
