@@ -318,6 +318,55 @@ const TABELA_HORAS: { h: string; v: string }[] = [
   { h: "4 horas", v: "R$ 300" },
 ];
 
+type PacoteAV = { nome: string; preco: string; itens: string[] };
+const AUDIOVISUAL: PacoteAV[] = [
+  {
+    nome: "Marcas & Brechós",
+    preco: "R$ 350 / marca",
+    itens: [
+      "1h de estúdio + captação de catálogo",
+      "Até 10 peças (3 a 5 ângulos) + making-of",
+      "Entrega: 3 a 5 dias úteis",
+    ],
+  },
+  {
+    nome: "Autônomo / Express",
+    preco: "R$ 880",
+    itens: [
+      "2h de estúdio + captação profissional",
+      "15 fotos tratadas + 2 reels editados (até 60s)",
+      "Entrega: 5 dias úteis",
+    ],
+  },
+  {
+    nome: "Coleção / Lookbook",
+    preco: "R$ 1.500",
+    itens: [
+      "3h de estúdio + captação completa",
+      "Até 30 peças · 25 fotos + 4 reels editados",
+      "Entrega: 5 dias úteis",
+    ],
+  },
+  {
+    nome: "Campanha Full",
+    preco: "R$ 2.100",
+    itens: [
+      "4h de estúdio + captação dedicada",
+      "Lote completo · 40 fotos + 6 reels editados",
+      "Entrega: até 7 dias úteis",
+    ],
+  },
+  {
+    nome: "Plano Creator (mensal)",
+    preco: "R$ 1.580 / mês",
+    itens: [
+      "2h de estúdio/mês em sessão única",
+      "20 fotos tratadas + 8 reels editados por mês",
+      "Entrega: 5 dias úteis · contrato mínimo de 3 meses",
+    ],
+  },
+];
+
 function Precos() {
   return (
     <section id="precos" className="py-20 md:py-28 bg-[#F5F5F5]">
