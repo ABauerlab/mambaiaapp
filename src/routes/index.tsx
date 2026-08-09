@@ -848,7 +848,6 @@ function Footer() {
             </span>
           </div>
         </div>
-        </div>
       </div>
     </footer>
   );
