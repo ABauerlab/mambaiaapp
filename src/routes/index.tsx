@@ -494,14 +494,12 @@ function Precos() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={WA_LINK}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/agendar"
                   className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#123f31] transition"
                 >
-                  <MessageCircle className="w-4 h-4" /> Solicitar pelo WhatsApp
-                </a>
+                  Agendar produção <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             ))}
           </div>
