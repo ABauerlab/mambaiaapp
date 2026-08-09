@@ -846,10 +846,8 @@ function Footer() {
                 BauerLab
               </a>
             </span>
-            <Link to="/login" className="hover:text-white/80">
-              Acesso interno
-            </Link>
           </div>
+        </div>
         </div>
       </div>
     </footer>
