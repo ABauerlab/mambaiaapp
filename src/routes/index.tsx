@@ -411,6 +411,57 @@ function Precos() {
           </div>
         </div>
 
+        <div className="mt-12 md:mt-16">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
+              <Camera className="w-5 h-5" />
+            </span>
+            <div>
+              <h3 className="text-xl font-medium text-[#0D2E24]">
+                Mambaia Estúdio · Pacotes completos de audiovisual
+              </h3>
+              <p className="text-sm text-[#1A1A1A]/60 mt-0.5">
+                Alugue o estúdio e leve a produção inclusa: captação, edição e conteúdo pronto.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {AUDIOVISUAL.map((p) => (
+              <div
+                key={p.nome}
+                className="bg-white rounded-2xl border border-black/5 p-6 flex flex-col shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+              >
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="font-semibold text-[#0D2E24]">{p.nome}</h4>
+                  <span className="text-lg font-semibold tabular-nums text-[#0D2E24] whitespace-nowrap">
+                    {p.preco}
+                  </span>
+                </div>
+                <ul className="mt-4 space-y-2 text-sm text-[#1A1A1A]/75 flex-1">
+                  {p.itens.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <Check className="w-4 h-4 mt-0.5 text-[#5F6B2D] shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={WA_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#123f31] transition"
+                >
+                  <MessageCircle className="w-4 h-4" /> Solicitar pelo WhatsApp
+                </a>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-sm text-[#1A1A1A]/60">
+            <strong className="text-[#0D2E24]">Regra de troca:</strong> 10 fotos = 1 Reel editado.
+            Precisa de uma proposta personalizada? Fale com a gente no WhatsApp.
+          </p>
+        </div>
+
         <p className="mt-6 text-xs text-[#1A1A1A]/55">
           Valores válidos para o estúdio na Praça Sete, Belo Horizonte. Podem mudar sem aviso
           enquanto seguimos com a reforma do espaço.
