@@ -35,10 +35,18 @@ function fmtDataBR(r: ReservaRow) {
   });
 }
 
+/** Bloqueia chamadas externas: apenas o agendador interno conhece o segredo. */
+function autorizado(request: Request) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
+  return request.headers.get("x-cron-secret") === secret;
+}
+
 export const Route = createFileRoute("/api/public/hooks/reserva-lembretes")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
         const now = new Date();
         // Fetch reservas nos proximos 26h (cobre janelas 24h e 1h com folga)
         const inicio = now.toISOString().slice(0, 10);

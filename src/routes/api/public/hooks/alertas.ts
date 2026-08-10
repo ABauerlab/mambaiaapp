@@ -74,10 +74,18 @@ async function registrar(chave: string, titulo: string, corpo: string) {
   await supabaseAdmin.from("notificacoes_log").insert({ chave, titulo, corpo });
 }
 
+/** Bloqueia chamadas externas: apenas o agendador interno conhece o segredo. */
+function autorizado(request: Request) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
+  return request.headers.get("x-cron-secret") === secret;
+}
+
 export const Route = createFileRoute("/api/public/hooks/alertas")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
         const now = agoraBR();
         const hoje = ymd(now);
         const minutosAgora = now.getUTCHours() * 60 + now.getUTCMinutes();
