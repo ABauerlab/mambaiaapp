@@ -91,5 +91,11 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^7.0.0",
     "@dyad-sh/react-vite-component-tagger": "^0.9.0"
+  },
+  "overrides": {
+    "seroval": "^1.6.2"
+  },
+  "resolutions": {
+    "seroval": "^1.6.2"
   }
 }
