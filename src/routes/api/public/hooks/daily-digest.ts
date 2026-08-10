@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/public/hooks/daily-digest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!autorizado(request)) return new Response(\"Unauthorized\", { status: 401 });
+        if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
         const today = new Date().toISOString().slice(0, 10);
         const dia = new Date().getDate();
 

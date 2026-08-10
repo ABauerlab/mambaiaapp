@@ -46,7 +46,7 @@ export const Route = createFileRoute("/api/public/hooks/reserva-lembretes")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!autorizado(request)) return new Response(\"Unauthorized\", { status: 401 });
+        if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
         const now = new Date();
         // Fetch reservas nos proximos 26h (cobre janelas 24h e 1h com folga)
         const inicio = now.toISOString().slice(0, 10);

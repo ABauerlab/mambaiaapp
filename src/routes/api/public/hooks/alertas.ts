@@ -85,7 +85,7 @@ export const Route = createFileRoute("/api/public/hooks/alertas")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!autorizado(request)) return new Response(\"Unauthorized\", { status: 401 });
+        if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
         const now = agoraBR();
         const hoje = ymd(now);
         const minutosAgora = now.getUTCHours() * 60 + now.getUTCMinutes();

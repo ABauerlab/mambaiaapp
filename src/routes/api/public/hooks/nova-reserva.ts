@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/public/hooks/nova-reserva")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        if (!autorizado(request)) return new Response(\"Unauthorized\", { status: 401 });
+        if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
         let body: { reserva_id?: string } = {};
         try {
           body = (await request.json()) as { reserva_id?: string };
