@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 
 const PIX_PADRAO = "contato.mambaia@gmail.com";
-const PIX_NOME_PADRAO = "LAURA OTTONI NEGRÃO";
+const PIX_NOME_PADRAO = "JOÃO VICTOR BAUER ROCHA GOMES";
 
 type Item = { nome: string; valor: string };
 
