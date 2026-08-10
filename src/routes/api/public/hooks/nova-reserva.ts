@@ -2,10 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendPushToAll } from "@/lib/push.server";
 
+/** Bloqueia chamadas externas: apenas o agendador interno conhece o segredo. */
+function autorizado(request: Request) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
+  return request.headers.get("x-cron-secret") === secret;
+}
+
 export const Route = createFileRoute("/api/public/hooks/nova-reserva")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        if (!autorizado(request)) return new Response(\"Unauthorized\", { status: 401 });
         let body: { reserva_id?: string } = {};
         try {
           body = (await request.json()) as { reserva_id?: string };
