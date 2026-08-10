@@ -8,21 +8,10 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-/** Envia um log para o servidor para sabermos se o push chegou ao celular */
+/** Log local de diagnostico do push. */
 async function logToBackend(msg) {
-  try {
-    await fetch("/api/public/hooks/log", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chave: "push-received",
-        titulo: "Push Event",
-        msg: `${new Date().toLocaleTimeString("pt-BR")} - ${msg}`,
-      }),
-    });
-  } catch (e) {
-    // ignorar falha no log
-  }
+  // Log apenas local: o endpoint publico de log foi removido por seguranca.
+  console.log("[sw]", msg);
 }
 
 self.addEventListener("push", (event) => {
