@@ -251,7 +251,7 @@ function Hero() {
           </a>
         </div>
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
-          {["Ciclorama branco", "Reserva online", "Sinal via PIX", "Praça Sete, Centro de BH"].map(
+          {["Fundo Infinito em L", "Reserva online", "Sinal via PIX", "Praça Sete, Centro de BH"].map(
             (t) => (
               <span key={t} className="inline-flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
@@ -276,7 +276,7 @@ const servicos: Servico[] = [
   {
     icon: Camera,
     title: "Estúdio fotográfico",
-    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. A partir de R$ 100 a hora, com apenas 50% de sinal via PIX para garantir a data.",
+    desc: "Fundo Infinito em L, iluminação profissional, mesa still e vista aberta da cidade. A partir de R$ 100 a hora, com apenas 50% de sinal via PIX para garantir a data.",
     img: estudio5.url,
     href: "/agendar",
     cta: "Ver horários livres",
@@ -406,7 +406,7 @@ function Precos() {
               ))}
             </dl>
             <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
-              Inclui ciclorama branco, iluminação profissional, mesa still, Wi-Fi e café. Precisa de
+              Inclui fundo infinito em L, iluminação profissional, mesa still, Wi-Fi e café. Precisa de
               mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -805,7 +805,7 @@ function CtaFinal() {
     <section className="relative py-24 md:py-32 overflow-hidden">
       <img
         src={estudio1.url}
-        alt="Ciclorama do estúdio Mambaia"
+        alt="Fundo infinito em L do estúdio Mambaia"
         className="absolute inset-0 w-full h-full object-cover"
         loading="lazy"
         decoding="async"
@@ -963,7 +963,7 @@ function Medidas() {
             Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Formato em L com ciclorama branco, luz natural pela janela e altura de sobra para
+            Formato em L com fundo infinito em L, luz natural pela janela e altura de sobra para
             iluminação profissional. Ideal para look book, produto, entrevistas e gravações.
           </p>
           <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
@@ -997,7 +997,7 @@ function Medidas() {
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border border-black/5">
           <img
             src={estudio5.url}
-            alt="Ciclorama branco do estúdio Mambaia com iluminação profissional"
+            alt="Fundo Infinito em L do estúdio Mambaia com iluminação profissional"
             loading="lazy"
             decoding="async"
             width={1600}
