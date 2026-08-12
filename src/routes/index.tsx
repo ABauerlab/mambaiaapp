@@ -14,6 +14,10 @@ import {
   Check,
   Menu,
   X,
+  ChevronDown,
+  Repeat,
+  Quote,
+  Star,
   Home as HomeIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -43,6 +47,9 @@ const MAPS_EMBED =
   encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Belo Horizonte - MG") +
   "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
+
+/** Aviso exibido abaixo da tabela de preços. Edite aqui quando a validade mudar. */
+const AVISO_PRECOS = "Valores válidos para reservas até dezembro/26.";
 
 const TITLE = "Mambaia | Aluguel de estúdio fotográfico no Centro de BH";
 const DESC =
