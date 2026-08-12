@@ -368,6 +368,7 @@ const AUDIOVISUAL: PacoteAV[] = [
 ];
 
 function Precos() {
+  const [verPacotes, setVerPacotes] = useState(false);
   return (
     <section id="precos" className="py-20 md:py-28 bg-[#F5F5F5]">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
@@ -384,135 +385,168 @@ function Precos() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 items-start">
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-black/5 p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
-                <Clock className="w-5 h-5" />
-              </span>
-              <h3 className="text-xl font-medium text-[#0D2E24]">Locação por hora</h3>
-            </div>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
-              {TABELA_HORAS.map((row) => (
-                <div
-                  key={row.h}
-                  className="flex items-baseline justify-between gap-4 py-3 border-b border-black/5"
-                >
-                  <dt className="text-sm md:text-base text-[#1A1A1A]/75">{row.h}</dt>
-                  <dd className="text-base md:text-lg font-semibold tabular-nums text-[#0D2E24]">
-                    {row.v}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
-              Inclui fundo infinito em L, iluminação profissional, mesa still, Wi-Fi e café. Precisa de
-              mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
-            </p>
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/agendar"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-6 py-3 text-sm font-semibold hover:bg-[#123f31] transition"
-              >
-                Ver horários livres <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a
-                href={WA_LINK}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0D2E24]/20 px-6 py-3 text-sm font-semibold text-[#0D2E24] hover:bg-white transition"
-              >
-                <MessageCircle className="w-4 h-4" /> Tirar dúvida no WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <div className="bg-[#0D2E24] text-white rounded-2xl p-6 md:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#E5C72A] text-[#0D2E24]">
-                <Building2 className="w-5 h-5" />
-              </span>
-              <h3 className="text-xl font-medium">Pacote marcas e brechó</h3>
-            </div>
-            <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-4xl font-semibold tabular-nums">R$ 350</span>
-              <span className="text-white/70 text-sm">por marca</span>
-            </div>
-            <ul className="mt-5 space-y-3 text-sm text-white/85">
-              {[
-                "1 hora de estúdio para cada marca",
-                "Produção pensada para catálogo e coleção nova",
-                "Ideal para brechó, slow fashion e lojinha autoral",
-                "Também confirma com 50% de sinal via PIX",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <Check className="w-4 h-4 mt-0.5 text-[#E5C72A] shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/pacote-marcas"
-              className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition"
-            >
-              Quero o pacote <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-12 md:mt-16">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3 mb-5">
             <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
-              <Camera className="w-5 h-5" />
+              <Clock className="w-5 h-5" />
             </span>
-            <div>
-              <h3 className="text-xl font-medium text-[#0D2E24]">
-                Mambaia Estúdio · Pacotes completos de audiovisual
-              </h3>
-              <p className="text-sm text-[#1A1A1A]/60 mt-0.5">
-                Alugue o estúdio e leve a produção inclusa: captação, edição e conteúdo pronto.
-              </p>
-            </div>
+            <h3 className="text-xl md:text-2xl font-medium text-[#0D2E24]">Locação por hora</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {AUDIOVISUAL.map((p) => (
+          <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8">
+            {TABELA_HORAS.map((row) => (
               <div
-                key={p.nome}
-                className="bg-white rounded-2xl border border-black/5 p-6 flex flex-col shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+                key={row.h}
+                className="flex items-baseline justify-between gap-4 py-3 border-b border-black/5"
               >
-                <div className="flex items-baseline justify-between gap-2">
-                  <h4 className="font-semibold text-[#0D2E24]">{p.nome}</h4>
-                  <span className="text-lg font-semibold tabular-nums text-[#0D2E24] whitespace-nowrap">
-                    {p.preco}
-                  </span>
-                </div>
-                <ul className="mt-4 space-y-2 text-sm text-[#1A1A1A]/75 flex-1">
-                  {p.itens.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 mt-0.5 text-[#5F6B2D] shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/agendar"
-                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#123f31] transition"
-                >
-                  Agendar produção <ArrowRight className="w-4 h-4" />
-                </Link>
+                <dt className="text-sm md:text-base text-[#1A1A1A]/75">{row.h}</dt>
+                <dd className="text-base md:text-lg font-semibold tabular-nums text-[#0D2E24]">
+                  {row.v}
+                </dd>
               </div>
             ))}
-          </div>
-          <p className="mt-4 text-sm text-[#1A1A1A]/60">
-            <strong className="text-[#0D2E24]">Regra de troca:</strong> 10 fotos = 1 Reel editado.
-            Precisa de uma proposta personalizada? Fale com a gente no WhatsApp.
+          </dl>
+          <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
+            Inclui fundo infinito em L, iluminação profissional, mesa still, Wi-Fi e café. Precisa
+            de mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
           </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <Link
+              to="/agendar"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-6 py-3 text-sm font-semibold hover:bg-[#123f31] transition"
+            >
+              Ver horários livres <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href={WA_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0D2E24]/20 px-6 py-3 text-sm font-semibold text-[#0D2E24] hover:bg-white transition"
+            >
+              <MessageCircle className="w-4 h-4" /> Tirar dúvida no WhatsApp
+            </a>
+          </div>
         </div>
 
-        <p className="mt-6 text-xs text-[#1A1A1A]/55">
-          Valores válidos para o estúdio na Praça Sete, Belo Horizonte. Podem mudar sem aviso
-          enquanto seguimos com a reforma do espaço.
-        </p>
+        {/* Resumo compacto da produção completa (oferta secundária) */}
+        <div className="mt-6 rounded-2xl bg-[#0D2E24] text-white p-6 md:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.12)] flex flex-col md:flex-row md:items-center gap-5">
+          <span className="grid place-items-center w-11 h-11 rounded-lg bg-[#E5C72A] text-[#0D2E24] shrink-0">
+            <Camera className="w-5 h-5" />
+          </span>
+          <div className="flex-1">
+            <h3 className="text-lg md:text-xl font-medium">Quer a produção completa?</h3>
+            <p className="mt-1 text-sm md:text-base text-white/75 leading-relaxed">
+              Também fazemos a produção completa pra você: fotógrafo, edição e conteúdo pronto, a
+              partir de R$ 350.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setVerPacotes((v) => !v)}
+            aria-expanded={verPacotes}
+            aria-controls="pacotes-producao"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition shrink-0"
+          >
+            {verPacotes ? "Ocultar pacotes" : "Ver pacotes de produção"}
+            <ChevronDown
+              className={cn("w-4 h-4 transition-transform", verPacotes && "rotate-180")}
+            />
+          </button>
+        </div>
+
+        {verPacotes && (
+          <div id="pacotes-producao" className="mt-8 md:mt-10">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
+                <Camera className="w-5 h-5" />
+              </span>
+              <div>
+                <h3 className="text-xl font-medium text-[#0D2E24]">
+                  Mambaia Estúdio · Pacotes completos de audiovisual
+                </h3>
+                <p className="text-sm text-[#1A1A1A]/60 mt-0.5">
+                  Alugue o estúdio e leve a produção inclusa: captação, edição e conteúdo pronto.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {AUDIOVISUAL.map((p) => (
+                <div
+                  key={p.nome}
+                  className="bg-white rounded-2xl border border-black/5 p-6 flex flex-col shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h4 className="font-semibold text-[#0D2E24]">{p.nome}</h4>
+                    <span className="text-lg font-semibold tabular-nums text-[#0D2E24] whitespace-nowrap">
+                      {p.preco}
+                    </span>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm text-[#1A1A1A]/75 flex-1">
+                    {p.itens.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 mt-0.5 text-[#5F6B2D] shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    to="/agendar"
+                    className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#123f31] transition"
+                  >
+                    Agendar produção <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            {/* Regra de troca em destaque */}
+            <div className="mt-6 rounded-2xl border-2 border-[#E5C72A] bg-[#E5C72A]/10 p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0D2E24] text-[#E5C72A] px-4 py-1.5 text-xs font-bold uppercase tracking-widest">
+                <Repeat className="w-3.5 h-3.5" /> Regra de troca
+              </span>
+              <p className="text-base md:text-lg font-semibold text-[#0D2E24]">
+                10 fotos = 1 Reel editado.{" "}
+                <span className="font-normal text-[#1A1A1A]/70 text-sm md:text-base">
+                  Precisa de uma proposta personalizada? Fale com a gente no WhatsApp.
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-6 bg-[#0D2E24] text-white rounded-2xl p-6 md:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#E5C72A] text-[#0D2E24]">
+                  <Building2 className="w-5 h-5" />
+                </span>
+                <h3 className="text-xl font-medium">Pacote marcas e brechó</h3>
+              </div>
+              <div className="mt-4 flex items-baseline gap-2">
+                <span className="text-4xl font-semibold tabular-nums">R$ 350</span>
+                <span className="text-white/70 text-sm">por marca</span>
+              </div>
+              <ul className="mt-5 grid sm:grid-cols-2 gap-3 text-sm text-white/85">
+                {[
+                  "1 hora de estúdio para cada marca",
+                  "Produção pensada para catálogo e coleção nova",
+                  "Ideal para brechó, slow fashion e lojinha autoral",
+                  "Também confirma com 50% de sinal via PIX",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 text-[#E5C72A] shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/pacote-marcas"
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition"
+              >
+                Quero o pacote <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        <p className="mt-6 text-xs text-[#1A1A1A]/55">{AVISO_PRECOS}</p>
       </div>
     </section>
   );
