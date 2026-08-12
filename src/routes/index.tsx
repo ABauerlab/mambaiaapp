@@ -14,6 +14,10 @@ import {
   Check,
   Menu,
   X,
+  ChevronDown,
+  Repeat,
+  Quote,
+  Star,
   Home as HomeIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -43,6 +47,9 @@ const MAPS_EMBED =
   encodeURIComponent("R. Rio de Janeiro, 462 - Sala 2217, Centro, Belo Horizonte - MG") +
   "&output=embed";
 const INSTA = "https://instagram.com/mambaiabh";
+
+/** Aviso exibido abaixo da tabela de preços. Edite aqui quando a validade mudar. */
+const AVISO_PRECOS = "Valores válidos para reservas até dezembro/26.";
 
 const TITLE = "Mambaia | Aluguel de estúdio fotográfico no Centro de BH";
 const DESC =
@@ -251,7 +258,7 @@ function Hero() {
           </a>
         </div>
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-white/80">
-          {["Ciclorama branco", "Reserva online", "Sinal via PIX", "Praça Sete, Centro de BH"].map(
+          {["Fundo Infinito em L", "Reserva online", "Sinal via PIX", "Praça Sete, Centro de BH"].map(
             (t) => (
               <span key={t} className="inline-flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-[#E5C72A]" /> {t}
@@ -276,7 +283,7 @@ const servicos: Servico[] = [
   {
     icon: Camera,
     title: "Estúdio fotográfico",
-    desc: "Ciclorama branco, iluminação profissional, mesa still e vista aberta da cidade. A partir de R$ 100 a hora, com apenas 50% de sinal via PIX para garantir a data.",
+    desc: "Fundo Infinito em L, iluminação profissional, mesa still e vista aberta da cidade. A partir de R$ 100 a hora, com apenas 50% de sinal via PIX para garantir a data.",
     img: estudio5.url,
     href: "/agendar",
     cta: "Ver horários livres",
@@ -368,6 +375,7 @@ const AUDIOVISUAL: PacoteAV[] = [
 ];
 
 function Precos() {
+  const [verPacotes, setVerPacotes] = useState(false);
   return (
     <section id="precos" className="py-20 md:py-28 bg-[#F5F5F5]">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
@@ -384,135 +392,282 @@ function Precos() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 items-start">
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-black/5 p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
-                <Clock className="w-5 h-5" />
-              </span>
-              <h3 className="text-xl font-medium text-[#0D2E24]">Locação por hora</h3>
-            </div>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
-              {TABELA_HORAS.map((row) => (
-                <div
-                  key={row.h}
-                  className="flex items-baseline justify-between gap-4 py-3 border-b border-black/5"
-                >
-                  <dt className="text-sm md:text-base text-[#1A1A1A]/75">{row.h}</dt>
-                  <dd className="text-base md:text-lg font-semibold tabular-nums text-[#0D2E24]">
-                    {row.v}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
-              Inclui ciclorama branco, iluminação profissional, mesa still, Wi-Fi e café. Precisa de
-              mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
-            </p>
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/agendar"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-6 py-3 text-sm font-semibold hover:bg-[#123f31] transition"
-              >
-                Ver horários livres <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a
-                href={WA_LINK}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0D2E24]/20 px-6 py-3 text-sm font-semibold text-[#0D2E24] hover:bg-white transition"
-              >
-                <MessageCircle className="w-4 h-4" /> Tirar dúvida no WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <div className="bg-[#0D2E24] text-white rounded-2xl p-6 md:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#E5C72A] text-[#0D2E24]">
-                <Building2 className="w-5 h-5" />
-              </span>
-              <h3 className="text-xl font-medium">Pacote marcas e brechó</h3>
-            </div>
-            <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-4xl font-semibold tabular-nums">R$ 350</span>
-              <span className="text-white/70 text-sm">por marca</span>
-            </div>
-            <ul className="mt-5 space-y-3 text-sm text-white/85">
-              {[
-                "1 hora de estúdio para cada marca",
-                "Produção pensada para catálogo e coleção nova",
-                "Ideal para brechó, slow fashion e lojinha autoral",
-                "Também confirma com 50% de sinal via PIX",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <Check className="w-4 h-4 mt-0.5 text-[#E5C72A] shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/pacote-marcas"
-              className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition"
-            >
-              Quero o pacote <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-12 md:mt-16">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3 mb-5">
             <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
-              <Camera className="w-5 h-5" />
+              <Clock className="w-5 h-5" />
             </span>
-            <div>
-              <h3 className="text-xl font-medium text-[#0D2E24]">
-                Mambaia Estúdio · Pacotes completos de audiovisual
-              </h3>
-              <p className="text-sm text-[#1A1A1A]/60 mt-0.5">
-                Alugue o estúdio e leve a produção inclusa: captação, edição e conteúdo pronto.
-              </p>
-            </div>
+            <h3 className="text-xl md:text-2xl font-medium text-[#0D2E24]">Locação por hora</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {AUDIOVISUAL.map((p) => (
+          <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8">
+            {TABELA_HORAS.map((row) => (
               <div
-                key={p.nome}
-                className="bg-white rounded-2xl border border-black/5 p-6 flex flex-col shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+                key={row.h}
+                className="flex items-baseline justify-between gap-4 py-3 border-b border-black/5"
               >
-                <div className="flex items-baseline justify-between gap-2">
-                  <h4 className="font-semibold text-[#0D2E24]">{p.nome}</h4>
-                  <span className="text-lg font-semibold tabular-nums text-[#0D2E24] whitespace-nowrap">
-                    {p.preco}
-                  </span>
-                </div>
-                <ul className="mt-4 space-y-2 text-sm text-[#1A1A1A]/75 flex-1">
-                  {p.itens.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 mt-0.5 text-[#5F6B2D] shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/agendar"
-                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#123f31] transition"
-                >
-                  Agendar produção <ArrowRight className="w-4 h-4" />
-                </Link>
+                <dt className="text-sm md:text-base text-[#1A1A1A]/75">{row.h}</dt>
+                <dd className="text-base md:text-lg font-semibold tabular-nums text-[#0D2E24]">
+                  {row.v}
+                </dd>
               </div>
             ))}
-          </div>
-          <p className="mt-4 text-sm text-[#1A1A1A]/60">
-            <strong className="text-[#0D2E24]">Regra de troca:</strong> 10 fotos = 1 Reel editado.
-            Precisa de uma proposta personalizada? Fale com a gente no WhatsApp.
+          </dl>
+          <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
+            Inclui fundo infinito em L, iluminação profissional, mesa still, Wi-Fi e café. Precisa
+            de mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
           </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <Link
+              to="/agendar"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-6 py-3 text-sm font-semibold hover:bg-[#123f31] transition"
+            >
+              Ver horários livres <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href={WA_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#0D2E24]/20 px-6 py-3 text-sm font-semibold text-[#0D2E24] hover:bg-white transition"
+            >
+              <MessageCircle className="w-4 h-4" /> Tirar dúvida no WhatsApp
+            </a>
+          </div>
         </div>
 
-        <p className="mt-6 text-xs text-[#1A1A1A]/55">
-          Valores válidos para o estúdio na Praça Sete, Belo Horizonte. Podem mudar sem aviso
-          enquanto seguimos com a reforma do espaço.
-        </p>
+        {/* Resumo compacto da produção completa (oferta secundária) */}
+        <div className="mt-6 rounded-2xl bg-[#0D2E24] text-white p-6 md:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.12)] flex flex-col md:flex-row md:items-center gap-5">
+          <span className="grid place-items-center w-11 h-11 rounded-lg bg-[#E5C72A] text-[#0D2E24] shrink-0">
+            <Camera className="w-5 h-5" />
+          </span>
+          <div className="flex-1">
+            <h3 className="text-lg md:text-xl font-medium">Quer a produção completa?</h3>
+            <p className="mt-1 text-sm md:text-base text-white/75 leading-relaxed">
+              Também fazemos a produção completa pra você: fotógrafo, edição e conteúdo pronto, a
+              partir de R$ 350.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setVerPacotes((v) => !v)}
+            aria-expanded={verPacotes}
+            aria-controls="pacotes-producao"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition shrink-0"
+          >
+            {verPacotes ? "Ocultar pacotes" : "Ver pacotes de produção"}
+            <ChevronDown
+              className={cn("w-4 h-4 transition-transform", verPacotes && "rotate-180")}
+            />
+          </button>
+        </div>
+
+        {verPacotes && (
+          <div id="pacotes-producao" className="mt-8 md:mt-10">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#0D2E24] text-[#E5C72A]">
+                <Camera className="w-5 h-5" />
+              </span>
+              <div>
+                <h3 className="text-xl font-medium text-[#0D2E24]">
+                  Mambaia Estúdio · Pacotes completos de audiovisual
+                </h3>
+                <p className="text-sm text-[#1A1A1A]/60 mt-0.5">
+                  Alugue o estúdio e leve a produção inclusa: captação, edição e conteúdo pronto.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {AUDIOVISUAL.map((p) => (
+                <div
+                  key={p.nome}
+                  className="bg-white rounded-2xl border border-black/5 p-6 flex flex-col shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h4 className="font-semibold text-[#0D2E24]">{p.nome}</h4>
+                    <span className="text-lg font-semibold tabular-nums text-[#0D2E24] whitespace-nowrap">
+                      {p.preco}
+                    </span>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm text-[#1A1A1A]/75 flex-1">
+                    {p.itens.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 mt-0.5 text-[#5F6B2D] shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    to="/agendar"
+                    className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-[#0D2E24] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#123f31] transition"
+                  >
+                    Agendar produção <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            {/* Regra de troca em destaque */}
+            <div className="mt-6 rounded-2xl border-2 border-[#E5C72A] bg-[#E5C72A]/10 p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0D2E24] text-[#E5C72A] px-4 py-1.5 text-xs font-bold uppercase tracking-widest">
+                <Repeat className="w-3.5 h-3.5" /> Regra de troca
+              </span>
+              <p className="text-base md:text-lg font-semibold text-[#0D2E24]">
+                10 fotos = 1 Reel editado.{" "}
+                <span className="font-normal text-[#1A1A1A]/70 text-sm md:text-base">
+                  Precisa de uma proposta personalizada? Fale com a gente no WhatsApp.
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-6 bg-[#0D2E24] text-white rounded-2xl p-6 md:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="grid place-items-center w-10 h-10 rounded-lg bg-[#E5C72A] text-[#0D2E24]">
+                  <Building2 className="w-5 h-5" />
+                </span>
+                <h3 className="text-xl font-medium">Pacote marcas e brechó</h3>
+              </div>
+              <div className="mt-4 flex items-baseline gap-2">
+                <span className="text-4xl font-semibold tabular-nums">R$ 350</span>
+                <span className="text-white/70 text-sm">por marca</span>
+              </div>
+              <ul className="mt-5 grid sm:grid-cols-2 gap-3 text-sm text-white/85">
+                {[
+                  "1 hora de estúdio para cada marca",
+                  "Produção pensada para catálogo e coleção nova",
+                  "Ideal para brechó, slow fashion e lojinha autoral",
+                  "Também confirma com 50% de sinal via PIX",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 text-[#E5C72A] shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/pacote-marcas"
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition"
+              >
+                Quero o pacote <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        <p className="mt-6 text-xs text-[#1A1A1A]/55">{AVISO_PRECOS}</p>
+      </div>
+    </section>
+  );
+}
+
+function GaleriaDestaque() {
+  const shots = [
+    { a: estudio5, alt: "Fundo infinito em L do estúdio Mambaia" },
+    { a: estudio3, alt: "Área de coworking do estúdio Mambaia" },
+    { a: estudio2, alt: "Espaço do Mambaia montado para eventos" },
+    { a: estudio1, alt: "Detalhe do estúdio Mambaia com luz natural" },
+  ];
+  return (
+    <section aria-label="O espaço por dentro" className="bg-white py-10 md:py-16">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="max-w-2xl mb-6 md:mb-8">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            O espaço por dentro
+          </span>
+          <h2 className="mt-3 text-2xl md:text-4xl font-light tracking-tight text-[#0D2E24]">
+            Veja o estúdio antes de reservar.
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {shots.map((s, i) => (
+            <div
+              key={s.alt}
+              className={cn(
+                "relative overflow-hidden rounded-2xl group",
+                i === 0 ? "col-span-2 md:col-span-2 aspect-[4/3]" : "aspect-square",
+              )}
+            >
+              <img
+                src={s.a.url}
+                alt={s.alt}
+                loading="lazy"
+                decoding="async"
+                sizes="(min-width: 768px) 45vw, 100vw"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type Depoimento = { nome: string; papel: string; texto: string };
+/** Preencha com depoimentos reais quando tiver. */
+const DEPOIMENTOS: Depoimento[] = [
+  {
+    nome: "Nome do cliente",
+    papel: "Marca / fotógrafo(a)",
+    texto: "Espaço para o depoimento real do cliente. Substitua este texto quando tiver o conteúdo.",
+  },
+  {
+    nome: "Nome do cliente",
+    papel: "Marca / fotógrafo(a)",
+    texto: "Espaço para o depoimento real do cliente. Substitua este texto quando tiver o conteúdo.",
+  },
+  {
+    nome: "Nome do cliente",
+    papel: "Marca / fotógrafo(a)",
+    texto: "Espaço para o depoimento real do cliente. Substitua este texto quando tiver o conteúdo.",
+  },
+];
+/** Logos de marcas que já usaram o espaço. Troque o texto por imagens quando tiver. */
+const MARCAS_PARCEIRAS = ["Sua marca aqui", "Sua marca aqui", "Sua marca aqui", "Sua marca aqui"];
+
+function ProvaSocial() {
+  return (
+    <section id="depoimentos" className="py-20 md:py-28 bg-[#F5F5F5]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="max-w-2xl mb-10">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            Quem já criou aqui
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+            Marcas e fotógrafos no Mambaia.
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {DEPOIMENTOS.map((d, i) => (
+            <figure
+              key={i}
+              className="bg-white rounded-2xl border border-black/5 p-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex flex-col"
+            >
+              <Quote className="w-6 h-6 text-[#E5C72A]" />
+              <blockquote className="mt-3 text-[#1A1A1A]/75 leading-relaxed text-sm md:text-base flex-1">
+                {d.texto}
+              </blockquote>
+              <div className="mt-4 flex gap-0.5" aria-hidden>
+                {Array.from({ length: 5 }).map((_, s) => (
+                  <Star key={s} className="w-4 h-4 text-[#E5C72A] fill-[#E5C72A]" />
+                ))}
+              </div>
+              <figcaption className="mt-3 text-sm">
+                <span className="font-semibold text-[#0D2E24]">{d.nome}</span>
+                <span className="block text-[#1A1A1A]/55">{d.papel}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {MARCAS_PARCEIRAS.map((m, i) => (
+            <div
+              key={i}
+              className="grid place-items-center rounded-xl border border-dashed border-[#0D2E24]/20 bg-white/60 py-6 text-xs uppercase tracking-widest text-[#0D2E24]/45"
+            >
+              {m}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -805,7 +960,7 @@ function CtaFinal() {
     <section className="relative py-24 md:py-32 overflow-hidden">
       <img
         src={estudio1.url}
-        alt="Ciclorama do estúdio Mambaia"
+        alt="Fundo infinito em L do estúdio Mambaia"
         className="absolute inset-0 w-full h-full object-cover"
         loading="lazy"
         decoding="async"
@@ -963,7 +1118,7 @@ function Medidas() {
             Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Formato em L com ciclorama branco, luz natural pela janela e altura de sobra para
+            Formato em L com fundo infinito, luz natural pela janela e altura de sobra para
             iluminação profissional. Ideal para look book, produto, entrevistas e gravações.
           </p>
           <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
@@ -997,7 +1152,7 @@ function Medidas() {
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border border-black/5">
           <img
             src={estudio5.url}
-            alt="Ciclorama branco do estúdio Mambaia com iluminação profissional"
+            alt="Fundo Infinito em L do estúdio Mambaia com iluminação profissional"
             loading="lazy"
             decoding="async"
             width={1600}
@@ -1052,13 +1207,15 @@ function Landing() {
       <Header />
       <main style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <Hero />
+        <GaleriaDestaque />
         <Precos />
-        <LeadForm />
         <Servicos />
         <Medidas />
         <Galeria />
         <Sobre />
+        <ProvaSocial />
         <Steps />
+        <LeadForm />
         <Localizacao />
         <CtaFinal />
       </main>
