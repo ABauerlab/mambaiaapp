@@ -963,7 +963,7 @@ function Medidas() {
             Um espaço em <span className="font-semibold">L</span>, feito para caber a sua ideia.
           </h2>
           <p className="mt-4 text-[#1A1A1A]/70 leading-relaxed">
-            Formato em L com fundo infinito em L, luz natural pela janela e altura de sobra para
+            Formato em L com fundo infinito, luz natural pela janela e altura de sobra para
             iluminação profissional. Ideal para look book, produto, entrevistas e gravações.
           </p>
           <dl className="mt-6 grid grid-cols-3 gap-3 max-w-md">
