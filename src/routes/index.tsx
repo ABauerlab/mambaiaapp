@@ -559,10 +559,6 @@ function Precos() {
   );
 }
 
-function Servicos() {
-  return null;
-}
-
 function GaleriaDestaque() {
   const shots = [
     { a: estudio5, alt: "Fundo infinito em L do estúdio Mambaia" },
@@ -677,7 +673,7 @@ function ProvaSocial() {
   );
 }
 
-function ServicosSecao() {
+function Servicos() {
   return (
     <section id="servicos" className="py-20 md:py-28 bg-white">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
