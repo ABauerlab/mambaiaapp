@@ -1207,13 +1207,15 @@ function Landing() {
       <Header />
       <main style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <Hero />
+        <GaleriaDestaque />
         <Precos />
-        <LeadForm />
         <Servicos />
         <Medidas />
         <Galeria />
         <Sobre />
+        <ProvaSocial />
         <Steps />
+        <LeadForm />
         <Localizacao />
         <CtaFinal />
       </main>
