@@ -560,6 +560,124 @@ function Precos() {
 }
 
 function Servicos() {
+  return null;
+}
+
+function GaleriaDestaque() {
+  const shots = [
+    { a: estudio5, alt: "Fundo infinito em L do estúdio Mambaia" },
+    { a: estudio3, alt: "Área de coworking do estúdio Mambaia" },
+    { a: estudio2, alt: "Espaço do Mambaia montado para eventos" },
+    { a: estudio1, alt: "Detalhe do estúdio Mambaia com luz natural" },
+  ];
+  return (
+    <section aria-label="O espaço por dentro" className="bg-white py-10 md:py-16">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="max-w-2xl mb-6 md:mb-8">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            O espaço por dentro
+          </span>
+          <h2 className="mt-3 text-2xl md:text-4xl font-light tracking-tight text-[#0D2E24]">
+            Veja o estúdio antes de reservar.
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {shots.map((s, i) => (
+            <div
+              key={s.alt}
+              className={cn(
+                "relative overflow-hidden rounded-2xl group",
+                i === 0 ? "col-span-2 md:col-span-2 aspect-[4/3]" : "aspect-square",
+              )}
+            >
+              <img
+                src={s.a.url}
+                alt={s.alt}
+                loading="lazy"
+                decoding="async"
+                sizes="(min-width: 768px) 45vw, 100vw"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type Depoimento = { nome: string; papel: string; texto: string };
+/** Preencha com depoimentos reais quando tiver. */
+const DEPOIMENTOS: Depoimento[] = [
+  {
+    nome: "Nome do cliente",
+    papel: "Marca / fotógrafo(a)",
+    texto: "Espaço para o depoimento real do cliente. Substitua este texto quando tiver o conteúdo.",
+  },
+  {
+    nome: "Nome do cliente",
+    papel: "Marca / fotógrafo(a)",
+    texto: "Espaço para o depoimento real do cliente. Substitua este texto quando tiver o conteúdo.",
+  },
+  {
+    nome: "Nome do cliente",
+    papel: "Marca / fotógrafo(a)",
+    texto: "Espaço para o depoimento real do cliente. Substitua este texto quando tiver o conteúdo.",
+  },
+];
+/** Logos de marcas que já usaram o espaço. Troque o texto por imagens quando tiver. */
+const MARCAS_PARCEIRAS = ["Sua marca aqui", "Sua marca aqui", "Sua marca aqui", "Sua marca aqui"];
+
+function ProvaSocial() {
+  return (
+    <section id="depoimentos" className="py-20 md:py-28 bg-[#F5F5F5]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        <div className="max-w-2xl mb-10">
+          <span className="text-xs font-semibold tracking-widest text-[#5F6B2D] uppercase">
+            Quem já criou aqui
+          </span>
+          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight text-[#0D2E24]">
+            Marcas e fotógrafos no Mambaia.
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {DEPOIMENTOS.map((d, i) => (
+            <figure
+              key={i}
+              className="bg-white rounded-2xl border border-black/5 p-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex flex-col"
+            >
+              <Quote className="w-6 h-6 text-[#E5C72A]" />
+              <blockquote className="mt-3 text-[#1A1A1A]/75 leading-relaxed text-sm md:text-base flex-1">
+                {d.texto}
+              </blockquote>
+              <div className="mt-4 flex gap-0.5" aria-hidden>
+                {Array.from({ length: 5 }).map((_, s) => (
+                  <Star key={s} className="w-4 h-4 text-[#E5C72A] fill-[#E5C72A]" />
+                ))}
+              </div>
+              <figcaption className="mt-3 text-sm">
+                <span className="font-semibold text-[#0D2E24]">{d.nome}</span>
+                <span className="block text-[#1A1A1A]/55">{d.papel}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {MARCAS_PARCEIRAS.map((m, i) => (
+            <div
+              key={i}
+              className="grid place-items-center rounded-xl border border-dashed border-[#0D2E24]/20 bg-white/60 py-6 text-xs uppercase tracking-widest text-[#0D2E24]/45"
+            >
+              {m}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServicosSecao() {
   return (
     <section id="servicos" className="py-20 md:py-28 bg-white">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
