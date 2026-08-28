@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { maskPhoneInput, isValidPhoneBR, onlyDigits } from "@/lib/phone";
 import { waMambaia } from "@/lib/whatsapp";
 import logo from "@/assets/logo-mambaia.svg";
+import { useMetaTracking } from "@/lib/meta-tracking";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sb = supabase as any;
@@ -222,6 +223,12 @@ export const Route = createFileRoute("/agendar")({
 
 function AgendarPage() {
   const navigate = useNavigate();
+  const { trackEvent } = useMetaTracking();
+
+  useEffect(() => {
+    trackEvent("ViewContent", { content_name: "Agendar estúdio", content_category: "estudio" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Inicialização segura para SSR: null inicialmente, preenche no useEffect
   const [hoje, setHoje] = useState<Date | null>(null);
   const [dataSel, setDataSel] = useState<Date | null>(null);
@@ -355,6 +362,16 @@ function AgendarPage() {
     },
     onSuccess: (row) => {
       toast.success("Reserva criada! Pague o sinal para confirmar.");
+      trackEvent(
+        "InitiateCheckout",
+        {
+          value: row.valor_sinal,
+          currency: "BRL",
+          content_name: pacote ? pacote.nome : "Locação por hora",
+          content_category: pacote ? "producao" : "locacao",
+        },
+        { phone: whatsapp },
+      );
       navigate({ to: "/cobranca/$slug", params: { slug: row.cobranca_slug } });
     },
     onError: (e) => toast.error(friendlyErrorMessage(e)),
