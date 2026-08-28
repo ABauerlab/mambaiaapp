@@ -167,6 +167,15 @@ function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <a
+            href={INSTA}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Instagram @mambaiabh"
+            className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-lg text-white/85 hover:text-[#E5C72A] hover:bg-white/10 transition"
+          >
+            <Instagram className="w-5 h-5" />
+          </a>
+          <a
             href="/agendar"
             className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-4 py-2 text-sm font-semibold hover:brightness-95 transition"
           >
@@ -194,6 +203,15 @@ function Header() {
                 {m.label}
               </a>
             ))}
+            <a
+              href={INSTA}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setOpen(false)}
+              className="py-2 border-b border-white/5 inline-flex items-center gap-2"
+            >
+              <Instagram className="w-4 h-4" /> @mambaiabh
+            </a>
             <a
               href="/agendar"
               onClick={() => setOpen(false)}
@@ -771,6 +789,34 @@ function Galeria() {
   );
 }
 
+function SegueInstagram() {
+  return (
+    <section className="py-14 md:py-20 bg-[#0D2E24]">
+      <div className="max-w-4xl mx-auto px-5 md:px-8 text-center">
+        <span className="grid place-items-center w-14 h-14 mx-auto rounded-2xl bg-[#E5C72A] text-[#0D2E24]">
+          <Instagram className="w-7 h-7" />
+        </span>
+        <h2 className="mt-5 text-2xl md:text-4xl font-light tracking-tight text-white">
+          Segue a gente no Instagram
+        </h2>
+        <p className="mt-3 text-white/70 text-sm md:text-base max-w-lg mx-auto">
+          Bastidores das sessões, novidades do espaço e as próximas datas disponíveis - tudo por
+          lá primeiro.
+        </p>
+        <a
+          href={INSTA}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#E5C72A] text-[#0D2E24] px-6 py-3 text-sm font-semibold hover:brightness-95 transition"
+        >
+          <Instagram className="w-4 h-4" />
+          Seguir @mambaiabh
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function Sobre() {
   const valores = [
     "Criatividade",
@@ -1218,6 +1264,7 @@ function Landing() {
         <LeadForm />
         <Localizacao />
         <CtaFinal />
+        <SegueInstagram />
       </main>
       <Footer />
       <MobileBar />

@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { maskPhoneInput, isValidPhoneBR, onlyDigits } from "@/lib/phone";
 import { waMambaia } from "@/lib/whatsapp";
+import { useMetaTracking } from "@/lib/meta-tracking";
 import logo from "@/assets/logo-mambaia.svg";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -222,6 +223,7 @@ export const Route = createFileRoute("/agendar")({
 
 function AgendarPage() {
   const navigate = useNavigate();
+  const { trackEvent } = useMetaTracking();
   // Inicialização segura para SSR: null inicialmente, preenche no useEffect
   const [hoje, setHoje] = useState<Date | null>(null);
   const [dataSel, setDataSel] = useState<Date | null>(null);
@@ -254,6 +256,11 @@ function AgendarPage() {
       if (n) setNome((prev) => prev || n);
       if (w) setWhatsapp((prev) => prev || maskPhoneInput(w));
     }
+  }, []);
+
+  useEffect(() => {
+    trackEvent("ViewContent", { content_name: "Agendar estúdio", content_category: "estudio" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const maxDate = useMemo(() => {
@@ -354,6 +361,16 @@ function AgendarPage() {
       };
     },
     onSuccess: (row) => {
+      trackEvent(
+        "InitiateCheckout",
+        {
+          value: row.valor_sinal,
+          currency: "BRL",
+          content_name: pacote ? pacote.nome : "Locação por hora",
+          content_category: pacote ? "producao" : "locacao",
+        },
+        { phone: whatsapp },
+      );
       toast.success("Reserva criada! Pague o sinal para confirmar.");
       navigate({ to: "/cobranca/$slug", params: { slug: row.cobranca_slug } });
     },

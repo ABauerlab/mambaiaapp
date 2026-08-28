@@ -19,6 +19,7 @@ import { friendlyErrorMessage } from "@/lib/utils";
 import { waMambaia } from "@/lib/whatsapp";
 import { formatPhoneBR } from "@/lib/phone";
 import { PdfPreviewDialog } from "@/components/PdfPreviewDialog";
+import { useMetaTracking } from "@/lib/meta-tracking";
 import logo from "@/assets/logo-mambaia.svg";
 
 type Cobranca = {
@@ -110,6 +111,7 @@ export const Route = createFileRoute("/cobranca/$slug")({
 
 function CobrancaPage() {
   const qc = useQueryClient();
+  const { trackEvent } = useMetaTracking();
   const { slug } = Route.useParams();
   const { data, isLoading, error } = useQuery({
     queryKey: ["cobranca", slug],
@@ -137,6 +139,15 @@ function CobrancaPage() {
       return { valorPago: valor, valorTotal: reserva?.valor_total ?? (data ? data.total : valor) };
     },
     onSuccess: (res) => {
+      trackEvent(
+        "Purchase",
+        {
+          value: res.valorPago,
+          currency: "BRL",
+          content_name: reserva?.tipo === "pacote_marcas" ? "Pacote Marcas" : "Reserva de estúdio",
+        },
+        { phone: reserva?.cliente_whatsapp },
+      );
       autoPreviewRef.current = true;
       toast.success(
         `Pagamento recebido: ${formatBRL(res.valorPago)} (Total da reserva: ${formatBRL(res.valorTotal)}). Status: Confirmado. Obrigado por agendar na Mambaia!`,
