@@ -10,6 +10,8 @@ import {
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
+import { MetaPixelTracker } from "@/components/MetaPixelTracker";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 
 const TITLE = "Mambaia Estúdio | Aluguel por hora em BH desde R$ 100";
 const DESC =
@@ -128,6 +130,8 @@ function RootComponent() {
       <AuthProvider>
         <Outlet />
         <Toaster richColors position="top-center" />
+        <MetaPixelTracker />
+        <CookieConsentBanner />
       </AuthProvider>
     </QueryClientProvider>
   );

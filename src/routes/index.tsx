@@ -167,6 +167,15 @@ function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <a
+            href={INSTA}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Instagram @mambaiabh"
+            className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-lg text-white/85 hover:text-[#E5C72A] hover:bg-white/10 transition"
+          >
+            <Instagram className="w-5 h-5" />
+          </a>
+          <a
             href="/agendar"
             className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-4 py-2 text-sm font-semibold hover:brightness-95 transition"
           >
@@ -194,6 +203,15 @@ function Header() {
                 {m.label}
               </a>
             ))}
+            <a
+              href={INSTA}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-flex items-center gap-2 py-2 text-white/85 hover:text-[#E5C72A] transition-colors"
+            >
+              <Instagram className="w-4 h-4" /> @mambaiabh
+            </a>
             <a
               href="/agendar"
               onClick={() => setOpen(false)}
@@ -1001,6 +1019,30 @@ function CtaFinal() {
   );
 }
 
+function InstagramSection() {
+  return (
+    <section className="bg-[#0D2E24] text-white py-16 md:py-20">
+      <div className="max-w-3xl mx-auto px-5 text-center">
+        <span className="inline-grid place-items-center w-12 h-12 rounded-2xl bg-[#E5C72A] text-[#0D2E24]">
+          <Instagram className="w-6 h-6" />
+        </span>
+        <h2 className="mt-5 text-2xl md:text-3xl font-bold">Segue a gente no Instagram</h2>
+        <p className="mt-3 text-white/75 text-sm md:text-base leading-relaxed">
+          Bastidores, ensaios e novidades do estúdio em primeira mão.
+        </p>
+        <a
+          href={INSTA}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-7 inline-flex items-center gap-2 rounded-lg bg-[#E5C72A] text-[#0D2E24] px-7 py-3.5 font-semibold hover:brightness-95 transition"
+        >
+          <Instagram className="w-5 h-5" /> Seguir @mambaiabh
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function Footer() {
   return (
     <footer className="bg-[#0D2E24] text-white/80">
@@ -1218,6 +1260,7 @@ function Landing() {
         <LeadForm />
         <Localizacao />
         <CtaFinal />
+        <InstagramSection />
       </main>
       <Footer />
       <MobileBar />
