@@ -21,6 +21,7 @@ import logo from "@/assets/logo-mambaia.svg";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NovaReservaWatcher } from "@/components/NovaReservaWatcher";
 
 type NavItem = {
   to:
@@ -61,6 +62,7 @@ export function AppShell() {
 
   return (
     <div className="min-h-screen bg-background flex">
+      <NovaReservaWatcher />
       {/* Sidebar desktop */}
       <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
         <div className="p-6 flex items-center gap-3 border-b border-sidebar-border">

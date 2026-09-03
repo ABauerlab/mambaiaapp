@@ -281,6 +281,7 @@ export type Database = {
           created_at: string
           display_name: string
           id: string
+          last_seen_reservas_at: string
           must_change_password: boolean
           socio_id: string | null
           updated_at: string
@@ -291,6 +292,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id?: string
+          last_seen_reservas_at?: string
           must_change_password?: boolean
           socio_id?: string | null
           updated_at?: string
@@ -301,6 +303,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id?: string
+          last_seen_reservas_at?: string
           must_change_password?: boolean
           socio_id?: string | null
           updated_at?: string
