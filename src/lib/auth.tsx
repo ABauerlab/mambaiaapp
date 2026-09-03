@@ -9,6 +9,7 @@ export type Profile = {
   avatar_url: string | null;
   socio_id: string | null;
   must_change_password: boolean;
+  last_seen_reservas_at: string;
 };
 
 type AuthState = {
