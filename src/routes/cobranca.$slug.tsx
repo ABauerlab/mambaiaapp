@@ -471,7 +471,7 @@ function CobrancaPage() {
             target="_blank"
             rel="noreferrer"
           >
-            {formatPhoneBR("3132232356")}
+            {formatPhoneBR("3175612135")}
           </a>
         </footer>
       </main>

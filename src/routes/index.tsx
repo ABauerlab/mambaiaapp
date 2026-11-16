@@ -31,7 +31,7 @@ import estudio4 from "@/assets/studio/estudio-4.asset.json";
 import estudio5 from "@/assets/studio/estudio-5.asset.json";
 
 const SITE = "https://mambaiabh.com.br";
-const WA_NUM = "553132232356";
+const WA_NUM = "553175612135";
 const WA_MSG = encodeURIComponent(
   "Oi, Mambaia! Vim pelo site e quero reservar um horário no estúdio. Pode me passar as datas disponíveis?",
 );
@@ -96,7 +96,7 @@ export const Route = createFileRoute("/")({
           image: [OG_IMAGE, `${SITE}${estudio1.url}`, `${SITE}${estudio5.url}`],
           logo: `${SITE}/icon-512.png`,
           url: SITE,
-          telephone: "+55 31 3223-2356",
+          telephone: "+55 31 7561-2135",
           priceRange: "R$ 50 - R$ 350",
           address: {
             "@type": "PostalAddress",
@@ -946,7 +946,7 @@ function Localizacao() {
             </li>
             <li className="flex gap-3">
               <MessageCircle className="w-5 h-5 text-[#5F6B2D] shrink-0 mt-0.5" />
-              <span>WhatsApp (31) 3223-2356</span>
+              <span>WhatsApp (31) 7561-2135</span>
             </li>
           </ul>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">

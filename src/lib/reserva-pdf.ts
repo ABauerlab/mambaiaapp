@@ -264,7 +264,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.line(40, H - 50, W - 40, H - 50);
   doc.setFontSize(8.5);
   doc.setTextColor(120, 120, 120);
-  doc.text("Mambaia · Praça Sete, Belo Horizonte · WhatsApp (31) 3223-2356", 40, H - 32);
+  doc.text("Mambaia · Praça Sete, Belo Horizonte · WhatsApp (31) 7561-2135", 40, H - 32);
   doc.text(`Código da proposta: ${codigo}  ·  ref. ${r.slug}`, 40, H - 18);
 
   return doc;
