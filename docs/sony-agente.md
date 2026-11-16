@@ -56,3 +56,12 @@ Usa as mesmas regras do `/agendar` (conflito de horario, cobranca do sinal de 50
 - **Limite de 30 mensagens por hora por cliente.** Passando disso, a Sony para de responder, mas nunca deixa o cliente no vácuo: envia uma única mensagem educada por hora e abre um aviso no grupo para a equipe assumir (`agente_conversas.limite_aviso_at`).
 - **Fotos do estúdio** vão pelo WhatsApp (ferramenta `enviar_fotos_estudio`, 5 imagens em `public/fotos-estudio/`, servidas em `https://mambaiabh.com.br/fotos-estudio/estudio-N.jpg`), em vez do link da galeria.
 - Migration: `20261116150000_agente_sony_grupo_limite.sql`.
+
+## Pagamento automatico (Mercado Pago)
+
+- Aplicação **Mambaia-API** (Checkout Pro). Secrets no Lovable: `MP_ACCESS_TOKEN` (token de produção) e `MP_WEBHOOK_SECRET` (assinatura do webhook).
+- `POST /api/public/agente/pagamento` (header `x-agente-token`): gera 2 links do sinal de 50%, PIX (valor do sinal) e cartão à vista (sinal + taxa, repassada ao cliente), válidos por 24h. A taxa fica em `agente_config.mp_taxa_cartao` (padrão 0,0498; ajuste conforme a conta).
+- `POST /api/public/hooks/mercadopago`: webhook. Valida a assinatura, consulta o pagamento na API do Mercado Pago e chama `mp_confirmar_pagamento`, que confirma a reserva (`paid_at`, `valor_pago`, taxa e líquido), gera a receita pelo trigger existente e dispara o aviso no grupo, o push e a confirmação ao cliente com o PDF. Idempotente por `payment_id` (tabela `mp_pagamentos`). Duplicidade, valor insuficiente, estorno e chargeback geram alerta no grupo.
+- Webhook no painel do Mercado Pago: URL `https://mambaiabh.com.br/api/public/hooks/mercadopago`, evento **Pagamentos**.
+- A Sony usa a ferramenta `gerar_links_pagamento` no lugar da chave PIX, que fica só como plano B.
+- Migration: `20261116160000_mercadopago.sql`.
