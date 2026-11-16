@@ -840,6 +840,7 @@ export type Database = {
         Returns: Json
       }
       agente_lembretes_pegar: { Args: { p_token: string }; Returns: Json }
+      agente_liberar_pendentes: { Args: { p_token: string }; Returns: Json }
       agente_minhas_reservas: {
         Args: { p_token: string; p_whatsapp: string }
         Returns: Json
