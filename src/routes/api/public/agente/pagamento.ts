@@ -31,12 +31,24 @@ async function criarPreferencia(token: string, p: {
   valor: number;
   reservaId: string;
   tipo: "sinal" | "saldo";
+  cliente: string;
   horasValidade: number;
   diffPricingId: string | null;
 }) {
   const expira = new Date(Date.now() + p.horasValidade * 60 * 60 * 1000).toISOString();
   const body: Record<string, unknown> = {
-    items: [{ id: p.reservaId, title: p.titulo, quantity: 1, currency_id: "BRL", unit_price: p.valor }],
+    items: [
+      {
+        id: p.reservaId,
+        title: p.titulo,
+        description: "Locacao de estudio fotografico por hora",
+        category_id: "services",
+        quantity: 1,
+        currency_id: "BRL",
+        unit_price: p.valor,
+      },
+    ],
+    payer: { name: p.cliente.split(" ")[0] || undefined, surname: p.cliente.split(" ").slice(1).join(" ") || undefined },
     external_reference: p.reservaId,
     metadata: { reserva_id: p.reservaId, tipo: p.tipo },
     notification_url: `${SITE}/api/public/hooks/mercadopago`,
@@ -110,6 +122,7 @@ export const Route = createFileRoute("/api/public/agente/pagamento")({
             valor,
             reservaId,
             tipo,
+            cliente: String(d.cliente ?? "").replace(/^TESTE.*/i, "").trim(),
             horasValidade: tipo === "saldo" ? 48 : 24,
             diffPricingId: d.diff_pricing_id,
           });
