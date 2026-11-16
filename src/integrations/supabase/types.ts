@@ -81,6 +81,7 @@ export type Database = {
           estado: string
           followups_enviados: number
           humano_ate: string | null
+          limite_aviso_at: string | null
           nome: string | null
           optout: boolean
           resumo: string | null
@@ -95,6 +96,7 @@ export type Database = {
           estado?: string
           followups_enviados?: number
           humano_ate?: string | null
+          limite_aviso_at?: string | null
           nome?: string | null
           optout?: boolean
           resumo?: string | null
@@ -109,6 +111,7 @@ export type Database = {
           estado?: string
           followups_enviados?: number
           humano_ate?: string | null
+          limite_aviso_at?: string | null
           nome?: string | null
           optout?: boolean
           resumo?: string | null
@@ -740,6 +743,7 @@ export type Database = {
       _agente_auth: { Args: { p_token: string }; Returns: undefined }
       _agente_dia: { Args: { p_data: string }; Returns: string }
       _agente_doc_chave: { Args: { p_reserva: string }; Returns: string }
+      _agente_faixas: { Args: { p_livres: Json }; Returns: string }
       _agente_fone: { Args: { p: string }; Returns: string }
       _agente_janela: {
         Args: { p_data: string }
