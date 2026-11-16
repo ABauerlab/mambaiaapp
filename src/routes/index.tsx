@@ -309,7 +309,7 @@ const servicos: Servico[] = [
   {
     icon: Users,
     title: "Coworking criativo",
-    desc: "Ambiente tranquilo para trabalhar, editar ou reunir a equipe por algumas horas. Café, Wi-Fi rápido e vista da cidade, no coração do Centro.",
+    desc: "Ambiente tranquilo para trabalhar, editar ou reunir a equipe por algumas horas. Água, Wi-Fi rápido e vista da cidade, no coração do Centro.",
     img: estudio3.url,
     href: "/agendar",
     cta: "Reservar uma mesa",
@@ -431,7 +431,7 @@ function Precos() {
             ))}
           </dl>
           <p className="mt-5 text-sm text-[#1A1A1A]/60 leading-relaxed">
-            Inclui fundo infinito em L, iluminação profissional, mesa still, Wi-Fi e café. Precisa
+            Inclui fundo infinito em L, iluminação profissional, mesa still, Wi-Fi e água. Precisa
             de mais de 4 horas ou de um formato diferente? Fale com a gente no WhatsApp.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
