@@ -31,3 +31,10 @@ Usa as mesmas regras do `/agendar` (conflito de horario, cobranca do sinal de 50
 - Para trocar o segredo: `insert into agente_config(chave, valor) values ('token_hash', encode(sha256(convert_to('<NOVO>','utf8')),'hex')) on conflict (chave) do update set valor = excluded.valor;`
   e atualize a credencial no n8n.
 - Webhook do Evolution (instancia `Mambaia`): `https://n8n.bauerlab.com.br/webhook/mambaia-sony-in`, evento `MESSAGES_UPSERT`.
+
+## Push (PWA) no iPhone
+- Causa do push nao chegar no iPhone: o segredo `VAPID_SUBJECT` estava como `mailto: <email>` (espaco e colchetes). A Apple responde
+  `403 BadJwtToken`; o Chrome tolera. `src/lib/push.server.ts` agora valida o subject (`mailto:email` ou `https://`) e usa
+  `mailto:contato.mambaia@gmail.com` quando invalido. Corrija tambem o segredo para `mailto:contato.mambaia@gmail.com`.
+- A resposta do hook `nova-reserva` inclui `sent`, `removed` e `failed` (host, codigo) para diagnostico.
+- O iPhone precisa do app instalado na tela inicial (iOS 16.4+) e com a permissao de notificacoes concedida.
