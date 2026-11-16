@@ -327,7 +327,7 @@ begin
     'hora_fim', to_char(NEW.hora_inicio + make_interval(mins => NEW.duracao_minutos),'HH24:MI'),
     'duracao_minutos', NEW.duracao_minutos, 'tipo_reserva', NEW.tipo, 'status', NEW.status, 'empreendimento', NEW.empreendimento,
     'numero_proposta', NEW.numero_proposta, 'valor_total', NEW.valor_total, 'valor_sinal', NEW.valor_sinal, 'valor_pago', NEW.valor_pago,
-    'origem', coalesce(nullif(current_setting('app.origem', true), ''), 'site'),
+    'origem', coalesce(nullif(current_setting('app.origem', true), ''), NEW.origem),
     'fora_horario', coalesce(nullif(current_setting('app.fora_horario', true), '')::boolean, NEW.fora_horario)));
   return NEW;
 end $$;
