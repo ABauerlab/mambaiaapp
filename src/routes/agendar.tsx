@@ -204,7 +204,7 @@ export const Route = createFileRoute("/agendar")({
               addressRegion: "MG",
               addressCountry: "BR",
             },
-            telephone: "+55 31 3223-2356",
+            telephone: "+55 31 7561-2135",
           },
           areaServed: { "@type": "City", name: "Belo Horizonte" },
           offers: [

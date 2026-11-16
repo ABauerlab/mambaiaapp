@@ -1,6 +1,6 @@
 import { toE164BR } from "./phone";
 
-export const MAMBAIA_WHATSAPP = "553132232356";
+export const MAMBAIA_WHATSAPP = "553175612135";
 
 /** Monta um link https://wa.me/... com mensagem já preenchida. */
 export function buildWhatsAppUrl(phoneOrE164: string, message: string): string {
