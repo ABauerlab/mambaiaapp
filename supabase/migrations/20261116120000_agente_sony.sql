@@ -72,10 +72,18 @@ revoke all on sequence public.agente_mensagens_id_seq, public.agente_eventos_id_
 -- ---------- helpers internos ----------
 create or replace function public._agente_auth(p_token text) returns void
 language plpgsql security definer set search_path = public as $$
+declare v_hdr text; v_tok text;
 begin
-  if p_token is null or not exists (
+  -- Prefere o header x-agente-token (credencial do n8n); aceita o parametro como alternativa.
+  begin
+    v_hdr := nullif(current_setting('request.headers', true)::jsonb ->> 'x-agente-token', '');
+  exception when others then
+    v_hdr := null;
+  end;
+  v_tok := coalesce(v_hdr, nullif(p_token, ''));
+  if v_tok is null or not exists (
     select 1 from public.agente_config
-    where chave = 'token_hash' and valor = encode(sha256(convert_to(p_token,'utf8')),'hex')
+    where chave = 'token_hash' and valor = encode(sha256(convert_to(v_tok,'utf8')),'hex')
   ) then
     raise exception 'nao autorizado' using errcode = '28000';
   end if;
@@ -347,8 +355,8 @@ begin
      where e.id in (select id from public.agente_eventos
                      where enviado_em is null and tentativas < 5 and (reservado_em is null or reservado_em < now() - interval '3 minutes')
                      order by id limit greatest(p_limite,1) for update skip locked)
-     returning e.id, e.tipo, e.dados, e.criado_em)
-  select coalesce(jsonb_agg(jsonb_build_object('id', id, 'tipo', tipo, 'dados', dados, 'criado_em', criado_em) order by id), '[]'::jsonb) into v from u;
+     returning e.id, e.tipo, e.reserva_id, e.dados, e.criado_em)
+  select coalesce(jsonb_agg(jsonb_build_object('id', id, 'tipo', tipo, 'reserva_id', reserva_id, 'dados', dados, 'criado_em', criado_em) order by id), '[]'::jsonb) into v from u;
   return v;
 end $$;
 
@@ -363,14 +371,14 @@ end $$;
 -- ---------- memoria de conversa / leads ----------
 create or replace function public.agente_msg_registrar(p_token text, p_whatsapp text, p_nome text, p_papel text, p_texto text, p_tipo text default 'texto', p_wa_id text default null) returns jsonb
 language plpgsql security definer set search_path = public as $$
-declare v_fone text := public._agente_fone(p_whatsapp); c public.agente_conversas%rowtype;
+declare v_fone text := public._agente_fone(p_whatsapp); c public.agente_conversas%rowtype; v_id bigint;
 begin
   perform public._agente_auth(p_token);
   insert into public.agente_conversas (whatsapp, nome) values (v_fone, nullif(p_nome,'')) on conflict (whatsapp) do nothing;
   if p_wa_id is not null and exists (select 1 from public.agente_mensagens where wa_id = p_wa_id) then
     return jsonb_build_object('ok', true, 'duplicada', true);
   end if;
-  insert into public.agente_mensagens (whatsapp, papel, texto, tipo, wa_id) values (v_fone, p_papel, p_texto, coalesce(p_tipo,'texto'), p_wa_id);
+  insert into public.agente_mensagens (whatsapp, papel, texto, tipo, wa_id) values (v_fone, p_papel, p_texto, coalesce(p_tipo,'texto'), p_wa_id) returning id into v_id;
   if p_papel = 'cliente' then
     update public.agente_conversas set ultima_msg_cliente_at = now(), followups_enviados = 0, atualizado_em = now(),
       nome = coalesce(nome, nullif(p_nome,'')), estado = case when estado in ('perdido','novo') then 'qualificando' else estado end
@@ -381,7 +389,7 @@ begin
     update public.agente_conversas set humano_ate = now() + interval '6 hours', atualizado_em = now() where whatsapp = v_fone;
   end if;
   select * into c from public.agente_conversas where whatsapp = v_fone;
-  return jsonb_build_object('ok', true, 'duplicada', false, 'humano_ativo', coalesce(c.humano_ate > now(), false), 'optout', c.optout, 'estado', c.estado);
+  return jsonb_build_object('ok', true, 'duplicada', false, 'msg_id', v_id, 'humano_ativo', coalesce(c.humano_ate > now(), false), 'optout', c.optout, 'estado', c.estado);
 end $$;
 
 create or replace function public.agente_historico(p_token text, p_whatsapp text, p_limite int default 40) returns jsonb
@@ -394,6 +402,7 @@ begin
            'quando', to_char(criado_em at time zone 'America/Sao_Paulo','DD/MM HH24:MI')) order by id), '[]'::jsonb) into v_msgs
     from (select * from public.agente_mensagens where whatsapp = v_fone order by id desc limit greatest(p_limite,1)) m;
   return jsonb_build_object('conversa', v_conv, 'mensagens', v_msgs, 'reservas_ativas', public.agente_minhas_reservas(p_token, v_fone),
+    'ultimo_msg_cliente_id', (select max(id) from public.agente_mensagens where whatsapp = v_fone and papel = 'cliente'),
     'agora_brt', to_char(now() at time zone 'America/Sao_Paulo','YYYY-MM-DD HH24:MI'),
     'hoje_dia_semana', public._agente_dia((now() at time zone 'America/Sao_Paulo')::date));
 end $$;
@@ -450,14 +459,14 @@ begin
     update public.reservas r set cliente_lembrete_24h_at = now()
      where r.status in ('confirmada','paga') and r.cliente_lembrete_24h_at is null and r.cliente_nome not like 'BLOQUEIO%'
        and (r.data + r.hora_inicio) between v_agora + interval '23 hours' and v_agora + interval '25 hours'
-    returning r.id)
-  select coalesce(jsonb_agg(public._agente_reserva_json(id) || jsonb_build_object('lembrete','24h')), '[]'::jsonb) into v from u;
+    returning r.id, r.cliente_whatsapp)
+  select coalesce(jsonb_agg(public._agente_reserva_json(id) || jsonb_build_object('lembrete','24h','whatsapp', cliente_whatsapp)), '[]'::jsonb) into v from u;
   with u as (
     update public.reservas r set cliente_lembrete_1h_at = now()
      where r.status in ('confirmada','paga') and r.cliente_lembrete_1h_at is null and r.cliente_nome not like 'BLOQUEIO%'
        and (r.data + r.hora_inicio) between v_agora + interval '50 minutes' and v_agora + interval '75 minutes'
-    returning r.id)
-  select coalesce(jsonb_agg(public._agente_reserva_json(id) || jsonb_build_object('lembrete','1h')), '[]'::jsonb) into v2 from u;
+    returning r.id, r.cliente_whatsapp)
+  select coalesce(jsonb_agg(public._agente_reserva_json(id) || jsonb_build_object('lembrete','1h','whatsapp', cliente_whatsapp)), '[]'::jsonb) into v2 from u;
   return v || v2;
 end $$;
 
