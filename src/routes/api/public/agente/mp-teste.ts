@@ -19,7 +19,48 @@ export const Route = createFileRoute("/api/public/agente/mp-teste")({
           p_reserva: "00000000-0000-0000-0000-000000000000",
         });
         if (error) return new Response("nao autorizado", { status: 401 });
+        const body = (await request.json().catch(() => ({}))) as { public_key?: string };
         const ref = "TESTE-" + Date.now();
+        if (body.public_key) {
+          // Cria direto um pagamento aprovado (cartao de teste APRO), sem a tela de checkout.
+          const tk = await fetch(`https://api.mercadopago.com/v1/card_tokens?public_key=${encodeURIComponent(body.public_key)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              card_number: "5031433215406351",
+              security_code: "123",
+              expiration_month: 11,
+              expiration_year: 2030,
+              cardholder: { name: "APRO", identification: { type: "CPF", number: "12345678909" } },
+            }),
+          });
+          const tkd = (await tk.json()) as { id?: string; message?: string };
+          if (!tk.ok || !tkd.id) return new Response(JSON.stringify({ ok: false, etapa: "card_token", erro: tkd.message }), { status: 502 });
+          const pr = await fetch("https://api.mercadopago.com/v1/payments", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", "X-Idempotency-Key": ref },
+            body: JSON.stringify({
+              transaction_amount: 10,
+              token: tkd.id,
+              installments: 1,
+              payment_method_id: "master",
+              description: "Sinal 50% - Mambaia, proposta teste",
+              statement_descriptor: "MAMBAIA",
+              external_reference: ref,
+              notification_url: `${SITE}/api/public/hooks/mercadopago`,
+              payer: { email: "test_user_123@testuser.com", first_name: "APRO", identification: { type: "CPF", number: "12345678909" } },
+              additional_info: {
+                items: [{ id: ref, title: "Sinal 50% - Mambaia, proposta teste", description: "Locacao de estudio fotografico por hora", category_id: "services", quantity: 1, unit_price: 10 }],
+                payer: { first_name: "Teste", last_name: "Comprador" },
+              },
+            }),
+          });
+          const prd = (await pr.json()) as { id?: number; status?: string; status_detail?: string; message?: string };
+          return new Response(JSON.stringify({ ok: pr.ok, payment_id: prd.id, status: prd.status, detalhe: prd.status_detail, erro: prd.message }), {
+            status: pr.ok ? 200 : 502,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
         const res = await fetch("https://api.mercadopago.com/checkout/preferences", {
           method: "POST",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
