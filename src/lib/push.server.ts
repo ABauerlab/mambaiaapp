@@ -79,5 +79,5 @@ export async function sendPushToAll(
     }),
   );
 
-  return { sent, removed, failed, vapid_public_prefix: (process.env.VAPID_PUBLIC_KEY ?? "").slice(0, 8), vapid_subject_env: process.env.VAPID_SUBJECT ?? null, vapid_subject_usado: validSubject(process.env.VAPID_SUBJECT) };
+  return { sent, removed, failed, vapid_public_prefix: (process.env.VAPID_PUBLIC_KEY ?? "").slice(0, 8) };
 }
