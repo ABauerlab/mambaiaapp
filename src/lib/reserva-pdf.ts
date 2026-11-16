@@ -212,7 +212,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
     "Tocha Sokani X100 RGB com softbox",
     "Bastão de LED LUXCEO",
     "2 painéis de LED bicolor",
-    "Fundo infinito em L, mesa still, luz natural pela janela, Wi-Fi e café",
+    "Fundo infinito em L, mesa still, luz natural pela janela, Wi-Fi e água",
   ]) {
     doc.text("• " + item, 40, y);
     y += 12;
