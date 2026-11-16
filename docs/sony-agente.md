@@ -49,3 +49,10 @@ Usa as mesmas regras do `/agendar` (conflito de horario, cobranca do sinal de 50
   proativos por 24h, so entre 9h e 20h, com intervalos aleatorios (4 a 12 s); lembretes com textos variados.
 - Economia de tokens: prompt enxuto, historico de 14 mensagens, ate 6 iteracoes, respostas da agenda compactas (faixas de horario),
   pedidos de midia acima de ~4,5 MB nao sao enviados ao Gemini.
+
+## Grupo dos donos, limite e fotos
+
+- **Responder no grupo executa a ação.** Quando um dono responde (usando "responder") a um aviso da Sony no grupo, a Sony lê o telefone no link `wa.me` do aviso citado, registra a resposta como `INSTRUCAO DOS DONOS` e responde o cliente com base nela (ex: dúvida do café). Mensagens no grupo que não citam um aviso da Sony são ignoradas. A Sony confirma no grupo com um "Certo, vou responder o cliente".
+- **Limite de 30 mensagens por hora por cliente.** Passando disso, a Sony para de responder, mas nunca deixa o cliente no vácuo: envia uma única mensagem educada por hora e abre um aviso no grupo para a equipe assumir (`agente_conversas.limite_aviso_at`).
+- **Fotos do estúdio** vão pelo WhatsApp (ferramenta `enviar_fotos_estudio`, 5 imagens em `public/fotos-estudio/`, servidas em `https://mambaiabh.com.br/fotos-estudio/estudio-N.jpg`), em vez do link da galeria.
+- Migration: `20261116150000_agente_sony_grupo_limite.sql`.
