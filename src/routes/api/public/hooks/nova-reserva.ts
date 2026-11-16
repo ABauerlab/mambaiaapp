@@ -14,9 +14,9 @@ export const Route = createFileRoute("/api/public/hooks/nova-reserva")({
     handlers: {
       POST: async ({ request }) => {
         if (!autorizado(request)) return new Response("Unauthorized", { status: 401 });
-        let body: { reserva_id?: string } = {};
+        let body: { reserva_id?: string; evento?: string } = {};
         try {
-          body = (await request.json()) as { reserva_id?: string };
+          body = (await request.json()) as { reserva_id?: string; evento?: string };
         } catch {
           body = {};
         }
@@ -39,13 +39,27 @@ export const Route = createFileRoute("/api/public/hooks/nova-reserva")({
           month: "2-digit",
         });
         const hora = String(r.hora_inicio).slice(0, 5);
-        const label = r.tipo === "pacote_marcas" ? "Pacote Marcas" : "Reserva";
+        const evento = ["nova", "alterada", "cancelada", "pago"].includes(body.evento ?? "")
+          ? (body.evento as string)
+          : "nova";
+        const labels: Record<string, string> = {
+          nova: r.tipo === "pacote_marcas" ? "Pacote Marcas" : "Reserva",
+          alterada: "Reserva remarcada",
+          cancelada: "Reserva cancelada",
+          pago: "Sinal pago",
+        };
+        const textos: Record<string, string> = {
+          nova: "nova reserva recebida",
+          alterada: "reserva remarcada pelo cliente",
+          cancelada: "reserva cancelada",
+          pago: "pagamento do sinal registrado",
+        };
         const who = r.empreendimento ? `${r.cliente_nome} (${r.empreendimento})` : r.cliente_nome;
         const result = await sendPushToAll({
-          title: `${label}: ${who}`,
-          body: `${dataFmt} às ${hora} — nova reserva recebida`,
+          title: `${labels[evento]}: ${who}`,
+          body: `${dataFmt} às ${hora} — ${textos[evento]}`,
           url: "/agenda",
-          tag: `nova-reserva-${body.reserva_id}`,
+          tag: `reserva-${evento}-${body.reserva_id}`,
         });
         return Response.json({ ok: true, ...result });
       },

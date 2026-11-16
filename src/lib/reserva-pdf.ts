@@ -14,8 +14,13 @@ export type ReservaPDFInput = {
   paidAt: string; // ISO
   slug: string;
   numeroProposta: number;
-  tipo?: "locacao" | "pacote_marcas";
+  tipo?: "locacao" | "pacote_marcas" | "producao";
   empreendimento?: string | null;
+  /** true = proposta ainda sem pagamento do sinal (documento enviado antes do PIX). */
+  pendente?: boolean;
+  valorSinal?: number;
+  pixChave?: string | null;
+  pixNome?: string | null;
 };
 
 const BRAND_DARK = "#1F3D2B";
@@ -95,7 +100,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.setTextColor(BRAND_DARK);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
-  doc.text("PAGAMENTO CONFIRMADO", W - 210, 65);
+  doc.text(r.pendente ? "AGUARDANDO SINAL (50%)" : "PAGAMENTO CONFIRMADO", W - 210, 65);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text(
@@ -114,9 +119,11 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
   doc.text(
-    isPacote
-      ? "Seu pacote fotográfico no estúdio Mambaia está garantido. Guarde este comprovante."
-      : "Seu horário no estúdio Mambaia está garantido. Guarde este comprovante.",
+    r.pendente
+      ? "Seu horário está pré-reservado. O pagamento do sinal de 50% via PIX garante a data."
+      : isPacote
+        ? "Seu pacote fotográfico no estúdio Mambaia está garantido. Guarde este comprovante."
+        : "Seu horário no estúdio Mambaia está garantido. Guarde este comprovante.",
     40,
     y,
   );
@@ -145,24 +152,84 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   }
 
   doc.setFillColor(240, 245, 235);
-  doc.roundedRect(40, y, W - 80, 80, 8, 8, "F");
-  doc.setTextColor(BRAND_DARK);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.text("PAGAMENTO", 60, y + 20);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  const tipo = r.tipoPagamento === "integral" ? "Integral (100%)" : "Sinal parcial (50%)";
-  doc.text("Tipo: " + tipo, 60, y + 38);
-  doc.text("Valor pago: " + formatBRL(r.valorPago), 60, y + 54);
-  doc.text("Valor total: " + formatBRL(r.valorTotal), 260, y + 54);
-  doc.text("Recebido em: " + formatDateTimeBR(r.paidAt), 60, y + 68);
-  if (r.tipoPagamento === "parcial") {
+  if (r.pendente) {
+    const sinal = r.valorSinal ?? r.valorTotal / 2;
+    doc.roundedRect(40, y, W - 80, 96, 8, 8, "F");
+    doc.setTextColor(BRAND_DARK);
     doc.setFont("helvetica", "bold");
-    doc.text("Restante no dia: " + formatBRL(Math.max(0, r.valorTotal - r.valorPago)), 260, y + 68);
+    doc.setFontSize(10);
+    doc.text("PAGAMENTO DO SINAL VIA PIX", 60, y + 20);
+    doc.setFont("helvetica", "normal");
+    doc.text("Sinal (50%): " + formatBRL(sinal), 60, y + 38);
+    doc.text("Valor total: " + formatBRL(r.valorTotal), 260, y + 38);
+    doc.text("Restante no dia: " + formatBRL(Math.max(0, r.valorTotal - sinal)), 60, y + 54);
+    if (r.pixChave) doc.text("Chave PIX: " + r.pixChave, 60, y + 70);
+    if (r.pixNome) doc.text("Favorecido: " + r.pixNome, 60, y + 84);
+    y += 111;
+  } else {
+    doc.roundedRect(40, y, W - 80, 80, 8, 8, "F");
+    doc.setTextColor(BRAND_DARK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text("PAGAMENTO", 60, y + 20);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    const tipo = r.tipoPagamento === "integral" ? "Integral (100%)" : "Sinal parcial (50%)";
+    doc.text("Tipo: " + tipo, 60, y + 38);
+    doc.text("Valor pago: " + formatBRL(r.valorPago), 60, y + 54);
+    doc.text("Valor total: " + formatBRL(r.valorTotal), 260, y + 54);
+    doc.text("Recebido em: " + formatDateTimeBR(r.paidAt), 60, y + 68);
+    if (r.tipoPagamento === "parcial") {
+      doc.setFont("helvetica", "bold");
+      doc.text(
+        "Restante no dia: " + formatBRL(Math.max(0, r.valorTotal - r.valorPago)),
+        260,
+        y + 68,
+      );
+    }
+    y += 95;
   }
-  y += 95;
 
+  // Quebra de página quando o conteúdo não cabe mais.
+  const garantirEspaco = (altura: number) => {
+    if (y + altura > H - 70) {
+      doc.addPage();
+      y = 50;
+    }
+  };
+
+  // Estrutura inclusa e endereço
+  garantirEspaco(120);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(BRAND_DARK);
+  doc.text("INCLUSO NA LOCAÇÃO", 40, y);
+  y += 16;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(50, 50, 50);
+  for (const item of [
+    "Tocha Sokani X100 RGB com softbox",
+    "Bastão de LED LUXCEO",
+    "2 painéis de LED bicolor",
+    "Fundo infinito em L, mesa still, luz natural pela janela, Wi-Fi e café",
+  ]) {
+    doc.text("• " + item, 40, y);
+    y += 12;
+  }
+  y += 6;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(BRAND_DARK);
+  doc.text("ONDE FICAMOS", 40, y);
+  y += 16;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(50, 50, 50);
+  doc.text("R. Rio de Janeiro, 462 · 22º andar · Sala 2217 · Centro · Belo Horizonte - MG · 30160-040", 40, y);
+  y += 22;
+
+  garantirEspaco(170);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(BRAND_DARK);
@@ -184,6 +251,7 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
 
   for (const b of bulletsGeneral) {
     const lines = doc.splitTextToSize("• " + b, W - 80);
+    garantirEspaco(lines.length * 12 + 4);
     doc.text(lines, 40, y);
     y += lines.length * 12 + 2;
   }
