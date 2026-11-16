@@ -12,7 +12,8 @@ type Dados = {
   paga: boolean;
   valor_total: number | string;
   valor_sinal: number | string;
-  taxa_cartao: number | string;
+  valor_pago: number | string | null;
+  diff_pricing_id: string | null;
 };
 
 type RpcClient = {
@@ -29,31 +30,32 @@ async function criarPreferencia(token: string, p: {
   titulo: string;
   valor: number;
   reservaId: string;
-  tipo: "pix" | "cartao";
+  tipo: "sinal" | "saldo";
+  horasValidade: number;
+  diffPricingId: string | null;
 }) {
-  const expira = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-  const excluidos =
-    p.tipo === "pix"
-      ? [{ id: "credit_card" }, { id: "debit_card" }, { id: "ticket" }, { id: "atm" }, { id: "prepaid_card" }]
-      : [{ id: "ticket" }, { id: "bank_transfer" }, { id: "atm" }, { id: "account_money" }];
+  const expira = new Date(Date.now() + p.horasValidade * 60 * 60 * 1000).toISOString();
+  const body: Record<string, unknown> = {
+    items: [{ id: p.reservaId, title: p.titulo, quantity: 1, currency_id: "BRL", unit_price: p.valor }],
+    external_reference: p.reservaId,
+    metadata: { reserva_id: p.reservaId, tipo: p.tipo },
+    notification_url: `${SITE}/api/public/hooks/mercadopago`,
+    statement_descriptor: "MAMBAIA",
+    expires: true,
+    expiration_date_to: expira,
+    // Todas as formas (PIX, cartao, saldo Mercado Pago), exceto boleto e lotericas (demoram dias e conflitam com a validade).
+    payment_methods: { excluded_payment_types: [{ id: "ticket" }, { id: "atm" }], installments: 3 },
+    back_urls: { success: SITE, pending: SITE, failure: SITE },
+  };
+  if (p.diffPricingId && /^\d+$/.test(p.diffPricingId)) body.differential_pricing = { id: Number(p.diffPricingId) };
   const res = await fetch("https://api.mercadopago.com/checkout/preferences", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      "X-Idempotency-Key": `${p.reservaId}-${p.tipo}-${p.valor}`,
+      "X-Idempotency-Key": `${p.reservaId}-${p.tipo}-${p.valor}-${Math.floor(Date.now() / 3600000)}`,
     },
-    body: JSON.stringify({
-      items: [{ id: p.reservaId, title: p.titulo, quantity: 1, currency_id: "BRL", unit_price: p.valor }],
-      external_reference: p.reservaId,
-      metadata: { reserva_id: p.reservaId, tipo: p.tipo },
-      notification_url: `${SITE}/api/public/hooks/mercadopago`,
-      statement_descriptor: "MAMBAIA",
-      expires: true,
-      expiration_date_to: expira,
-      payment_methods: { excluded_payment_types: excluidos, installments: 1 },
-      back_urls: { success: SITE, pending: SITE, failure: SITE },
-    }),
+    body: JSON.stringify(body),
   });
   const d = (await res.json()) as { init_point?: string; message?: string };
   if (!res.ok || !d.init_point) throw new Error(d.message ?? `Mercado Pago ${res.status}`);
@@ -61,7 +63,7 @@ async function criarPreferencia(token: string, p: {
 }
 
 /**
- * Gera os links de pagamento (PIX e cartao com taxa repassada) do sinal de uma reserva.
+ * Gera 1 link de pagamento (todas as formas) do sinal ou do saldo de uma reserva.
  * Protegido pelo token do agente (header x-agente-token), validado no banco.
  */
 export const Route = createFileRoute("/api/public/agente/pagamento")({
@@ -72,8 +74,11 @@ export const Route = createFileRoute("/api/public/agente/pagamento")({
         if (!mpToken) return json({ ok: false, erro: "Mercado Pago nao configurado" }, 500);
         const agenteToken = request.headers.get("x-agente-token") ?? "";
         let reservaId = "";
+        let tipo: "sinal" | "saldo" = "sinal";
         try {
-          reservaId = String(((await request.json()) as { reserva_id?: string }).reserva_id ?? "");
+          const b = (await request.json()) as { reserva_id?: string; tipo?: string };
+          reservaId = String(b.reserva_id ?? "");
+          if (b.tipo === "saldo") tipo = "saldo";
         } catch {
           return json({ ok: false, erro: "JSON invalido" }, 400);
         }
@@ -85,25 +90,30 @@ export const Route = createFileRoute("/api/public/agente/pagamento")({
         });
         if (error || !d) return json({ ok: false, erro: "Nao autorizado" }, 401);
         if (!d.ok) return json({ ok: false, erro: d.erro ?? "Reserva nao encontrada" }, 404);
-        if (d.paga) return json({ ok: false, erro: "Reserva ja paga" }, 409);
-
-        const sinal = Number(d.valor_sinal);
-        const taxa = Math.min(Math.max(Number(d.taxa_cartao) || 0.0498, 0), 0.2);
-        const sinalCartao = Math.round((sinal / (1 - taxa)) * 100) / 100;
-        const titulo = `Sinal 50% - Mambaia, proposta ${String(d.numero).padStart(4, "0")}`;
+        const total = Number(d.valor_total);
+        const pago = Number(d.valor_pago ?? 0);
+        let valor: number;
+        let titulo: string;
+        const num = String(d.numero).padStart(4, "0");
+        if (tipo === "saldo") {
+          valor = Math.round((total - pago) * 100) / 100;
+          if (!d.paga || valor <= 0.01) return json({ ok: false, erro: "Nao ha saldo a pagar" }, 409);
+          titulo = `Saldo - Mambaia, proposta ${num}`;
+        } else {
+          if (d.paga) return json({ ok: false, erro: "Reserva ja paga" }, 409);
+          valor = Number(d.valor_sinal);
+          titulo = `Sinal 50% - Mambaia, proposta ${num}`;
+        }
         try {
-          const [linkPix, linkCartao] = await Promise.all([
-            criarPreferencia(mpToken, { titulo, valor: sinal, reservaId, tipo: "pix" }),
-            criarPreferencia(mpToken, { titulo: `${titulo} (cartao)`, valor: sinalCartao, reservaId, tipo: "cartao" }),
-          ]);
-          return json({
-            ok: true,
-            valor_pix: sinal,
-            link_pix: linkPix,
-            valor_cartao: sinalCartao,
-            link_cartao: linkCartao,
-            validade: "24 horas",
+          const link = await criarPreferencia(mpToken, {
+            titulo,
+            valor,
+            reservaId,
+            tipo,
+            horasValidade: tipo === "saldo" ? 48 : 24,
+            diffPricingId: d.diff_pricing_id,
           });
+          return json({ ok: true, tipo, valor, link, validade: tipo === "saldo" ? "48 horas" : "24 horas" });
         } catch (e) {
           return json({ ok: false, erro: e instanceof Error ? e.message : "Falha ao gerar link" }, 502);
         }

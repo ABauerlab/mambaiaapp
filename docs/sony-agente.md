@@ -60,8 +60,10 @@ Usa as mesmas regras do `/agendar` (conflito de horario, cobranca do sinal de 50
 ## Pagamento automatico (Mercado Pago)
 
 - Aplicação **Mambaia-API** (Checkout Pro). Secrets no Lovable: `MP_ACCESS_TOKEN` (token de produção) e `MP_WEBHOOK_SECRET` (assinatura do webhook).
-- `POST /api/public/agente/pagamento` (header `x-agente-token`): gera 2 links do sinal de 50%, PIX (valor do sinal) e cartão à vista (sinal + taxa, repassada ao cliente), válidos por 24h. A taxa fica em `agente_config.mp_taxa_cartao` (padrão 0,0498; ajuste conforme a conta).
+- `POST /api/public/agente/pagamento` (header `x-agente-token`): gera 1 link do sinal de 50% (ou do saldo, com `tipo: saldo`) com todas as formas de pagamento (PIX, cartão em até 3x, saldo Mercado Pago; sem boleto). Sinal vale 24h, saldo 48h. Para repassar a taxa do cartão, crie um "preço diferencial" no painel do Mercado Pago e salve o ID em `agente_config.mp_differential_pricing_id`.
 - `POST /api/public/hooks/mercadopago`: webhook. Valida a assinatura, consulta o pagamento na API do Mercado Pago e chama `mp_confirmar_pagamento`, que confirma a reserva (`paid_at`, `valor_pago`, taxa e líquido), gera a receita pelo trigger existente e dispara o aviso no grupo, o push e a confirmação ao cliente com o PDF. Idempotente por `payment_id` (tabela `mp_pagamentos`). Duplicidade, valor insuficiente, estorno e chargeback geram alerta no grupo.
 - Webhook no painel do Mercado Pago: URL `https://mambaiabh.com.br/api/public/hooks/mercadopago`, evento **Pagamentos**.
 - A Sony usa a ferramenta `gerar_links_pagamento` no lugar da chave PIX, que fica só como plano B.
 - Migration: `20261116160000_mercadopago.sql`.
+
+- **Saldo (50% restantes):** a cada 5 minutos o n8n pega as reservas com sinal pago que estão começando (`agente_saldos_pegar`), gera o link do saldo e envia no WhatsApp. O pagamento é confirmado por `mp_confirmar_saldo` (reserva vira `paga`, receita é ajustada pelo trigger). Migration: `20261116170000_mercadopago_saldo.sql`.

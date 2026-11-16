@@ -8,6 +8,7 @@ type Pagamento = {
   external_reference?: string | null;
   payment_type_id?: string;
   fee_details?: { amount: number }[];
+  metadata?: { tipo?: string } | null;
 };
 
 type AdminClient = {
@@ -70,7 +71,8 @@ export const Route = createFileRoute("/api/public/hooks/mercadopago")({
         const db = supabaseAdmin as unknown as AdminClient;
         if (p.status === "approved") {
           const taxa = (p.fee_details ?? []).reduce((s, f) => s + Number(f.amount || 0), 0);
-          const { data, error } = await db.rpc("mp_confirmar_pagamento", {
+          const saldo = p.metadata?.tipo === "saldo";
+          const { data, error } = await db.rpc(saldo ? "mp_confirmar_saldo" : "mp_confirmar_pagamento", {
             p_payment_id: String(p.id),
             p_reserva: reservaId,
             p_bruto: Number(p.transaction_amount),
