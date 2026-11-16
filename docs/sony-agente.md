@@ -38,3 +38,14 @@ Usa as mesmas regras do `/agendar` (conflito de horario, cobranca do sinal de 50
   `mailto:contato.mambaia@gmail.com` quando invalido. Corrija tambem o segredo para `mailto:contato.mambaia@gmail.com`.
 - A resposta do hook `nova-reserva` inclui `sent`, `removed` e `failed` (host, codigo) para diagnostico.
 - O iPhone precisa do app instalado na tela inicial (iOS 16.4+) e com a permissao de notificacoes concedida.
+
+## Preco, tokens e cuidado com o WhatsApp nao oficial (Evolution/Baileys)
+- Precos da locacao: 1h R$ 100, 2h R$ 180, 3h R$ 250, 4h R$ 300 (meias horas: 30 min R$ 50, 1h30 R$ 150, 2h30 R$ 230, 3h30 R$ 280).
+  Acima de 4h: R$ 75 por hora (8h = R$ 600), ate 12h (`calc_preco_reserva`). Sinal de 50%.
+- O estudio tem agua; nao oferecemos cafe (prompt da Sony, PDF e site).
+- Uma unica mensagem por resposta (a reserva vai como PDF com a resposta na legenda). Nada de varias mensagens picadas.
+- Anti-banimento: so responde a quem escreveu primeiro; filtros no banco ignoram "ok/obrigado/emoji" quando nao ha pergunta aberta,
+  honram "parar" (opt-out) e param de responder acima de 30 mensagens/hora do mesmo numero; follow-ups em lotes de 2, ate 30 envios
+  proativos por 24h, so entre 9h e 20h, com intervalos aleatorios (4 a 12 s); lembretes com textos variados.
+- Economia de tokens: prompt enxuto, historico de 14 mensagens, ate 6 iteracoes, respostas da agenda compactas (faixas de horario),
+  pedidos de midia acima de ~4,5 MB nao sao enviados ao Gemini.
