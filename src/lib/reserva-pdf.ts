@@ -226,7 +226,11 @@ export function gerarReservaPDF(r: ReservaPDFInput): jsPDF {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(50, 50, 50);
-  doc.text("R. Rio de Janeiro, 462 · 22º andar · Sala 2217 · Centro · Belo Horizonte - MG · 30160-040", 40, y);
+  doc.text(
+    "R. Rio de Janeiro, 462 · 22º andar · Sala 2217 · Centro · Belo Horizonte - MG · 30160-040",
+    40,
+    y,
+  );
   y += 22;
 
   garantirEspaco(170);

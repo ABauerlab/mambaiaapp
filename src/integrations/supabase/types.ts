@@ -59,6 +59,147 @@ export type Database = {
           },
         ]
       }
+      agente_config: {
+        Row: {
+          chave: string
+          valor: string
+        }
+        Insert: {
+          chave: string
+          valor: string
+        }
+        Update: {
+          chave?: string
+          valor?: string
+        }
+        Relationships: []
+      }
+      agente_conversas: {
+        Row: {
+          atualizado_em: string
+          criado_em: string
+          estado: string
+          followups_enviados: number
+          humano_ate: string | null
+          nome: string | null
+          optout: boolean
+          resumo: string | null
+          ultima_msg_cliente_at: string | null
+          ultima_msg_sony_at: string | null
+          ultimo_followup_at: string | null
+          whatsapp: string
+        }
+        Insert: {
+          atualizado_em?: string
+          criado_em?: string
+          estado?: string
+          followups_enviados?: number
+          humano_ate?: string | null
+          nome?: string | null
+          optout?: boolean
+          resumo?: string | null
+          ultima_msg_cliente_at?: string | null
+          ultima_msg_sony_at?: string | null
+          ultimo_followup_at?: string | null
+          whatsapp: string
+        }
+        Update: {
+          atualizado_em?: string
+          criado_em?: string
+          estado?: string
+          followups_enviados?: number
+          humano_ate?: string | null
+          nome?: string | null
+          optout?: boolean
+          resumo?: string | null
+          ultima_msg_cliente_at?: string | null
+          ultima_msg_sony_at?: string | null
+          ultimo_followup_at?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      agente_eventos: {
+        Row: {
+          criado_em: string
+          dados: Json
+          enviado_em: string | null
+          erro: string | null
+          id: number
+          reserva_id: string | null
+          reservado_em: string | null
+          tentativas: number
+          tipo: string
+        }
+        Insert: {
+          criado_em?: string
+          dados?: Json
+          enviado_em?: string | null
+          erro?: string | null
+          id?: number
+          reserva_id?: string | null
+          reservado_em?: string | null
+          tentativas?: number
+          tipo: string
+        }
+        Update: {
+          criado_em?: string
+          dados?: Json
+          enviado_em?: string | null
+          erro?: string | null
+          id?: number
+          reserva_id?: string | null
+          reservado_em?: string | null
+          tentativas?: number
+          tipo?: string
+        }
+        Relationships: []
+      }
+      agente_feriados: {
+        Row: {
+          data: string
+          nome: string
+        }
+        Insert: {
+          data: string
+          nome: string
+        }
+        Update: {
+          data?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      agente_mensagens: {
+        Row: {
+          criado_em: string
+          id: number
+          papel: string
+          texto: string
+          tipo: string
+          wa_id: string | null
+          whatsapp: string
+        }
+        Insert: {
+          criado_em?: string
+          id?: number
+          papel: string
+          texto: string
+          tipo?: string
+          wa_id?: string | null
+          whatsapp: string
+        }
+        Update: {
+          criado_em?: string
+          id?: number
+          papel?: string
+          texto?: string
+          tipo?: string
+          wa_id?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       alertas: {
         Row: {
           ativo: boolean
@@ -405,6 +546,8 @@ export type Database = {
       }
       reservas: {
         Row: {
+          cliente_lembrete_1h_at: string | null
+          cliente_lembrete_24h_at: string | null
           cliente_nome: string
           cliente_whatsapp: string
           cobranca_id: string | null
@@ -412,13 +555,16 @@ export type Database = {
           data: string
           duracao_minutos: number
           empreendimento: string | null
+          fora_horario: boolean
           hora_inicio: string
           id: string
           lembrete_1h_enviado_at: string | null
           lembrete_24h_enviado_at: string | null
           numero_proposta: number
           observacoes: string | null
+          origem: string
           paid_at: string | null
+          remarcacoes: number
           status: string
           tipo: string
           tipo_pagamento: string | null
@@ -428,6 +574,8 @@ export type Database = {
           valor_total: number
         }
         Insert: {
+          cliente_lembrete_1h_at?: string | null
+          cliente_lembrete_24h_at?: string | null
           cliente_nome: string
           cliente_whatsapp: string
           cobranca_id?: string | null
@@ -435,13 +583,16 @@ export type Database = {
           data: string
           duracao_minutos: number
           empreendimento?: string | null
+          fora_horario?: boolean
           hora_inicio: string
           id?: string
           lembrete_1h_enviado_at?: string | null
           lembrete_24h_enviado_at?: string | null
           numero_proposta?: number
           observacoes?: string | null
+          origem?: string
           paid_at?: string | null
+          remarcacoes?: number
           status?: string
           tipo?: string
           tipo_pagamento?: string | null
@@ -451,6 +602,8 @@ export type Database = {
           valor_total: number
         }
         Update: {
+          cliente_lembrete_1h_at?: string | null
+          cliente_lembrete_24h_at?: string | null
           cliente_nome?: string
           cliente_whatsapp?: string
           cobranca_id?: string | null
@@ -458,13 +611,16 @@ export type Database = {
           data?: string
           duracao_minutos?: number
           empreendimento?: string | null
+          fora_horario?: boolean
           hora_inicio?: string
           id?: string
           lembrete_1h_enviado_at?: string | null
           lembrete_24h_enviado_at?: string | null
           numero_proposta?: number
           observacoes?: string | null
+          origem?: string
           paid_at?: string | null
+          remarcacoes?: number
           status?: string
           tipo?: string
           tipo_pagamento?: string | null
@@ -581,7 +737,125 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _agente_auth: { Args: { p_token: string }; Returns: undefined }
+      _agente_dia: { Args: { p_data: string }; Returns: string }
+      _agente_doc_chave: { Args: { p_reserva: string }; Returns: string }
+      _agente_fone: { Args: { p: string }; Returns: string }
+      _agente_janela: {
+        Args: { p_data: string }
+        Returns: Record<string, unknown>
+      }
+      _agente_livres: { Args: { p_data: string; p_dur: number }; Returns: Json }
+      _agente_reserva_json: { Args: { p_id: string }; Returns: Json }
       _mb_slugify: { Args: { _txt: string }; Returns: string }
+      agente_agenda: {
+        Args: {
+          p_de?: string
+          p_dias?: number
+          p_duracao?: number
+          p_token: string
+        }
+        Returns: Json
+      }
+      agente_alterar_reserva: {
+        Args: {
+          p_nova_data: string
+          p_nova_hora: string
+          p_reserva: string
+          p_token: string
+          p_whatsapp: string
+        }
+        Returns: Json
+      }
+      agente_cancelar_reserva: {
+        Args: {
+          p_motivo?: string
+          p_reserva: string
+          p_token: string
+          p_whatsapp: string
+        }
+        Returns: Json
+      }
+      agente_criar_reserva: {
+        Args: {
+          p_data: string
+          p_duracao: number
+          p_empreendimento?: string
+          p_hora: string
+          p_nome: string
+          p_observacoes?: string
+          p_pacote?: string
+          p_qtd_marcas?: number
+          p_token: string
+          p_whatsapp: string
+        }
+        Returns: Json
+      }
+      agente_documento_dados: {
+        Args: { p_chave: string; p_slug: string }
+        Returns: Json
+      }
+      agente_documento_url: {
+        Args: { p_reserva: string; p_token: string }
+        Returns: Json
+      }
+      agente_evento_criar: {
+        Args: {
+          p_dados?: Json
+          p_tipo: string
+          p_token: string
+          p_whatsapp?: string
+        }
+        Returns: Json
+      }
+      agente_evento_resultado: {
+        Args: { p_erro?: string; p_id: number; p_ok: boolean; p_token: string }
+        Returns: Json
+      }
+      agente_eventos_pegar: {
+        Args: { p_limite?: number; p_token: string }
+        Returns: Json
+      }
+      agente_followups_pegar: {
+        Args: { p_limite?: number; p_token: string }
+        Returns: Json
+      }
+      agente_historico: {
+        Args: { p_limite?: number; p_token: string; p_whatsapp: string }
+        Returns: Json
+      }
+      agente_horarios: {
+        Args: { p_data: string; p_duracao?: number; p_token: string }
+        Returns: Json
+      }
+      agente_lead_atualizar: {
+        Args: {
+          p_estado?: string
+          p_nome?: string
+          p_optout?: boolean
+          p_resumo?: string
+          p_token: string
+          p_whatsapp: string
+        }
+        Returns: Json
+      }
+      agente_lembretes_pegar: { Args: { p_token: string }; Returns: Json }
+      agente_minhas_reservas: {
+        Args: { p_token: string; p_whatsapp: string }
+        Returns: Json
+      }
+      agente_msg_registrar: {
+        Args: {
+          p_nome: string
+          p_papel: string
+          p_texto: string
+          p_tipo?: string
+          p_token: string
+          p_wa_id?: string
+          p_whatsapp: string
+        }
+        Returns: Json
+      }
       calc_preco_reserva: { Args: { _minutos: number }; Returns: number }
       confirmar_pagamento_cobranca: {
         Args: { _slug: string; _tipo: string; _valor: number }

@@ -34,6 +34,7 @@ import { Route as ApiPublicHooksReservaLembretesRouteImport } from './routes/api
 import { Route as ApiPublicHooksNovaReservaRouteImport } from './routes/api/public/hooks/nova-reserva'
 import { Route as ApiPublicHooksDailyDigestRouteImport } from './routes/api/public/hooks/daily-digest'
 import { Route as ApiPublicHooksAlertasRouteImport } from './routes/api/public/hooks/alertas'
+import { Route as ApiPublicAgentePropostaRouteImport } from './routes/api/public/agente/proposta'
 
 const WifiRoute = WifiRouteImport.update({
   id: '/wifi',
@@ -162,6 +163,11 @@ const ApiPublicHooksAlertasRoute = ApiPublicHooksAlertasRouteImport.update({
   path: '/api/public/hooks/alertas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAgentePropostaRoute = ApiPublicAgentePropostaRouteImport.update({
+  id: '/api/public/agente/proposta',
+  path: '/api/public/agente/proposta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
+  '/api/public/agente/proposta': typeof ApiPublicAgentePropostaRoute
   '/api/public/hooks/alertas': typeof ApiPublicHooksAlertasRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
   '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
+  '/api/public/agente/proposta': typeof ApiPublicAgentePropostaRoute
   '/api/public/hooks/alertas': typeof ApiPublicHooksAlertasRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
   '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
@@ -238,6 +246,7 @@ export interface FileRoutesById {
   '/_app/relatorios': typeof AppRelatoriosRoute
   '/_app/transacoes': typeof AppTransacoesRoute
   '/cobranca/$slug': typeof CobrancaSlugRoute
+  '/api/public/agente/proposta': typeof ApiPublicAgentePropostaRoute
   '/api/public/hooks/alertas': typeof ApiPublicHooksAlertasRoute
   '/api/public/hooks/daily-digest': typeof ApiPublicHooksDailyDigestRoute
   '/api/public/hooks/nova-reserva': typeof ApiPublicHooksNovaReservaRoute
@@ -266,6 +275,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/transacoes'
     | '/cobranca/$slug'
+    | '/api/public/agente/proposta'
     | '/api/public/hooks/alertas'
     | '/api/public/hooks/daily-digest'
     | '/api/public/hooks/nova-reserva'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/transacoes'
     | '/cobranca/$slug'
+    | '/api/public/agente/proposta'
     | '/api/public/hooks/alertas'
     | '/api/public/hooks/daily-digest'
     | '/api/public/hooks/nova-reserva'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/_app/relatorios'
     | '/_app/transacoes'
     | '/cobranca/$slug'
+    | '/api/public/agente/proposta'
     | '/api/public/hooks/alertas'
     | '/api/public/hooks/daily-digest'
     | '/api/public/hooks/nova-reserva'
@@ -334,6 +346,7 @@ export interface RootRouteChildren {
   PrimeiroAcessoRoute: typeof PrimeiroAcessoRoute
   WifiRoute: typeof WifiRoute
   CobrancaSlugRoute: typeof CobrancaSlugRoute
+  ApiPublicAgentePropostaRoute: typeof ApiPublicAgentePropostaRoute
   ApiPublicHooksAlertasRoute: typeof ApiPublicHooksAlertasRoute
   ApiPublicHooksDailyDigestRoute: typeof ApiPublicHooksDailyDigestRoute
   ApiPublicHooksNovaReservaRoute: typeof ApiPublicHooksNovaReservaRoute
@@ -517,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksAlertasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/agente/proposta': {
+      id: '/api/public/agente/proposta'
+      path: '/api/public/agente/proposta'
+      fullPath: '/api/public/agente/proposta'
+      preLoaderRoute: typeof ApiPublicAgentePropostaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -563,6 +583,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrimeiroAcessoRoute: PrimeiroAcessoRoute,
   WifiRoute: WifiRoute,
   CobrancaSlugRoute: CobrancaSlugRoute,
+  ApiPublicAgentePropostaRoute: ApiPublicAgentePropostaRoute,
   ApiPublicHooksAlertasRoute: ApiPublicHooksAlertasRoute,
   ApiPublicHooksDailyDigestRoute: ApiPublicHooksDailyDigestRoute,
   ApiPublicHooksNovaReservaRoute: ApiPublicHooksNovaReservaRoute,
