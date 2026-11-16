@@ -682,6 +682,7 @@ export type Database = {
           valor_total: number
         }[]
       }
+      is_team_member: { Args: never; Returns: boolean }
     }
     Enums: {
       tipo_transacao: "despesa" | "receita"
