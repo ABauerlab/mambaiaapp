@@ -33,7 +33,7 @@ const WHATSAPP_GERAL = waMambaia(
 const OPEN_HOUR = 9;
 const CLOSE_HOUR = 22;
 const DURACAO = 60;
-const PRECO_UNIT = 350;
+const PRECO_UNIT = 500;
 
 function ymd(d: Date): string {
   const y = d.getFullYear();
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/pacote-marcas")({
       {
         name: "description",
         content:
-          "Pacote fotográfico para marcas e brechós: 1h no estúdio Mambaia com fotografia, edição e making-of por R$ 350. Praça Sete, Belo Horizonte.",
+          "Pacote fotográfico para marcas e brechós: 1h no estúdio Mambaia com fotografia, edição e making-of por R$ 500. Praça Sete, Belo Horizonte.",
       },
       {
         name: "keywords",
@@ -69,7 +69,7 @@ export const Route = createFileRoute("/pacote-marcas")({
       {
         property: "og:description",
         content:
-          "1h no estúdio com fotografia, edição e making-of por R$ 350. Ideal para marcas e brechós na Praça Sete.",
+          "1h no estúdio com fotografia, edição e making-of por R$ 500. Ideal para marcas e brechós na Praça Sete.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
@@ -85,7 +85,7 @@ export const Route = createFileRoute("/pacote-marcas")({
       { name: "twitter:title", content: "Pacote Marcas Mambaia" },
       {
         name: "twitter:description",
-        content: "1h de estúdio, fotografia, edição e making-of por R$ 350 por marca.",
+        content: "1h de estúdio, fotografia, edição e making-of por R$ 500 por marca.",
       },
       {
         name: "twitter:image",
@@ -108,7 +108,7 @@ export const Route = createFileRoute("/pacote-marcas")({
             "https://mambaiabh.com.br/__l5e/assets-v1/bfe6eb16-e7c8-4f7d-be7b-b584a011b868/mambaia-estudio-4.jpg",
           offers: {
             "@type": "Offer",
-            price: "350.00",
+            price: "500.00",
             priceCurrency: "BRL",
             availability: "https://schema.org/InStock",
             url: "https://mambaiabh.com.br/pacote-marcas",
@@ -255,7 +255,7 @@ function PacoteMarcasPage() {
             <p className="mt-3 text-sm md:text-base opacity-90 max-w-prose">
               Traga as peças, a gente faz o resto. Um pacote fechado com{" "}
               <strong>fotografia, edição e making-of</strong> por{" "}
-              <strong>R$ 350 e 1h de estúdio por marca</strong>. Trouxe 2 marcas? São 2h e R$ 700, e
+              <strong>R$ 500 e 1h de estúdio por marca</strong>. Trouxe 2 marcas? São 2h e R$ 1.000, e
               assim por diante.
             </p>
           </div>
@@ -268,8 +268,8 @@ function PacoteMarcasPage() {
           <p className="text-sm opacity-90">
             <strong>Você só precisa trazer as peças.</strong> A gente cuida de toda a estrutura:
             câmera profissional, tripés, iluminação e o olhar da equipe. O valor de{" "}
-            <strong>R$ 350 vale para 1 marca com 1h de estúdio</strong>. Se você trouxer mais de um
-            empreendimento, cada marca extra soma <strong>+ R$ 350 e + 1h</strong> na sessão - assim
+            <strong>R$ 500 vale para 1 marca com 1h de estúdio</strong>. Se você trouxer mais de um
+            empreendimento, cada marca extra soma <strong>+ R$ 500 e + 1h</strong> na sessão - assim
             garantimos tempo e cuidado individual para cada uma.
           </p>
           <ul className="text-sm space-y-1.5 opacity-90 pt-1">
@@ -287,7 +287,7 @@ function PacoteMarcasPage() {
             </li>
             <li className="flex gap-2">
               <Package className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Cada marca
-              ganha <strong>1h dedicada + R$ 350</strong>. Ex.: 3 marcas = 3h e R$ 1.050.
+              ganha <strong>1h dedicada + R$ 500</strong>. Ex.: 3 marcas = 3h e R$ 1.500.
             </li>
             <li className="flex gap-2">
               <Camera className="w-4 h-4 mt-0.5 shrink-0 text-[var(--brand-lime)]" /> Estúdio em L
@@ -413,7 +413,7 @@ function PacoteMarcasPage() {
                 }
               />
               <p className="text-[11px] opacity-70 mt-1">
-                R$ 350 e 1h de estúdio para <strong>cada</strong> marca. O valor total e a duração
+                R$ 500 e 1h de estúdio para <strong>cada</strong> marca. O valor total e a duração
                 são multiplicados pela quantidade.
               </p>
             </div>
@@ -461,7 +461,7 @@ function PacoteMarcasPage() {
               </div>
               <div className="text-right">
                 <div className="text-[11px] opacity-60">
-                  Total {qtd > 1 ? `(${qtd} × R$ 350)` : ""}
+                  Total {qtd > 1 ? `(${qtd} × R$ 500)` : ""}
                 </div>
                 <div className="text-lg font-bold tabular-nums">{formatBRL(precoTotal)}</div>
               </div>

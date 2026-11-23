@@ -61,8 +61,8 @@ const PACOTES: Pacote[] = [
   {
     id: "marcas",
     nome: "Marcas & Brechós",
-    preco: 350,
-    precoLabel: "R$ 350 / marca",
+    preco: 500,
+    precoLabel: "R$ 500 / marca",
     duracao: 60,
     bullets: [
       "1h de estúdio + captação de catálogo",
