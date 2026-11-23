@@ -97,7 +97,7 @@ export const Route = createFileRoute("/")({
           logo: `${SITE}/icon-512.png`,
           url: SITE,
           telephone: "+55 31 7561-2135",
-          priceRange: "R$ 50 - R$ 350",
+          priceRange: "R$ 50 - R$ 500",
           address: {
             "@type": "PostalAddress",
             streetAddress: "R. Rio de Janeiro, 462 - Sala 2217",
@@ -325,7 +325,7 @@ const servicos: Servico[] = [
   {
     icon: Building2,
     title: "Pacote marcas / brechó",
-    desc: "Produção fotográfica completa por R$ 350 por marca, com 1h de estúdio para cada uma. Feito para catálogo, brechó e coleção nova.",
+    desc: "Produção fotográfica completa por R$ 500 por marca, com 1h de estúdio para cada uma. Feito para catálogo, brechó e coleção nova.",
     img: estudio1.url,
     href: "/pacote-marcas",
     cta: "Quero o pacote",
@@ -347,7 +347,7 @@ type PacoteAV = { nome: string; preco: string; itens: string[] };
 const AUDIOVISUAL: PacoteAV[] = [
   {
     nome: "Marcas & Brechós",
-    preco: "R$ 350 / marca",
+    preco: "R$ 500 / marca",
     itens: [
       "1h de estúdio + captação de catálogo",
       "Até 10 peças (3 a 5 ângulos) + making-of",
@@ -461,7 +461,7 @@ function Precos() {
             <h3 className="text-lg md:text-xl font-medium">Quer a produção completa?</h3>
             <p className="mt-1 text-sm md:text-base text-white/75 leading-relaxed">
               Também fazemos a produção completa pra você: fotógrafo, edição e conteúdo pronto, a
-              partir de R$ 350.
+              partir de R$ 500.
             </p>
           </div>
           <button
@@ -545,7 +545,7 @@ function Precos() {
                 <h3 className="text-xl font-medium">Pacote marcas e brechó</h3>
               </div>
               <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-4xl font-semibold tabular-nums">R$ 350</span>
+                <span className="text-4xl font-semibold tabular-nums">R$ 500</span>
                 <span className="text-white/70 text-sm">por marca</span>
               </div>
               <ul className="mt-5 grid sm:grid-cols-2 gap-3 text-sm text-white/85">
